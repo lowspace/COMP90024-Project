@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+COUCHDB_USERNAME = 'admin'
+COUCHDB_PASSWORD = 'password'
 
 # Application definition
 REST_FRAMEWORK = {

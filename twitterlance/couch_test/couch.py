@@ -1,8 +1,9 @@
-import requests, uuid, json, time
+import requests, uuid, json
+from django.conf import settings
 
 class Couch:
     def __init__(self):
-        self.base_url = 'http://admin:password@localhost:5984'
+        self.base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@localhost:5984'
 
     def new_id(self):
         return uuid.uuid4().hex
@@ -37,15 +38,3 @@ class Couch:
         if document['_id'] is None: 
             raise Exception('"_id" is missing')
         return requests.put(self.base_url + '/' + database + '/' + document['_id'], json=document)
-
-    def test(self):
-        error = 0
-        seconds = time.time()
-        docs = []
-        for i in range(0, 100):
-            data = {"_id": self.new_id()}
-            docs.append(data)
-        res = self.bulk_insert('testok', docs)
-        print(res.json())
-        print("Seconds since epoch =", seconds - time.time())	
-        return error
