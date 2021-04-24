@@ -1,3 +1,10 @@
-from django.test import TestCase
+import unittest
+class TestStringMethods(unittest.TestCase):
 
-# Create your tests here.
+    def setUp(self):
+        pass
+
+
+if __name__ == '__main__':
+    unittest.main()
+   
