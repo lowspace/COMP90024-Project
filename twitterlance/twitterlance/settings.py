@@ -27,8 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-COUCHDB_USERNAME = 'admin'
-COUCHDB_PASSWORD = 'password'
+COUCHDB_USERNAME = 'user'
+COUCHDB_PASSWORD = 'pass'
 
 # Application definition
 REST_FRAMEWORK = {
@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'analyser'
 ]
 
 MIDDLEWARE = [

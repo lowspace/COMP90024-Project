@@ -4,7 +4,7 @@ from . import views
 
 # https://www.django-rest-framework.org/api-guide/routers/
 router = routers.DefaultRouter()
-router.register(r'comment', views.CommentViewSet, basename="Comment")
+router.register(r'tweets', views.MapViewSet, basename="Tweet")
 
 urlpatterns = [
     path('', include(router.urls)),
