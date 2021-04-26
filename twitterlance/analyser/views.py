@@ -41,3 +41,17 @@ class MapViewSet(viewsets.ViewSet):
         query = f'lat_min:[{lat_min} TO 0] AND lat_max:[-90 TO {lat_max}] AND lon_min:[{lon_min} TO 180] AND lon_max:[0 TO {lon_max}]'
         res = self.couch.get(f'{self.database}/_design/geo/_search/box?q={query}')
         return Response({'total_rows': int(res.json()['total_rows'])})
+
+
+class UserViewSet(viewsets.ViewSet):
+    def __init__(self, **args):
+        super().__init__(**args)
+        self.couch = Couch()
+
+    #GET analyser/users
+    @action(detail=False, methods=['get'], name="Get all users")
+    def get_total_number_of_users(self, request):
+        res = self.couch.get(f'/userdb/_all_docs')
+        rows = res.json()['total_rows']
+        return Response({"rows": rows})
+
