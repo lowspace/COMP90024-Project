@@ -5,7 +5,7 @@ from django.conf import settings
 base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@localhost:5984'
 
 # Generate a new uuid for CouchDB document
-def new_id(self):
+def new_id():
     return uuid.uuid4().hex
 
 # Basic GET request. path is the url after base_url
