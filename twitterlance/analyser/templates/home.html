@@ -9,40 +9,53 @@
             Zihao Hu -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>COMP90024 Project Home</title>
-  <!-- less stylesheet -->
+  <!--import bootstrap and jquery -->
   <link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
+  <link rel="stylesheet" href="../static/bootcss/bootstrap.min.css">
+  <link rel="stylesheet" href="../static/bootcss/bootstrap-theme.min.css">
+  <script src="../static/jquery/jquery.min.js"></script>
+  <script src="../static/bootjs/bootstrap.min.js"></script>
+
+<!--  import style sheet-->
   <link rel="stylesheet" type="text/css" href="../static/css/styless.css"/>
   <link rel="stylesheet" href="../static/css/fa/css/all.css">
 
 </head>
+<body id="home">
+  <div class="container">
+    <div class="row clearfix">
+      <!--    side nav-->
+      <div class="col-md-3 column sidenav">
+        <img alt="140x140" src="../static/img/404.jpg" />
+        <ul>
+          <li class="this">
+            <a href="#">&nbsp<i class="fas fa-home">&nbsp&nbspHome</i></a>
+          </li>
+          <li>
+            <a href="about.html">&nbsp<i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
+          </li>
+          <li>
+            <a href="map.html">&nbsp<i class="fas fa-map">&nbsp&nbspMap</i></a>
+          </li>
+          <li>
+            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
+          </li>
+          <li>
+            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspTBA</i></a>
+          </li>
+        </ul>
+      </div>
+<!--      content for this page-->
+      <div class="col-md-9 column right-content">
+        <div class="home-right">
+          <h1>COMP90024 Project</h1>
+          <h1>Twitterlance</h1>
+          <h1>Team 39</h1>
+        </div>
+      </div>
 
-<body id="home_page">
-<div id="indexnav" class="sidenav">
-  <a href="javascript:void(0)" class="index_hide" onclick="closeNav()">
-      <i class="fas fa-angle-left"></i>
-  </a>
-  <a href="#">Home</a>
-  <a href="about.html">About</a>
-  <a href="map.html">Map</a>
-  <a href="statistics.html">Statistics</a>
-</div>
+    </div>
+  </div>
 
-<span onclick="openNav()">
-  <i class="fas fa-angle-right" id="index_show">&nbspMENU</i>
-</span>
-
-<div id="main" class="container" onclick="closeNav()">
-  <h1>COMP90024 Project</h1>
-  <h1>Group 39</h1>
-</div>
-
-<script>
-  function openNav() {
-      document.getElementById("indexnav").style.width = "240px";
-  }
-  function closeNav() {
-      document.getElementById("indexnav").style.width = "0";
-  }
-</script>
 </body>
 </html>
