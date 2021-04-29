@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import configparser
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +29,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-COUCHDB_USERNAME = 'user'
-COUCHDB_PASSWORD = 'pass'
+# Load CouchDB endpoint and credentials
+config = configparser.ConfigParser()
+try:
+    config.read("twitterlance/couchdb.conf")
+except:
+    print("CouchDB Configuration not found")
+COUCHDB_USERNAME = config.get('CouchDB', 'username')
+COUCHDB_PASSWORD = config.get('CouchDB', 'password')
+COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
 
 # Application definition
 REST_FRAMEWORK = {
@@ -47,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'couchdb',
     'analyser'
 ]
 

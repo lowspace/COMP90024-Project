@@ -1,0 +1,27 @@
+uwsgi:
+  http: 0.0.0.0:80
+  master: true
+  module: twitterlance.wsgi:application
+  env: DJANGO_SETTINGS_MODULE=twitterlance.settings
+  enable-threads: true
+  vacuum: true
+  need-app: true
+  disable-logging: true
+  cheaper-algo: busyness  
+  check-static: .
+
+  processes: 512
+  cheaper: 2
+  cheaper-initial: 2
+  cheaper-overload: 1
+  cheaper-step: 2 
+  cheaper-busyness-multiplier: 30    
+  cheaper-busyness-min: 20          
+  cheaper-busyness-max: 70           
+  cheaper-busyness-backlog-alert: 16 
+  cheaper-busyness-backlog-step: 2    
+  auto-procname: true
+
+  max-requests: 1000
+  max-worker-lifetime: 3600
+  

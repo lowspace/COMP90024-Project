@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  twitterlance:
+    container_name: twitterlance-app
+    build:
+      context: ./twitterlance
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
