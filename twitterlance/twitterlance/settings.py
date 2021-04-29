@@ -38,6 +38,8 @@ except:
 COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
+COUCHDB_NODES = config.get('CouchDB', 'nodes').split(',')
+COUCHDB_COORDINATION_NODE = config.get('CouchDB', 'coordination_node')
 
 # Application definition
 REST_FRAMEWORK = {
