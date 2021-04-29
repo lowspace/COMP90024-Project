@@ -1,0 +1,28 @@
+# Common vars
+availability_zone: melbourne-qh2-uom
+
+# Volume
+volumes:
+  - vol_name: vol-1
+    vol_size: 10
+  - vol_name: vol-2
+    vol_size: 10
+  - vol_name: vol-3
+    vol_size: 10
+  - vol_name: vol-4
+    vol_size: 10
+  
+# Instance
+instances:
+  - name: instance1
+    volumes: ['vol-1']
+  - name: instance2
+    volumes: ['vol-2']
+  - name: instance3
+    volumes: ['vol-3']
+  - name: instance4
+    volumes: ['vol-4']
+instance_image: f8b79936-6616-4a22-b55d-0d0a1d27bceb
+instance_key_name: instance1
+instance_flavor: uom.mse.1c4g
+sg_names: ['default', 'http', 'ssh']
