@@ -1,86 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--    Group 39
-            Zihao Yang
-            Wei Li
-            Yuqi Zhang
-            Xin Li
-            Zihao Hu -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ABOUT THIS PROJECT </title>
-    <!-- less stylesheet -->
-    <link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/styless.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!--    Group 39
+          Zihao Yang
+          Wei Li
+          Yuqi Zhang
+          Xin Li
+          Zihao Hu -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>COMP90024 Project Home</title>
+  <!--import bootstrap and jquery -->
+  <link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
+  <link rel="stylesheet" href="../static/bootcss/bootstrap.min.css">
+  <link rel="stylesheet" href="../static/bootcss/bootstrap-theme.min.css">
+  <script src="../static/jquery/jquery.min.js"></script>
+  <script src="../static/bootjs/bootstrap.min.js"></script>
+
+  <!--  import style sheet-->
+  <link rel="stylesheet" type="text/css" href="../static/css/styless.css"/>
+  <link rel="stylesheet" href="../static/css/fa/css/all.css">
+
 </head>
-
 <body id="about">
-    <div class="topnav">
-        <a href="home.html">Home</a>
-        <a href="#" class="active">About</a>
-        <a href="map.html">Map</a>
-        <a href="statistics.html">Statistics</a>
-    </div>
-    <div class="container">
-        <h1>About This Project</h1>
-    </div>
-
-    <div class="container layout">
-        <div class="structure"><img src="../static/img/404.jpg" alt="structure" class="structure"></div>
-        <div class="details">
+  <div class="container">
+    <div class="row clearfix">
+  <!--    side nav-->
+      <div class="col-md-3 column sidenav">
+        <img alt="140x140" src="../static/img/404.jpg" />
+        <ul>
+          <li>
+            <a href="home.html">&nbsp<i class="fas fa-home">&nbsp&nbspHome</i></a>
+          </li>
+          <li class="this">
+            <a href="#">&nbsp<i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
+          </li>
+          <li>
+            <a href="map.html">&nbsp<i class="fas fa-map">&nbsp&nbspMap</i></a>
+          </li>
+          <li>
+            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
+          </li>
+          <li>
+            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspTBA</i></a>
+          </li>
+        </ul>
+      </div>
+  <!--    content for this page-->
+      <div class="col-md-9 column right-content">
+        <div class="about-right">
+          <div class="frame">Frame</div>
+          <div class="frame-detail">
+            <img src="../static/img/404.jpg" alt="frame pic">
             <p>
-                The purpose of this project is to analyse a large amount of data from social media in the
-                context of the increasing importance of social media. The main method is to count the number
-                of swear words contained in tweets in different cities and analyse the emotions of tweets,
-                explore the connection between education level, unemployment rate and economic level with
-                emotions of people and swear word. A large number of tweets can provide a lot of useful
-                information for analysis tasks and help to improve the quality of analysis results.
-                However, due to the rapid growth of data and the large storage space required, data
-                analysis and processing often require a system with a good framework and design to support
-                the processing of big data analysis. This project established a clustered data analysis
-                system based on Nectar Cloud and realized the visualization of the analysis results. In
-                this system, we combine the processed data with the statistical data of the Australian
-                Urban Research Infrastructure Network (AURIN) platform to explore the story between different
-                factors, different emotions and the frequency of swear word.
+              The purpose of this project is to analyse a large amount of data from social media in the
+              context of the increasing importance of social media. The main method is to count the number
+              of swear words contained in tweets in different cities and analyse the emotions of tweets,
+              explore the connection between education level, unemployment rate and economic level with
+              emotions of people and swear word. A large number of tweets can provide a lot of useful
+              information for analysis tasks and help to improve the quality of analysis results.
+              However, due to the rapid growth of data and the large storage space required, data
+              analysis and processing often require a system with a good framework and design to support
+              the processing of big data analysis. This project established a clustered data analysis
+              system based on Nectar Cloud and realized the visualization of the analysis results. In
+              this system, we combine the processed data with the statistical data of the Australian
+              Urban Research Infrastructure Network (AURIN) platform to explore the story between different
+              factors, different emotions and the frequency of swear word.
             </p>
-        </div>
-
-    </div>
-    <div class="member">
-        <h1>About Group Member</h1>
-        <table class="member_list">
-            <tr>
+          </div>
+          <div class="frame">Member</div>
+          <div class="frame-detail">
+            <table class="member">
+              <tr>
                 <th>Name</th>
                 <th>Student Number</th>
                 <th>Allocate task</th>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>Zihao Yang</td>
                 <td>666666</td>
                 <td>1,2,3</td>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>Wei Li</td>
                 <td>666666</td>
                 <td>1,2,3</td>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>Xin Li</td>
                 <td>666666</td>
                 <td>1,2,3</td>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>Yuqi Zhang</td>
                 <td>666666</td>
                 <td>1,2,3</td>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>Zihao Hu</td>
                 <td>977716</td>
                 <td>1,2,3</td>
-            </tr>
-        </table>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </body>
 </html>

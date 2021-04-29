@@ -1,5 +1,5 @@
 # author Zihao Hu
-# time 4/26/2021
+# time 4/29/2021
 import tweepy
 import couchdb
 import configparser
@@ -16,13 +16,6 @@ def json_load(url):
         data = json.load(f)
         return data
 
-# read melbourne shape json
-areas = json_load("TOP4city.json")["features"]
-
-# read area list
-area_list = []
-for i in areas:
-    area_list.append(i["attributes"]["GCC_NAME16"])
 
 def area_match(longitude, latitude, area):
     # if the point is in a polygon returns True
@@ -34,6 +27,7 @@ def area_match(longitude, latitude, area):
             within = True
     return within
 
+
 def coor_area(longitude, latitude, areas):
     # matching the tweet's coordinate to city
     area_NAME = "out"
@@ -42,6 +36,7 @@ def coor_area(longitude, latitude, areas):
             area_NAME = area["attributes"]["GCC_NAME16"]
             break
     return area_NAME
+
 
 def new_user(tweetJson, area):
     # if new user then add to database
@@ -56,19 +51,40 @@ def new_user(tweetJson, area):
         print("error: user exist")
         return False
 
+
 def new_tweet(tweetJson, area):
+    tweettemp = {}
+    tweettemp["_id"] = tweetJson["id_str"]
+    tweettemp["uid"] = tweetJson["user"]["id_str"]
+    tweettemp["city"] = area
+    tweettemp["value"] = tweetJson
+    try:
+        tdb.save(tweettemp)
+        return True
+    except:
+        print("error: tweet exist")
+        return False
+
+
+def new_timeline(tweetJson, area):
     # add user's tweet to database
     uid = tweetJson["user"]["id"]
-#     tweepy.Cursor(api.user_timeline, user_id=uid, max_id=maxid, tweet_mode="extended")
+    #     tweepy.Cursor(api.user_timeline, user_id=uid, max_id=maxid, tweet_mode="extended")
     cursor = tweepy.Cursor(api.user_timeline, user_id=uid)
-    for tweet in cursor.items(20):
-        tweettemp={}
+    for tweet in cursor.items(200):
+        tweettemp = {}
         tjson = tweet._json
         tweettemp["_id"] = tjson["id_str"]
         tweettemp["uid"] = tjson["user"]["id_str"]
         tweettemp["city"] = area
         tweettemp["value"] = tjson
-        tdb.save(tweettemp)
+        try:
+            tdb.save(tweettemp)
+            return True
+        except:
+            print("error: tweet exist")
+            return False
+
 
 def AddUserTweet2DB(tweetJson):
     # locate the tweet to the region
@@ -79,14 +95,18 @@ def AddUserTweet2DB(tweetJson):
         t_area = coor_area(longitude, latitude, areas)
     elif tweetJson["place"] and tweetJson["place"]['bounding_box']:
         # bounding box to city
-            box_coor = tweetJson['place']['bounding_box']['coordinates'][0]
-            longitude = (box_coor[0][0] + box_coor[2][0]) / 2
-            latitude = (box_coor[0][1] + box_coor[2][1]) / 2
-            t_area = coor_area(longitude, latitude, areas)
+        box_coor = tweetJson['place']['bounding_box']['coordinates'][0]
+        longitude = (box_coor[0][0] + box_coor[2][0]) / 2
+        latitude = (box_coor[0][1] + box_coor[2][1]) / 2
+        t_area = coor_area(longitude, latitude, areas)
     else:
         t_area = "out"
-    if t_area != "out" and new_user(tweetJson, t_area):
-        new_tweet(tweetJson, t_area)
+    if t_area != "out":
+        if new_user(tweetJson, t_area):
+            new_timeline(tweetJson, t_area)
+        else:
+            new_tweet(tweetJson, t_area)
+
 
 class MyStreamListener(tweepy.StreamListener):
     def on_data(self, data):
@@ -120,7 +140,21 @@ class MyStreamListener(tweepy.StreamListener):
             time.sleep(10)
         return True
 
+
 if __name__ == '__main__':
+
+    Syd = [149.928, -34.345, 151.645, -32.976]
+    Can = [148.747, -35.926, 149.420, -35.106]
+    Mel = [144.312, -38.506, 145.894, -37.160]
+    Ade = [138.422, -35.355, 139.052, -34.493]
+
+    # read melbourne shape json
+    areas = json_load("TOP4city.json")["features"]
+
+    # read area list
+    area_list = []
+    for i in areas:
+        area_list.append(i["attributes"]["GCC_NAME16"])
 
     # Generate Authentication
     config = configparser.ConfigParser()
@@ -158,7 +192,8 @@ if __name__ == '__main__':
     while True:
         try:
             myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
-            myStream.filter(locations=[144.3120, -38.506, 145.894, -37.16])
+            myStream.filter(locations=Syd)
 
         except Exception as e:
             print(e)
+
