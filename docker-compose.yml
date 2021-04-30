@@ -13,6 +13,8 @@ services:
       placement:
         constraints:
           - 'node.role == manager'
+    networks: 
+      - backend
 
   portainer:
     image: portainer/portainer
@@ -24,79 +26,32 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == manager]
+    networks: 
+      - backend
 
-  couch-master:
+  couchdb:
     image: "ibmcom/couchdb3:3.0.0"
-    restart_policy:
-      condition: on-failure
-      delay: 5s
     ports:
       - "5984:5984"
       - "4369:4369"
-    links:
-      - couch_slave1
-      - couch_slave2
+      - "9100:9200"
     volumes:
-      - ./data/master/data:/opt/couchdb/data
+      - ./opt/couchdb/data:/opt/couchdb/data
     environment:
       - COUCHDB_USER=user
       - COUCHDB_PASSWORD=pass
-      - NODENAME=172.20.0.2
-    container_name: couch_master
+      - NODENAME={{.Task.Name}}
+    configs:
+      - source: couchdb_conf
+        target: /opt/couchdb/etc/local.d/config.in
     networks:
-      backend:
-        ipv4_address: 172.20.0.2
+      - backend
+    command: /bin/bash -c "cp -f /couchdb_conf /opt/couchdb/etc/local.d/couch.ini"
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 3
       placement:
           constraints: [node.role == manager]
-
-  couch_slave1:
-    image: "ibmcom/couchdb3:3.0.0"
-    restart_policy:
-      condition: on-failure
-      delay: 5s
-    ports:
-      - "15984:5984"
-    volumes:
-      - ./data/slave1/data:/opt/couchdb/data
-    environment:
-      - COUCHDB_USER=user
-      - COUCHDB_PASSWORD=pass
-      - NODENAME=172.20.0.3
-    container_name: couch_slave1
-    networks:
-      backend:
-        ipv4_address: 172.20.0.3
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-          constraints: [node.role == worker]
-
-  couch_slave2:
-    image: "ibmcom/couchdb3:3.0.0"
-    restart_policy:
-      condition: on-failure
-      delay: 5s
-    ports:
-      - "25984:5984"
-    volumes:
-      - ./data/slave2/data:/opt/couchdb/data
-    environment:
-      - COUCHDB_USER=user
-      - COUCHDB_PASSWORD=pass
-      - NODENAME=172.20.0.4
-    container_name: couch_slave2
-    networks:
-      backend:
-        ipv4_address: 172.20.0.4
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-          constraints: [node.role == worker]
         
   twitterlance:
     image: "yangzy3/twitterlance"
@@ -108,11 +63,10 @@ services:
         - couch_slave1
         - couch_slave2
     environment:
-        - NODENAME=172.20.0.5
+        - NODENAME={{.Task.Name}}
     command: python /code/manage.py initcouchdb
     networks:
-      backend:
-        ipv4_address: 172.20.0.5
+      - backend
     deploy:
       mode: replicated
       replicas: 2
@@ -124,4 +78,8 @@ networks:
     driver: overlay
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.20.0.0/16.
+
+configs:
+  couchdb_conf:
+    file: ./couchdb.ini
