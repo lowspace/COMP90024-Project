@@ -37,6 +37,7 @@ services:
       - "9100-9100:9200-9200"
     volumes:
       - /opt/couchdb/data/:/opt/couchdb/data
+      driver: vieux/sshfs
     environment:
       - COUCHDB_USER=user
       - COUCHDB_PASSWORD=pass
