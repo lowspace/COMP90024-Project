@@ -49,7 +49,7 @@ services:
     command: /bin/bash -c "cp -f ./couchdb.ini /opt/couchdb/etc/local.d/couch.ini"
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 3
         
   app:
     image: "yangzy3/twitterlance"
