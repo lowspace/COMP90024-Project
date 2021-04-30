@@ -76,9 +76,6 @@ services:
 networks:
   backend:
     driver: overlay
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16.
 
 configs:
   couchdb_conf:
