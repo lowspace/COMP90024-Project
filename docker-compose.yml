@@ -1,5 +1,18 @@
 version: "3.8"
 services:
+  visualizer: 
+    image: "dockersamples/visualizer"
+    ports: 
+      - "8080:8080"
+    networks:
+      backend:
+        ipv4_address: 172.20.0.1
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+          constraints: [node.role == manager]
+
   couch_master:
     image: "ibmcom/couchdb3:3.0.0"
     restart: always
@@ -87,7 +100,7 @@ services:
       replicas: 2
       placement:
         constraints: [node.role == worker]
-
+        
 networks:
   backend:
     driver: overlay
