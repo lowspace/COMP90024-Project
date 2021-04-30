@@ -17,7 +17,7 @@ services:
       - NODENAME=172.20.0.2
     container_name: couch_master
     networks:
-      dockernet:
+      backend:
         ipv4_address: 172.20.0.2
     deploy:
       placement:
@@ -36,7 +36,7 @@ services:
       - NODENAME=172.20.0.3
     container_name: couch_slave1
     networks:
-      dockernet:
+      backend:
         ipv4_address: 172.20.0.3
     deploy:
       placement:
@@ -47,7 +47,7 @@ services:
     restart: always
     ports:
       - "25984:5984"
-    volumes:
+    volumes:+
       - ./data/slave2/data:/opt/couchdb/data
     environment:
       - COUCHDB_USER=user
@@ -55,7 +55,7 @@ services:
       - NODENAME=172.20.0.4
     container_name: couch_slave2
     networks:
-      dockernet:
+      backend:
         ipv4_address: 172.20.0.4
     deploy:
       placement:
@@ -74,7 +74,7 @@ services:
         - NODENAME=172.20.0.5
     command: python /code/manage.py initcouchdb
     networks:
-      dockernet:
+      backend:
         ipv4_address: 172.20.0.5
     deploy:
       mode: replicated
@@ -83,8 +83,8 @@ services:
         constraints: [node.role == worker]
 
 networks:
-  dockernet:
-    driver: bridge
+  backend:
+    driver: overlay
     ipam:
       config:
         - subnet: 172.20.0.0/16
