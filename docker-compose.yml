@@ -36,7 +36,7 @@ services:
       - "4369:4369"
       - "9100-9200:9100-9200"
     volumes:
-      - /home/couchdb/data/:/opt/couchdb/data
+      - /var/lib/couchdb/data/:/opt/couchdb/data
     environment:
       - NODENAME={{.Task.Name}}.{{.Task.ID}}
       - ERL_FLAGS="-setcookie a192aeb9904e6590849337933b000c99"
