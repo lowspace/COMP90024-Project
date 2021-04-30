@@ -46,7 +46,6 @@ services:
         target: /opt/couchdb/etc/local.d/config.in
     networks:
       - backend
-    command: /bin/bash -c "cp -f ./couchdb.ini /opt/couchdb/etc/local.d/couch.ini"
     deploy:
       mode: replicated
       replicas: 3
