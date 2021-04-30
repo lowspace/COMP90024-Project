@@ -26,4 +26,5 @@ EXPOSE 80
 # To run the app on the app user
 USER appuser
 
-ENTRYPOINT [ "/code/entrypoint.sh" ] 
+# Initialisation
+ENTRYPOINT ["./entrypoint.sh"] 

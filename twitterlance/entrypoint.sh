@@ -1,4 +1,7 @@
 #!/bin/sh
 set -e
-python /code/manage.py initcouchdb
-uwsgi /code/uwsgi.yml
+pwd
+echo "Running initcouchdb..."
+python manage.py initcouchdb
+echo "Running uwsgi..."
+uwsgi uwsgi.yml
