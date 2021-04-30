@@ -38,9 +38,8 @@ services:
     volumes:
       - /opt/couchdb/data/:/opt/couchdb/data
     environment:
-      - COUCHDB_USER=user
-      - COUCHDB_PASSWORD=pass
       - NODENAME={{.Task.Name}}.{{.Task.ID}}
+      - ERL_FLAGS="-setcookie a192aeb9904e6590849337933b000c99"
     configs:
       - source: couchdb_conf
         target: /opt/couchdb/etc/local.d/config.in
