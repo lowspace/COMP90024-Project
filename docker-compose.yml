@@ -34,13 +34,13 @@ services:
     ports:
       - "5984:5984"
       - "4369:4369"
-      - "9100:9200"
+      - "9100-9100:9200-9200"
     volumes:
-      - ./opt/couchdb/data:/opt/couchdb/data
+      - /opt/couchdb/data/:/opt/couchdb/data
     environment:
       - COUCHDB_USER=user
       - COUCHDB_PASSWORD=pass
-      - NODENAME={{.Task.Name}}
+      - NODENAME={{.Task.Name}}.{{.Task.ID}}
     configs:
       - source: couchdb_conf
         target: /opt/couchdb/etc/local.d/config.in
@@ -49,21 +49,14 @@ services:
     command: /bin/bash -c "cp -f /couchdb_conf /opt/couchdb/etc/local.d/couch.ini"
     deploy:
       mode: replicated
-      replicas: 3
-      placement:
-          constraints: [node.role == manager]
+      replicas: 1
         
-  twitterlance:
+  app:
     image: "yangzy3/twitterlance"
-    container_name: twitterlance-app
     ports:
       - "80:80"
-    links:
-        - couch_master
-        - couch_slave1
-        - couch_slave2
     environment:
-        - NODENAME={{.Task.Name}}
+        - NODENAME={{.Task.Name}}.{{.Task.ID}}
     command: python /code/manage.py initcouchdb
     networks:
       - backend
