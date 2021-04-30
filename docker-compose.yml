@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 services:
   couch_master:
     image: "ibmcom/couchdb3:3.0.0"
@@ -19,6 +19,9 @@ services:
     networks:
       dockernet:
         ipv4_address: 172.20.0.2
+    deploy:
+      placement:
+          constraints: [node.role == manager]
 
   couch_slave1:
     image: "ibmcom/couchdb3:3.0.0"
@@ -35,6 +38,9 @@ services:
     networks:
       dockernet:
         ipv4_address: 172.20.0.3
+    deploy:
+      placement:
+          constraints: [node.role == worker]
 
   couch_slave2:
     image: "ibmcom/couchdb3:3.0.0"
@@ -51,25 +57,30 @@ services:
     networks:
       dockernet:
         ipv4_address: 172.20.0.4
+    deploy:
+      placement:
+          constraints: [node.role == worker]
         
   twitterlance:
+    image: "yangzy3/twitterlance"
     container_name: twitterlance-app
-    build:
-      context: ./twitterlance
-      dockerfile: Dockerfile
+    ports:
+      - "80:80"
     links:
         - couch_master
         - couch_slave1
         - couch_slave2
     environment:
         - NODENAME=172.20.0.5
-    ports:
-      - "80:80"
-    command: python -c "print('Executing commands...')"
     command: python /code/manage.py initcouchdb
     networks:
       dockernet:
         ipv4_address: 172.20.0.5
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints: [node.role == worker]
 
 networks:
   dockernet:
