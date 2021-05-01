@@ -97,10 +97,10 @@ if __name__ == '__main__':
             # set api
             consumer_key = tokens[token]['consumer_key']
             consumer_secret = tokens[token]['consumer_secret']
-            access_token =  tokens[token]['access_token']
-            access_secret =  tokens[token]['access_secret']
+            access_token_key =  tokens[token]['access_token_key']
+            access_token_secret =  tokens[token]['access_token_secret']
             auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-            auth.set_access_token(access_token, access_secret)
+            auth.set_access_token(access_token_key, access_token_secret)
             api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
             # find the users
             job, ID = user_search(' ', city, api, ID)
