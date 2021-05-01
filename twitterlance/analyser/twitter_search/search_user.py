@@ -24,42 +24,50 @@ def user_search(query: str, city: str, api, ID = None):
         2. save the uid locally (for now)
     """
     assert city in ('Melbourne', 'Sydney', 'Canberra', 'Adelaide'), "The city only accepts 'Melbourne', 'Sydney', 'Canberra', and 'Adelaide'."
-    user = {} # dict
+    users = dict() # dict
+    count = 0
     # store = {} # dict
     geocode = config.Geocode[city] # get geocode
     if not ID: # ID = None
         first = toJson(api.search(q = query, geocode = geocode, count=1))
     else: # ID != None
         first = toJson(api.search(q = query, geocode = geocode, max_id = ID, count=1))
-    print('first', first)
-    if len(first) == 0: # no tweet 
+    # print('first', first)
+    if len(first) == 0 and count != 0: # no tweet 
         return True, None
+    elif len(first) == 0 and count == 0:
+        print('query contains nothing.')
+        return False, None
     maxid = str(first[0]['id']-1)
-    count = 0
     while True:
         # convert search results into Json file
         try:
             twitter = toJson(api.search(q = query, geocode = geocode, count = 100, max_id = maxid))
         except:
             if count == 10:
+                print('????')
                 break
             else:
                 # save uid locally
-                df = pd.DataFrame.from_dict(user, orient='index') # dict to pd
+                print('try')
+                df = pd.DataFrame.from_dict(users, orient='index') # dict to pd
                 t = str(datetime.datetime.now()) # time 
                 name = city + ' ' + t + '.csv' # to avoid duplication
                 path = './' + name 
                 df.to_csv(path_or_buf = path, header=True, index=True) # save pd to csv in current dir
                 return False, maxid # to be continued
-        if len(twitter) != 0 and count == 10: # search query return tweets
+        if len(twitter) != 0 and count != 10: # search query return tweets
             maxid = str(twitter[-1]['id']-1)
             for i in twitter:
-                if i['user']['id_str'] not in user.keys(): # have not added under the query
+                if i['user']['id_str'] not in users.keys(): # have not added under the query
                     count += 1 
-                    # store[count]['_id'] = i['user']['id_str'] # does the format is right?
+                    user = dict()
+                    # store[count]['_id'] = i['users']['id_str'] # does the format is right?
                     # store[count]['city'] = city
-                    user[count]['_id'] = i['user']['id_str'] # does the format is right?
-                    user[count]['city'] = city
+                    user['_id'] = i['user']['id_str']
+                    user['city'] = city
+                    print('user is', user, count)
+                    users[user['_id']] = user # does the format is right?
                     # if len(store.keys()) == 100: # feed 100 uid to CouchDB
                     #     print(store) # feed this part to CouchDB
                     #     store = {} # empty the store
@@ -77,7 +85,9 @@ def user_search(query: str, city: str, api, ID = None):
             #     break
             break
     # save uid locally
-    df = pd.DataFrame.from_dict(user, orient='index') # dict to pd
+    print('save??')
+    print(users)
+    df = pd.DataFrame.from_dict(users, orient='index') # dict to pd
     t = str(datetime.datetime.now()) # time 
     name = city + ' ' + t + '.csv' # to avoid duplication
     path = './' + name 
