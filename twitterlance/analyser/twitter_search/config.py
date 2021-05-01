@@ -10,10 +10,10 @@ Geocode  = dict(
 
 token = dict(
     token_1 = dict(
-        consumer_key = 'Rkupsy9IRz1LZFn5BnW41HieR',
-        consumer_secret = 'AJGztH99Xj8Ch3ueleBd95nUHS2L30tmmvRjiVEpri1qZyAlc4',
-        access_token = '1383751844057391107-Tw0FTLNESkWFgq5OB9BkvjvlOjETot',
-        access_secret = '847AbkKGOcEp1SeiR3wNu5xvBgDaUS0EHd9iIeMx6nv50'
+    consumer_key = 'Rkupsy9IRz1LZFn5BnW41HieR',
+    consumer_secret = 'AJGztH99Xj8Ch3ueleBd95nUHS2L30tmmvRjiVEpri1qZyAlc4',
+    access_token_key = '1383751844057391107-Tw0FTLNESkWFgq5OB9BkvjvlOjETot',
+    access_token_secret = '847AbkKGOcEp1SeiR3wNu5xvBgDaUS0EHd9iIeMx6nv50',
     )
     
     # token_2 = dict(
