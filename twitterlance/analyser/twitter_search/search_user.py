@@ -4,7 +4,7 @@ from tweepy import OAuthHandler
 import pandas as pd
 import datetime
 
-import config
+import config 
 
 def toJson(tweets):
     twitter = []
@@ -12,7 +12,7 @@ def toJson(tweets):
         twitter.append(i._json)
     return twitter
 
-def user_search(query: str, city: str, ID = None, api):
+def user_search(query: str, city: str, api, ID = None):
     """
     This function tends to obtain the uid of the tweets with the query
     Input:
@@ -26,13 +26,14 @@ def user_search(query: str, city: str, ID = None, api):
     assert city in ('Melbourne', 'Sydney', 'Canberra', 'Adelaide'), "The city only accepts 'Melbourne', 'Sydney', 'Canberra', and 'Adelaide'."
     user = {} # dict
     # store = {} # dict
-    geocode = Geocode[city] # get geocode
+    geocode = config.Geocode[city] # get geocode
     if not ID: # ID = None
         first = toJson(api.search(q = query, geocode = geocode, count=1))
     else: # ID != None
         first = toJson(api.search(q = query, geocode = geocode, max_id = ID, count=1))
+    print('first', first)
     if len(first) == 0: # no tweet 
-        return None
+        return True, None
     maxid = str(first[0]['id']-1)
     count = 0
     while True:
@@ -40,7 +41,7 @@ def user_search(query: str, city: str, ID = None, api):
         try:
             twitter = toJson(api.search(q = query, geocode = geocode, count = 100, max_id = maxid))
         except:
-            if count = 10000:
+            if count == 10:
                 break
             else:
                 # save uid locally
@@ -50,7 +51,7 @@ def user_search(query: str, city: str, ID = None, api):
                 path = './' + name 
                 df.to_csv(path_or_buf = path, header=True, index=True) # save pd to csv in current dir
                 return False, maxid # to be continued
-        if len(twitter) != 0 and count = 10000: # search query return tweets
+        if len(twitter) != 0 and count == 10: # search query return tweets
             maxid = str(twitter[-1]['id']-1)
             for i in twitter:
                 if i['user']['id_str'] not in user.keys(): # have not added under the query
@@ -62,7 +63,7 @@ def user_search(query: str, city: str, ID = None, api):
                     # if len(store.keys()) == 100: # feed 100 uid to CouchDB
                     #     print(store) # feed this part to CouchDB
                     #     store = {} # empty the store
-                    if count == 10000: # each city get 10000 unique uid
+                    if count == 10: # each city get 10 unique uid
                         # if len(store.keys()) != 0:
                         #     print(store) # feed this part to CouchDB
                         #     store = {} # empty the store
@@ -83,15 +84,30 @@ def user_search(query: str, city: str, ID = None, api):
     df.to_csv(path_or_buf = path, header=True, index=True) # save pd to csv in current dir
     return True, maxid
 
-    for city in Geocode.keys():
-        auth = tweepy.OAuthHandler(Geocode[city][1], Geocode[city][2])
-        auth.set_access_token(Geocode[city][3], Geocode[city][4])
-        api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-        result = tweet_search(" ",Geocode[city][0], api)
-        if result !=None:
-            users = result[1]
-            for user in users:
-                user_search(user, api)
-
 if __name__ == '__main__':
-    print(config.token.keys())
+    # each city may use different tokens to complete the search task
+    # need to exhaust all the cities
+
+    cities = config.Geocode.keys()
+    tokens = config.token
+    ID = None
+
+    for city in cities:
+        for token in tokens.keys():
+            # set api
+            consumer_key = tokens[token]['consumer_key']
+            consumer_secret = tokens[token]['consumer_secret']
+            access_token =  tokens[token]['access_token']
+            access_secret =  tokens[token]['access_secret']
+            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+            auth.set_access_token(access_token, access_secret)
+            api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+            # find the users
+            job, ID = user_search(' ', city, api, ID)
+            if job == True:
+                ID = None # initilize the ID
+                print('{c} is done.'.format(c = city))
+                break # next city
+            else:
+                print('{t} has been used, max_id is {i}'.format(t = token, i = ID))
+                continue # use next token
