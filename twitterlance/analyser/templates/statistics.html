@@ -15,7 +15,9 @@
   <link rel="stylesheet" href="../static/bootcss/bootstrap-theme.min.css">
   <script src="../static/jquery/jquery.min.js"></script>
   <script src="../static/bootjs/bootstrap.min.js"></script>
-
+  <!--  import chart-->
+  <script src="../static/Chart.js/Chart.min.js"></script>
+  <script src="../static/Chart.js/samples/utils.js"></script>
   <!--  import style sheet-->
   <link rel="stylesheet" type="text/css" href="../static/css/styless.css"/>
   <link rel="stylesheet" href="../static/css/fa/css/all.css">
@@ -29,27 +31,251 @@
         <img alt="140x140" src="../static/img/404.jpg" />
         <ul>
           <li>
-            <a href="home.html"><i class="fas fa-home">&nbsp&nbspHome</i></a>
+            <a href="home.html">&nbsp<i class="fas fa-home">&nbsp&nbspHome</i></a>
           </li>
           <li>
-            <a href="about.html"><i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
+            <a href="about.html">&nbsp<i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
           </li>
           <li>
-            <a href="map.html"><i class="fas fa-map">&nbsp&nbspMap</i></a>
+            <a href="map.html">&nbsp<i class="fas fa-map">&nbsp&nbspMap</i></a>
           </li>
           <li class="this">
-            <a href="#"><i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
+            <a href="#">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
           </li>
           <li>
-            <a href="statistics.html"><i class="fas fa-chart-bar">&nbsp&nbspTBA</i></a>
+            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspTBA</i></a>
           </li>
         </ul>
       </div>
   <!--    content for this page-->
       <div class="col-md-9 column right-content">
+        <div class="statistic-right">
+          <div class="col-md-12 column">
+            <div class="frame data-analysis">Data Analysis</div>
+            <div class="col-md-3 user"><i class="fas fa-user">&nbsp</i>Users: <span id="total_user">loading</span></div>
+            <div class="col-md-3 tweet" style="margin: 5px 2%"><i class="fab fa-twitter">&nbsp</i>Tweet: <span id="total_tweet">loading</span></div>
+            <div class="col-md-3 tweetsport"><i class="fas fa-running">&nbsp</i>Sports: <span id="sportcount">loading</span></div>
+          </div>
+          <div class="col-md-12 column">
+            <div class = options>
+              <a class = "col-md-2" href="#barchart" id="user">Population&nbsp;&nbsp;</a>
+              <a class = "col-md-2" href="#barchart" id="tweets">Education level&nbsp;&nbsp;</a>
+              <a class = "col-md-2" href="sport.html" id="sporttype">Sport Type&nbsp;&nbsp;</a>
+              <a class = "col-md-2" href="#barchart" id="deathrate">Deathrate&nbsp;&nbsp;</a>
+            </div>
+          </div>
+          <div class="statistic-detail" >
+            <div class="charts">
+              <canvas class= "chart"></canvas>
+              <canvas class= "chart"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+  <script>
+    window.onload = function () {
+
+      var frontjson = {"twitter":6000,"user":600}
+      var tuser = document.getElementById('total_user')
+      var ttweet = document.getElementById('total_tweet')
+      var tsport = document.getElementById('sportcount')
+      var xhr = new XMLHttpRequest();
+      // 初始化 true表示异步 false为同步
+      xhr.open('GET', 'http://localhost:8000/font-end', true);
+      // 发送
+      xhr.send();
+      // 事件绑定
+      xhr.onreadystatechange = function (){
+        if (xhr.readyState === 4){
+          if(xhr.status >= 200 && xhr.status < 300){
+            //  处理结果 行 头空行 体
+            console.log(xhr.status);
+            console.log(xhr.statusText);
+            console.log(xhr.getAllResponseHeaders());
+            console.log(xhr.response);
+            // 将获取的jsonstr转化为json
+            ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
+            tuser.innerHTML = eval("("+xhr.response+")")["user"];
+            tsport.innerHTML = JSON.parse(xhr.response)["sport"];
+          }
+        }
+      };
+
+    }
+  </script>
+
+  <script>
+    var Users = {
+      datasets:[{
+        backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+        data: [10,40,40,10],
+      }],
+      labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+    };
+    var optionsEC = {
+      title:{display: true, text:'Popolation level across all cities', fontSize:'24', fontFamily:'sans-serif'},
+      legend:{display:true, position:'bottom', align:'center'}
+    };
+    var canvas = document.getElementsByTagName('canvas')[0];
+    var Pie = canvas.getContext('2d');
+    PieChart = new Chart(Pie, {type:'pie', data: Users, options: optionsEC});
+
+    var UsersBar={
+      datasets: [{
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }],
+      labels: ["Melbourne", "Sydney", "Canberry", "Adelede", "Purple", "Orange"]
+    }
+    var optionBar={
+      title: {
+        display: true,
+        text: 'Populations against sport for Cities in Victoria',
+        fontColor: '#cccccc',
+        fontSize: 30,
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero:true
+          }}] }
+    }
+    var canvas1 = document.getElementsByTagName('canvas')[1];
+    var Bar = canvas1.getContext('2d');
+    BarChart = new Chart(Bar, {type:'bar', data: UsersBar, options: optionBar});
+
+    document.getElementById('user').addEventListener('click', function() {
+      var Users = {
+        datasets:[{
+          backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+          data: [30,20,40,10],
+        }]
+        ,
+        labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+      };
+      var optionsEC = {
+        title:{display: true, text:'Users mentioned sport per city', fontSize:'24', fontFamily:'sans-serif'},
+        legend:{display:true, position:'bottom', align:'center'}
+      };
+      var canvas = document.getElementsByTagName('canvas')[0];
+      var Pie = canvas.getContext('2d');
+      PieChart = new Chart(Pie, {type:'pie', data: Users, options: optionsEC});
+      var UsersBar={
+        datasets: [{
+          data: [12, 40, 3, 5, 9, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }],
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]
+      }
+      var optionBar={
+        title: {
+          display: true,
+          text: 'Populations against sport for Cities in Victoria',
+          fontColor: '#cccccc',
+          fontSize: 30,
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true
+            }}] }
+      }
+      var canvas1 = document.getElementsByTagName('canvas')[1];
+      var Bar = canvas1.getContext('2d');
+      BarChart = new Chart(Bar, {type:'bar', data: UsersBar, options: optionBar});
+    });
+    document.getElementById('tweets').addEventListener('click', function() {
+      var Users = {
+        datasets:[{
+          backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+          data: [10,40,40,10],
+        }]
+        ,
+        labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+      };
+      var optionsEC = {
+        title:{display: true, text:'Users mentioned sport per city', fontSize:'24', fontFamily:'sans-serif'},
+        legend:{display:true, position:'bottom', align:'center'}
+      };
+      var canvas = document.getElementsByTagName('canvas')[0];
+      var Pie = canvas.getContext('2d');
+      PieChart = new Chart(Pie, {type:'pie', data: Users, options: optionsEC});
+      var UsersBar={
+        datasets: [{
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }],
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]
+      }
+      var optionBar={
+        title: {
+          display: true,
+          text: 'Populations against sport for Cities in Victoria',
+          fontColor: '#cccccc',
+          fontSize: 30,
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true
+            }}] }
+      }
+      var canvas1 = document.getElementsByTagName('canvas')[1];
+      var Bar = canvas1.getContext('2d');
+      BarChart = new Chart(Bar, {type:'bar', data: UsersBar, options: optionBar});
+
+    });
+  </script>
 </body>
 </html>
