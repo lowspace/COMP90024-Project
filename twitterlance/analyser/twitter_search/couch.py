@@ -10,7 +10,7 @@ def new_id():
 
 # Basic GET request. path is the url after base_url
 def get(path='', body=''):
-    # path = path.lstrip('/')
+    path = path.lstrip('/')
     return requests.get(f'{base_url}/{path}', json=body)
 
 # Basic PUT request. path is the url after base_url
