@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import os
-import configparser
+import os, configparser
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,14 +31,12 @@ ALLOWED_HOSTS = []
 # Load CouchDB endpoint and credentials
 config = configparser.ConfigParser()
 try:
-    config.read("twitterlance/couchdb.conf")
+    config.read("couchdb.conf")
 except:
     print("CouchDB Configuration not found")
 COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
-COUCHDB_NODES = config.get('CouchDB', 'nodes').split(',')
-COUCHDB_COORDINATION_NODE = config.get('CouchDB', 'coordination_node')
 
 # Application definition
 REST_FRAMEWORK = {
@@ -146,3 +143,17 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}

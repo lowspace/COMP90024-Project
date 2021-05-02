@@ -1,16 +1,15 @@
-version: "3.8"
+version: "3.7"
 services:
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
-      - "8001:8080"
+      - "8080:8080"
     stop_grace_period: 1m30s
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     deploy:
+      mode: replicated
       replicas: 1
-      placement:
-        constraints: [node.role == manager]
 
   portainer:
     image: portainer/portainer
@@ -19,23 +18,23 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     deploy:
-      replicas: 1
-      placement:
-        constraints: [node.role == manager]
+      mode: replicated
+      replicas: 1   
 
   couchdb:
     image: "ibmcom/couchdb3:3.1.1"
     ports:
-      - "80:5984"
+      - "5984:5984"
       - "5986:5986"
       - "4369:4369"
       - "9100-9200:9100-9200"
     volumes:
       - couchdb_data:/opt/couchdb/data
     environment:
-      NODENAME: "{{.Service.Name}}.{{.Task.Slot}}"
+      NODENAME: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
       COUCHDB_USER: "user"
       COUCHDB_PASSWORD: "pass"
+      COUCHDB_SECRET: "92de07df7e7a3fe14808cef90a7cc0d91"
       ERL_FLAGS: "-setcookie a20b37d83ef18efce400b3ace400036e"
     entrypoint: /bin/bash -c "cp -f /couchdb_conf /opt/couchdb/etc/local.d/couch.ini && /docker-entrypoint.sh /opt/couchdb/bin/couchdb"
     configs:
@@ -47,13 +46,10 @@ services:
   app:
     image: "yangzy3/twitterlance"
     ports:
-      - "81:80"
-    command: python /code/manage.py initcouchdb
+      - "80:80"
     deploy:
       mode: replicated
       replicas: 1
-      placement:
-        constraints: [node.role == worker]
 
 configs:
   couchdb_conf:
