@@ -10,14 +10,16 @@ class Command(BaseCommand):
         self.stdout.write(f'Verifying connection to {settings.COUCHDB_ENDPOINT}...')
         url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}:5984/'
         status = 408
-        while status != 200:
+        retries = 0
+        while status != 200 and retries < 4:
             try: 
                 res = requests.head(url, timeout=10)
                 status = res.status_code
                 self.stdout.write(f'Response {settings.COUCHDB_ENDPOINT} {res.status_code}')
             except Exception as e:
                 self.stdout.write(f'Cannot connect to {settings.COUCHDB_ENDPOINT}: {e}')
-                time.sleep(5)
+            time.sleep(5)
+            retries += 1
 
     def create_db(self, name):
         self.stdout.write(f'Creating db {name}')
@@ -61,7 +63,7 @@ class Command(BaseCommand):
         self.create_db('_users')
         self.create_db('_replicator')
         self.create_db('_global_changes')
-        self.create_db('twitter')
+        self.create_db('twitters')
         self.create_design_docs()
         self.stdout.write(self.style.SUCCESS('Successfully initilised databases.'))
             

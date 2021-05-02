@@ -29,7 +29,8 @@ def reconsolidate_cluster():
                     all_nodes.append(node)
 
     print(f'All nodes on this machine: {all_nodes}')
-
+    
+    new_connections = []
     for node in all_nodes: 
         count = 0
         while True:
@@ -38,12 +39,27 @@ def reconsolidate_cluster():
             if res.json().get('error') == 'conflict':
                 print(f'{node} already in cluster')
             else: 
+                new_connections.append(node)
                 print(f'{node} {res.text}')
             time.sleep(0.5)
             if count > REPEAT and res.json().get('error') is not None:
                 break
             count += 1
-            
+    
+    
+    if len(new_connections) > 0:
+        print('Waiting for the new nodes to connect...')
+        time.sleep(5)
+
+    for node in new_connections:
+        while True:  
+            res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/{node}')
+            if res.json().get('error') is None or res.json().get('error') != 'nodedown':
+                break
+            else: 
+                print(f'{node} is not connected.')
+                time.sleep(5)
+    
     # Remove disconnected
     res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_membership')
     cluster_nodes = res.json().get('cluster_nodes') + res.json().get('all_nodes') 
@@ -69,6 +85,11 @@ def reconsolidate_cluster():
     cluster_nodes = res.json().get('cluster_nodes')
     print(f'Current nodes: {cluster_nodes}')
 
+    # Add default databases
+    dbs = ['_users', '_replicator', 'twitters', 'users']
+    for db in dbs:
+        res = requests.put(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/{db}')
+        print(f'Adding databases: {res.text}')
 
 if __name__ == '__main__':
   reconsolidate_cluster()
