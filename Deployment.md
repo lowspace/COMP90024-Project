@@ -17,14 +17,14 @@ sudo mkdir /data
 sudo mount -t auto /dev/vdb /data
 sudo adduser ubuntu docker
 sudo chown :docker /data
-sudo chmod 775 /dat
+sudo chmod 775 /data
 ```
 
 ## Docker Swarm 
 ```
 sudo apt-get update
 sudo apt install docker.io vim python3 python3-pip -y
-sudo chmod 775 /var/run/docker.sock
+sudo chmod 666 /var/run/docker.sock
 sudo systemctl restart docker
 # Re-login to get permission
 docker swarm init --advertise-addr <IP>
