@@ -10,6 +10,8 @@ ADD . /code/
 
 ENV DJANGO_SETTINGS_MODULE=twitterlance.settings
 
+RUN apk update
+
 # Python dependencies
 RUN set -e; \
 	apk add --no-cache --virtual .build-deps \
@@ -20,6 +22,8 @@ RUN set -e; \
 	pip install -r requirements.txt; \
 	apk del .build-deps;
 
+RUN apk add --no-cache --virtual mailcap
+
 # uWSGI listening on this port
 EXPOSE 80
 
@@ -27,4 +31,4 @@ EXPOSE 80
 USER appuser
 
 # Initialisation
-ENTRYPOINT ["./entrypoint.sh"] 
+ENTRYPOINT ["uwsgi", "uwsgi.yml"]

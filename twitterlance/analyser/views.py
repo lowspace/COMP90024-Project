@@ -53,4 +53,15 @@ class UserViewSet(viewsets.ViewSet):
     def get_total_number_of_users(self, request):
         res = self.couch.get(f'userdb/_all_docs')
         rows = res.json()['total_rows']
+<<<<<<< HEAD
         return Response({"total_rows": rows})
+=======
+        return Response({"rows": rows})
+
+class ManagerViewSet(viewsets.ViewSet):
+    # POST analyser/couchdb
+    @action(detail=False, methods=['post'], name="Initialisation")
+    def couchdb(self, request):
+        from django.core.management import call_command
+        call_command('initcouchdb')
+>>>>>>> 243143fe78349453188ca813b8e996ddf7f3e4ba
