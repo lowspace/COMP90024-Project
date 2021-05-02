@@ -21,13 +21,16 @@ class Command(BaseCommand):
             time.sleep(5)
             retries += 1
 
-    def create_db(self, name):
+    def create_db(self, name, partitioned):
         self.stdout.write(f'Creating db {name}')
         url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}:5984/'
         res = requests.head(f'{url}{name}')
         self.stdout.write(f'Response {settings.COUCHDB_ENDPOINT} {res.status_code}')
         if res.status_code == 404:
-            res = requests.put(f'{url}{name}')
+            if partitioned: 
+                res = requests.put(f'{url}{name}?partitioned=true')
+            else: 
+                res = requests.put(f'{url}{name}')
             self.stdout.write(f'Response {settings.COUCHDB_ENDPOINT} {res.text} {res.status_code}')
             assert res.status_code in [201, 202], f'database "{name}" cannot be created.'
     
@@ -60,10 +63,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options): 
         self.connect()
-        self.create_db('_users')
-        self.create_db('_replicator')
-        self.create_db('_global_changes')
-        self.create_db('twitters')
+        self.create_db('_users', False)
+        self.create_db('_replicator', False)
+        self.create_db('_global_changes', False)
+        self.create_db('twitters', True)
+        self.create_db('users', True)
         self.create_design_docs()
         self.stdout.write(self.style.SUCCESS('Successfully initilised databases.'))
             

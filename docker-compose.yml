@@ -11,16 +11,6 @@ services:
       mode: replicated
       replicas: 1
 
-  portainer:
-    image: portainer/portainer
-    ports:
-      - "9000:9000"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    deploy:
-      mode: replicated
-      replicas: 1   
-
   couchdb:
     image: "couchdb:3.0.1"
     ports:
@@ -46,7 +36,7 @@ services:
       - couchdb_conf
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
 
   app:
     image: "yangzy3/twitterlance"
