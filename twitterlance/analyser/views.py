@@ -23,6 +23,13 @@ class TweetViewSet(viewsets.ViewSet):
         res = couch.get(f'twitter/{pk}')
         return Response(couch.get('twitter',pk).json())
 
+    # GET analyser/tweets/:count
+    @action(detail=Faslse, methods=['get'], name="Get the total numbers of tweets")
+    def get_total_number_of_tweets(self, request):
+        res = couch.get(f'twitter/_all_docs')
+        rows = res.json()['total_rows']
+        return Response({"total_rows": rows})
+
     # GET analyser/tweets/box_tweets?lat_min=-9.1457534&lat_max=-0.4000327&lon_min=134.505904&lon_max=141.0549412
     @action(detail=False, methods=['get'], name="Get Tweets within box")
     def box_tweets(self, request):
@@ -41,10 +48,9 @@ class TweetViewSet(viewsets.ViewSet):
 
 class UserViewSet(viewsets.ViewSet):
 
-    # GET analyser/users
-    @action(detail=False, methods=['get'], name="Get all users")
+    # GET analyser/users:count
+    @action(detail=False, methods=['get'], name="Get the total numbers of users")
     def get_total_number_of_users(self, request):
         res = self.couch.get(f'userdb/_all_docs')
         rows = res.json()['total_rows']
-        return Response({"rows": rows})
-
+        return Response({"total_rows": rows})

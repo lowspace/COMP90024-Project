@@ -1,5 +1,8 @@
+# import sys
+# import os
+# sys.path.append(os.path.join(os.path.dirname(os.getcwd()),"couchdb"))
 
-import analyser.couch as couch
+import couchdb.couch as couch
 
 def test():
     print(couch.put('testdb').json())
