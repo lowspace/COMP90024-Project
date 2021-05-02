@@ -15,8 +15,9 @@
   <link rel="stylesheet" href="../static/bootcss/bootstrap-theme.min.css">
   <script src="../static/jquery/jquery.min.js"></script>
   <script src="../static/bootjs/bootstrap.min.js"></script>
-  <script src="js/Chart.js/Chart.min.js"></script>
-  <script src="js/Chart.js/samples/utils.js"></script>
+  <!--  import chart-->
+  <script src="../static/Chart.js/Chart.min.js"></script>
+  <script src="../static/Chart.js/samples/utils.js"></script>
   <style>
   *{
     overflow-y:auto;
@@ -93,11 +94,11 @@
         <div class = cards>
           <div class = card>
             <h3>6000</h3>
-            <span>Users</span>    
+            <span>Users</span>
           </div>
           <div class = card>
             <h3>36000</h3>
-            <span>Tweets</span>  
+            <span>Tweets</span>
           </div>
         </div>
         <div class= charts>
@@ -110,13 +111,13 @@
           <a href="#barchart" id="tweets">Melbourne&nbsp;&nbsp;</a>
           <a href="#barchart" id="tweets">Adelede&nbsp;&nbsp;</a>
           <a href="#barchart" id="crime">Canberry</a>
-        </div> 
+        </div>
         <div class= charts>
           <h2>BarChart:</h2>
           <canvas class= chart></canvas>
           <canvas class= chart></canvas>
         </div>
-    
+
     </div>
   </div>
 </div>
@@ -405,7 +406,7 @@
     var Bar = canvas1.getContext('2d');
     BarChart = new Chart(Bar, {type:'bar', data: UsersBar, options: optionBar});
           });
-    
+
 </script>
 
 </body>
