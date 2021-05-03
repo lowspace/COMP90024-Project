@@ -5,6 +5,7 @@ import pandas as pd
 import datetime
 import config 
 import couch as couch
+import time
 
 def toJson(tweets):
     twitter = []
@@ -45,9 +46,9 @@ def user_search(query: str, city: str, api, ID = None):
     while True:
         # convert search results into Json file
         try:
-            twitter = toJson(api.search(q = query, geocode = geocode, count = 5, max_id = maxid))
+            twitter = toJson(api.search(q = query, geocode = geocode, count = 200, max_id = maxid))
         except:
-            if count == 5000:
+            if count == 1000:
                 print('unable to search new tweets, but meet the rate requirement.')
                 break
             else:
@@ -64,7 +65,7 @@ def user_search(query: str, city: str, api, ID = None):
                 #     json.dump(users, output)
                 couch.bulk_save('userdb', users)
                 return False, maxid # to be continued
-        if len(twitter) != 0 and count != 5000: # search query return tweets
+        if len(twitter) != 0 and count != 1000: # search query return tweets
             maxid = str(twitter[-1]['id']-1)
             for i in twitter:
                 if i['user']['id_str'] not in ulist:
@@ -84,7 +85,7 @@ def user_search(query: str, city: str, api, ID = None):
                     # if len(store.keys()) == 100: # feed 100 uid to CouchDB
                     #     print(store) # feed this part to CouchDB
                     #     store = {} # empty the store
-                    if count == 5000: # each city get 10 unique uid
+                    if count == 1000: # each city get 10 unique uid
                         # if len(store.keys()) != 0:
                         #     print(store) # feed this part to CouchDB
                         #     store = {} # empty the store
