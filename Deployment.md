@@ -7,7 +7,7 @@ sudo addgroup docker
 sudo adduser $(whoami) docker
 mkdir ./data
 chmod 775 ./data
-docker run -p 5984:5984 -p 4369:4369 -p 9100-9200:9100-9200 -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -e NODENAME=127.0.0.1 -v ./data:/opt/couchdb/data --name couchdb -d couchdb:3.1.1
+docker run -p 5984:5984 -p 4369:4369 -p 9100-9200:9100-9200 -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -e NODENAME=127.0.0.1 -v $PWD:/opt/couchdb/data --name couchdb -d couchdb:3.1.1
 ```
 
 ## Django Server
