@@ -2,6 +2,7 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
+<<<<<<< HEAD
 import config
 import couch as couch
 import time
@@ -9,6 +10,13 @@ import search_user
 
 global total_num_retrieve_tweets
 total_num_retrieve_tweets = 0
+=======
+from . import config
+import couchdb.couch as couch
+
+def test():
+    return couch.new_id()
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
 
 def toJson(tweets):
     twitter = []
@@ -70,7 +78,10 @@ def tweet_search(uid: str, city: str, api, ID: str):
                 json.dump(ts, output)
 
     tweets = [] # return object
+<<<<<<< HEAD
     timeline_limit = 1000 # for each user, retrieve 1000 tweets maximally
+=======
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
     try:
         new_tweets = toJson(api.user_timeline(user_id = uid, count = 200))
     except:
@@ -105,9 +116,12 @@ def tweet_search(uid: str, city: str, api, ID: str):
             # ???
             # if len(tweets) >= 400: 
             #     break
+<<<<<<< HEAD
             if len(tweets) >= timeline_limit: # some users have a large timeline
                 print("for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
                 break
+=======
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
             try:
                 new_tweets = api.user_timeline(user_id =uid, count=200, max_id=maxid)
                 new_tweets = toJson(new_tweets)
@@ -131,8 +145,11 @@ def tweet_search(uid: str, city: str, api, ID: str):
     tweets = de_dup(tweets)
     # save_as_json(tweets, uid, city)
     couch.bulk_save('tweetdb', tweets)
+<<<<<<< HEAD
     global total_num_retrieve_tweets
     total_num_retrieve_tweets += len(tweets)
+=======
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
     print('the length of the timeline is {l}'.format(l = len(tweets)))
     print('done at the last')
     return True, None
@@ -141,9 +158,22 @@ if __name__ == '__main__':
 
     cities = config.Geocode.keys()
     tokens = config.token
+<<<<<<< HEAD
+    cwd = os.getcwd() # get current dirs
     ID = None
 
     t0 = time.time()
+=======
+    cwd = os.getcwd() # get current dir
+    ID = None
+
+    users = []
+    response = couch.get(path = 'userdb/_all_docs', body = '') # get users list of dict
+    json_data = response.json()['rows'] # load response as json
+    for i in json_data: # get the user list
+        users.append(i['id'])  
+
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
     for city in cities:
         # read id from csv
         # file_name = city + '.csv'
@@ -152,6 +182,7 @@ if __name__ == '__main__':
         #     ###
         #     # how to read this csv? the csv save without lose information, but open will
         #     ###
+<<<<<<< HEAD
         # get users in that city
         users = []
         ###
@@ -166,6 +197,9 @@ if __name__ == '__main__':
             users.append(i['_id'])
         t1 = time.time()
         for i in range(len(users)): # user = uid
+=======
+        for user in users: # user = uid
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
             for token in tokens.keys():
                 # set api
                 consumer_key = tokens[token]['consumer_key']
@@ -176,6 +210,7 @@ if __name__ == '__main__':
                 auth.set_access_token(access_token_key, access_token_secret)
                 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
                 # crwal the timeline
+<<<<<<< HEAD
                 job, ID = tweet_search(users[i], city, api, ID)
                 if job == True:
                     ID = None # initilize the ID
@@ -188,5 +223,15 @@ if __name__ == '__main__':
             print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
             print('Have cost {t:.3f} seconds in {c}; average cost time {s:.3f} seconds for each user'.format(c = city, t = t2-t1, s = (t2-t1)/(i+1)))
             print('Total cost time is {t:.3f}.'.format(t = t0 - t2))
-            print('Estimated time to complete {t:.3f} mins.'.format(t = (len(users)-i-1)*(t2-t1)/(i+1)/60))
+            print('Estimated time to complete {t:.3f} mins. city is {c}'.format(t = (len(users)-i-1)*(t2-t1)/(i+1)/60), c = city)
             print('\n')
+=======
+                job, ID = tweet_search(user, city, api, ID)
+                if job == True:
+                    ID = None # initilize the ID
+                    print('{u} in {c} is done.'.format(u = user, c = city))
+                    break # next user
+                else:
+                    print('move to next token and continue to search {u} in {c}.'.format(u = user, c = city))
+                    continue # use next token 
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376

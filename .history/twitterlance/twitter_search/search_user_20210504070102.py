@@ -8,7 +8,7 @@ import couch as couch
 import time
 
 global rate_limit
-rate_limit = 3 # how many users we wanna count in this city
+rate_limit = 10000 # how many users we wanna count in this city
 
 def toJson(tweets):
     twitter = []

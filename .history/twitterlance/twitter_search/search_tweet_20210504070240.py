@@ -188,5 +188,5 @@ if __name__ == '__main__':
             print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
             print('Have cost {t:.3f} seconds in {c}; average cost time {s:.3f} seconds for each user'.format(c = city, t = t2-t1, s = (t2-t1)/(i+1)))
             print('Total cost time is {t:.3f}.'.format(t = t0 - t2))
-            print('Estimated time to complete {t:.3f} mins.'.format(t = (len(users)-i-1)*(t2-t1)/(i+1)/60))
+            print('Estimated time to complete {t:.3f} mins. city is {a}'.format(t = (len(users)-i-1)*(t2-t1)/(i+1)/60), a = city)
             print('\n')

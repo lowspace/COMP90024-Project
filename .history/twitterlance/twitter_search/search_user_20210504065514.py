@@ -8,7 +8,7 @@ import couch as couch
 import time
 
 global rate_limit
-rate_limit = 3 # how many users we wanna count in this city
+rate_limit = 500 # how many users we wanna count in this city
 
 def toJson(tweets):
     twitter = []
@@ -31,6 +31,7 @@ def user_search(query: str, city: str, api, ID = None):
     users = [] # list of {uid:, city:,}
     ulist = [] # list of uid
     count = 0 
+    rate_limit = 500 # how many users we wanna count in this city
     # store = {} # dict
     geocode = config.Geocode[city] # get geocode
     if not ID: # ID = None
