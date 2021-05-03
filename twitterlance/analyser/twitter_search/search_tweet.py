@@ -27,7 +27,7 @@ def tweet_search(uid: str, city: str, api, ID: str):
         Output = structured tweet_dict
         """
         d = {}
-        d['_id'] = t['id_str']
+        d['_id'] = city + ':' + t['id_str'] # parition _id
         d['uid'] = t['user']['id_str']
         d['city'] = city
         d['val'] = t
@@ -97,6 +97,8 @@ def tweet_search(uid: str, city: str, api, ID: str):
             #     first.append(tweet)
             # # feed the second to CouchDB
             # ???
+            # if len(tweets) >= 400: 
+            #     break
             try:
                 new_tweets = api.user_timeline(user_id =uid, count=200, max_id=maxid)
                 new_tweets = toJson(new_tweets)
@@ -118,8 +120,8 @@ def tweet_search(uid: str, city: str, api, ID: str):
     # save the file as json
     # de duplication
     tweets = de_dup(tweets)
-    save_as_json(tweets, uid, city)
-    couch.bulk_save('twitter', tweets)
+    # save_as_json(tweets, uid, city)
+    couch.bulk_save('tweetdb', tweets)
     print('the length of the timeline is {l}'.format(l = len(tweets)))
     print('done at the last')
     return True, None
