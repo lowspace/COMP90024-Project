@@ -10,22 +10,30 @@ def new_id():
 
 # Basic GET request. path is the url after base_url
 def get(path='', body=''):
+<<<<<<< HEAD
     # path = path.lstrip('/')
+=======
+    path = path.lstrip('/')
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
     return requests.get(f'{base_url}/{path}', json=body)
 
 # Basic PUT request. path is the url after base_url
 def put(path='', body=''):
-    # path = path.lstrip('/')
+    path = path.lstrip('/')
     return requests.put(f'{base_url}/{path}', json=body)
 
 # Basic POST request. path is the url after base_url
 def post(path='', body=''):
+<<<<<<< HEAD
     # path = path.lstrip('/')
+=======
+    path = path.lstrip('/')
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
     return requests.post(f'{base_url}/{path}', json=body)
 
 # Basic HEAD request. path is the url after base_url
 def head(path=''):
-    # path = path.lstrip('/')
+    path = path.lstrip('/')
     return requests.head(f'{base_url}/{path}')
 
 # Save a single document (dict)
