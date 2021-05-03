@@ -34,10 +34,6 @@ def user_search(query: str, city: str, api, ID = None):
     users = [] # list of {uid:, city:,}
     ulist = [] # list of uid
     count = 0 
-<<<<<<< HEAD
-=======
-    rate_limit = 500 # how many users we wanna count in this city
->>>>>>> 3753208f46022203ee2f511948de7ccebedff376
     # store = {} # dict
     geocode = config.Geocode[city] # get geocode
     if not ID: # ID = None
