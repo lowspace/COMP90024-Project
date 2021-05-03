@@ -1,5 +1,33 @@
-# Pre-reqiusites
-Below are the dependencies:
+# Local Development
+Docker network host mode does not work on mac because the host runs on a VM on mac. 
+## CouchDB 
+```
+cd <project directory>
+sudo addgroup docker
+sudo adduser $(whoami) docker
+mkdir ./data
+chmod 775 ./data
+docker run -p 5984:5984 -p 4369:4369 -p 9100-9200:9100-9200 -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -e NODENAME=127.0.0.1 -v ./data:/opt/couchdb/data --name couchdb -d couchdb:3.1.1
+```
+
+## Django Server
+```
+Python manage.py runserver
+```
+
+## uWSGI
+```
+docker build -t yangzy3/twitterlance .
+docker run -p 80:80 yangzy3/twitterlance
+```
+
+## Push Image
+```
+docker build -t yangzy3/twitterlance .
+docker push yangzy3/twitterlance
+```
+
+# Cloud Deployment
 
 ## MRC
 ```
@@ -47,7 +75,7 @@ On the main manager instance:
 ```
 docker run -it -d -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
 docker run -it -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
-docker run -p 5984:5984 -p 4369:4369 -p 9100-9200:9100-9200 --network host -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -v  src=/data,dst=/opt/couchdb/data --name couchdb_backup -d couchdb:3.1.1
+docker run -p 5984:5984 -p 4369:4369 -p 9100-9200:9100-9200 --network host -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -e NODENAME=127.0.0.1 -v  src=/data,dst=/opt/couchdb/data --name couchdb_backup -d couchdb:3.1.1
 docker node update --availability drain instance-1
 docker stack deploy -c docker-compose.yml twitterlance
 ```
