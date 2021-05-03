@@ -17,7 +17,7 @@
   <script src="../static/bootjs/bootstrap.min.js"></script>
 
   <!--  import style sheet-->
-  <link rel="stylesheet" type="text/css" href="../static/css/styless.css"/>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css"/>
   <link rel="stylesheet" href="../static/css/fa/css/all.css">
 
 </head>
@@ -46,12 +46,43 @@
         </ul>
       </div>
   <!--    content for this page-->
-      <div class="col-md-9 column right-content">
-        <iframe src="https://public.tableau.com/views/cafebars_16175950324130/Dashboard1?%3Aembed=y&amp;%3AshowVizHome=no&amp;%3Adisplay_count=y&amp;%3Adisplay_static_image=y&amp;%3AbootstrapWhenNotified=true&amp;%3Alanguage=en&amp;:embed=y&amp;:showVizHome=n&amp;:apiID=host0#navType=0&amp;navSrc=Parse"></iframe>
-<!--        <iframe src="https://www.apple.com.cn"></iframe>-->
+      <div class="col-md-9 column right-content" >
+        <div class="map-right">
+          <div class='tableauPlaceholder' id='viz1620018019391'>
+            <noscript>
+              <a href=' '>
+                < img alt='Melbourne Cafes, Restaurants, Bars  ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;R7&#47;R7QD74B3R&#47;1_rss.png' style='border: none' />
+              </a>
+            </noscript>
+            <object class='tableauViz'  style='display:none;'>
+              <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+              <param name='embed_code_version' value='3' />
+              <param name='path' value='shared&#47;R7QD74B3R' />
+              <param name='toolbar' value='yes' />
+              <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;R7&#47;R7QD74B3R&#47;1.png' />
+              <param name='animate_transition' value='yes' />
+              <param name='display_static_image' value='yes' />
+              <param name='display_spinner' value='yes' />
+              <param name='display_overlay' value='yes' />
+              <param name='display_count' value='yes' />
+              <param name='language' value='en-GB' />
+            </object>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
+  <script type='text/javascript'>
+    var divElement = document.getElementById('viz1620018019391');
+    var vizElement = divElement.getElementsByTagName('object')[0];
+    if ( divElement.offsetWidth > 500 ) {
+      vizElement.style.width='100%';vizElement.style.height='1127px';
+    } else {
+      vizElement.style.width='100%';vizElement.style.height='2077px';
+    }
+    var scriptElement = document.createElement('script');
+    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement.parentNode.insertBefore(scriptElement, vizElement);
+  </script>
 </body>
 </html>
