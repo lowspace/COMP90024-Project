@@ -1,14 +1,15 @@
 # This python script looks for isolated couchdb instances on the current docker host and add them to the couchdb cluster.
-# Run on all docker swarm node when couchdb is created or rescaled. 
+# Run recluster on each couchdb nodes, and then run reshard on all couchdb nodes
 
-import requests, time, docker, configparser
+import requests, time, docker, configparser, os
 
 help = 'Initialise the databses required by this app'
 
 # Load CouchDB endpoint and credentials
 config = configparser.ConfigParser()
 try:
-    config.read("couchdb.conf")
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    config.read(os.path.join(__location__, "couchdb.conf"))
 except:
     print("CouchDB Configuration not found")
 COUCHDB_USERNAME = config.get('CouchDB', 'username')
@@ -18,7 +19,7 @@ REPEAT = int(config.get('CouchDB', 'repeat'))
 
 def reconsolidate_cluster():
     # Get all nodes
-    all_nodes = []
+    local_nodes = []
     client = docker.from_env()
     networks = client.networks.list(greedy=True)
     for network in networks: 
@@ -26,34 +27,34 @@ def reconsolidate_cluster():
             for container in network.attrs['Containers'].values():
                 if 'twitterlance_couchdb' == container['Name'].split('.')[0]:
                     node = 'couchdb@' + container['Name']
-                    all_nodes.append(node)
+                    local_nodes.append(node)
 
-    print(f'All nodes on this machine: {all_nodes}')
+    print(f'CouchDB node on this host: {local_nodes}')
+    assert len(local_nodes) == 1, f'The host should have and only have 1 CouchDB node' 
+
+    local_node = local_nodes[0]
     
-    new_connections = []
-    for node in all_nodes: 
-        count = 0
-        while True:
-            url = f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/_local/_nodes/{node}'
-            res = requests.put(url, json={})
-            if res.json().get('error') == 'conflict':
-                print(f'{node} already in cluster')
-            else: 
-                new_connections.append(node)
-                print(f'{node} {res.text}')
-            time.sleep(0.5)
-            if count > REPEAT and res.json().get('error') is not None:
-                break
-            count += 1
+    new_connection = None
+    count = 0
+    while True:
+        url = f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/_local/_nodes/{local_node}'
+        res = requests.put(url, json={})
+        if res.json().get('error') == 'conflict':
+            print(f'{local_node} already in cluster')
+        else: 
+            new_connection = local_node
+            print(f'{local_node} {res.text}')
+        time.sleep(0.5)
+        if count > REPEAT and res.json().get('error') is not None:
+            break
+        count += 1
     
     
-    if len(new_connections) > 0:
+    if new_connection is not None:
         print('Waiting for the new nodes to connect...')
         time.sleep(5)
-
-    for node in new_connections:
         while True:  
-            res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/{node}')
+            res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/{new_connection}')
             if res.json().get('error') is None or res.json().get('error') != 'nodedown':
                 break
             else: 
@@ -85,13 +86,6 @@ def reconsolidate_cluster():
     cluster_nodes = res.json().get('cluster_nodes')
     print(f'Current nodes: {cluster_nodes}')
 
-    # Add default databases
-    dbs = ['_users', '_replicator', 'twitters', 'users']
-    for db in dbs:
-        res = requests.put(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/{db}')
-        print(f'Adding databases: {res.text}')
-
 if __name__ == '__main__':
   reconsolidate_cluster()
-  print('Successfully reconsolidated CouchDB cluster.')
     
