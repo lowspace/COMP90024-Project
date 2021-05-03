@@ -2,11 +2,7 @@
 Docker network host mode does not work on mac because the host runs on a VM on mac. 
 ## CouchDB 
 ```
-cd <project directory>
-sudo addgroup docker
-sudo adduser $(whoami) docker
-mkdir ./data
-chmod 775 ./data
+cd <couchdb data directory>
 docker run -p 5984:5984 -p 4369:4369 -p 9100-9200:9100-9200 -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -e NODENAME=127.0.0.1 -v $PWD:/opt/couchdb/data --name couchdb -d couchdb:3.1.1
 ```
 
@@ -39,13 +35,21 @@ sudo echo "no_proxy=localhost,127.0.0.1,localaddress,172.16.0.0/12,.melbourne.rc
 ```
 
 ## Mount Disk 
+Run on all nodes
 ```
 sudo mkfs.ext4 /dev/vdb
 sudo mkdir /data
 sudo mount -t auto /dev/vdb /data
 sudo adduser ubuntu docker
-sudo chown :docker /data
-sudo chmod 775 /data
+docker stack rm twitterlance
+sudo rm -rf /data/*
+sudo mkdir -p /data/opt/couchdb/data
+sudo mkdir -p /data/opt/couchdb/etc/local.d
+sudo chown -R :docker /data/opt
+docker stack deploy -c docker-compose.yml twitterlance
+docker service ps twitterlance_couchdb
+docker service logs twitterlance_couchdb
+
 ```
 
 ## Docker Swarm 
@@ -75,7 +79,7 @@ On the main manager instance:
 ```
 docker run -it -d -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
 docker run -it -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
-docker run -p 5984:5984 -p 4369:4369 -p 9100-9200:9100-9200 --network host -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -e NODENAME=127.0.0.1 -v  src=/data,dst=/opt/couchdb/data --name couchdb_backup -d couchdb:3.1.1
+docker run -p 15984:5984 -e COUCHDB_USER=user -e COUCHDB_PASSWORD=pass -e NODENAME=127.0.0.1 -v /data/opt/couchdb/data:/opt/couchdb/data -v /data/opt/couchdb/etc/local.d:/opt/couchdb/etc/local.d --name couchdb_backup -d couchdb:3.1.1
 docker node update --availability drain instance-1
 docker stack deploy -c docker-compose.yml twitterlance
 ```
