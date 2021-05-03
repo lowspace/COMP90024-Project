@@ -97,6 +97,8 @@ def tweet_search(uid: str, city: str, api, ID: str):
             #     first.append(tweet)
             # # feed the second to CouchDB
             # ???
+            # if len(tweets) >= 400: 
+            #     break
             try:
                 new_tweets = api.user_timeline(user_id =uid, count=200, max_id=maxid)
                 new_tweets = toJson(new_tweets)
