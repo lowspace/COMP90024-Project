@@ -2,8 +2,11 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-import config
-import couch as couch
+from . import config
+import couchdb.couch as couch
+
+def test():
+    return couch.new_id()
 
 def toJson(tweets):
     twitter = []

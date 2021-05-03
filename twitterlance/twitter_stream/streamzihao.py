@@ -9,6 +9,10 @@ from shapely.geometry import Point, Polygon
 from http.client import IncompleteRead as http_incompleteRead
 from urllib3.exceptions import IncompleteRead as urllib3_incompleteRead
 
+import couchdb.couch as couch
+
+def test():
+    return couch.new_id()
 
 # load json file
 def json_load(url):
