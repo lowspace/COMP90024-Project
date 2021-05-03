@@ -2,7 +2,7 @@ import requests, uuid, json
 from django.conf import settings
 
 # Module with functions serve a Singleton
-base_url = f'http://admin:ccc@localhost:5984'
+base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}:5984'
 
 # Generate a new uuid for CouchDB document
 def new_id():
@@ -37,3 +37,11 @@ def save(database, document):
 def bulk_save(database, documents):
     database = database.lstrip('/')
     return requests.post(f'{base_url}/{database}/_bulk_docs', json={"docs": documents})
+
+# Create a databse
+def create(path='', partition=False, body=''):
+    path = path.lstrip('/')
+    if partition:
+        path += '?partitioned=true'
+        print(path)
+    return requests.put(f'{base_url}/{path}', json=body)
