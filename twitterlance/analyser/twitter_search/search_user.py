@@ -3,8 +3,8 @@ import tweepy
 from tweepy import OAuthHandler
 import pandas as pd
 import datetime
-
 import config 
+import couch as couch
 
 def toJson(tweets):
     twitter = []
@@ -24,7 +24,8 @@ def user_search(query: str, city: str, api, ID = None):
         2. save the uid locally (for now)
     """
     assert city in ('Melbourne', 'Sydney', 'Canberra', 'Adelaide'), "The city only accepts 'Melbourne', 'Sydney', 'Canberra', and 'Adelaide'."
-    users = dict() # dict
+    users = [] # list of {uid:, city:,}
+    ulist = [] # list of uid
     count = 0
     # store = {} # dict
     geocode = config.Geocode[city] # get geocode
@@ -44,34 +45,44 @@ def user_search(query: str, city: str, api, ID = None):
         try:
             twitter = toJson(api.search(q = query, geocode = geocode, count = 100, max_id = maxid))
         except:
-            if count == 10:
+            if count == 6:
                 print('????')
                 break
             else:
                 # save uid locally
                 print('try')
-                df = pd.DataFrame.from_dict(users, orient='index') # dict to pd
+                # df = pd.DataFrame.from_dict(users, orient='index') # dict to pd
                 t = str(datetime.datetime.now()) # time 
-                name = city + ' ' + t + '.csv' # to avoid duplication
-                path = './' + name 
-                df.to_csv(path_or_buf = path, header=True, index=True) # save pd to csv in current dir
+                # name = city + ' ' + t + '.csv' # to avoid duplication
+                # path = './twitterlance/analyser/twitter_search/' + name 
+                # df.to_csv(path_or_buf = path, header=True, index=True) # save pd to csv in current dir
+                name = city + ' ' + t + '.json' # to json
+                path = './twitterlance/analyser/twitter_search/' + name 
+                with open(path, 'w') as output: # save as json
+                    json.dump(users, output)
+                couch.bulk_save('userdb', users)
                 return False, maxid # to be continued
-        if len(twitter) != 0 and count != 10: # search query return tweets
+        if len(twitter) != 0 and count != 6: # search query return tweets
             maxid = str(twitter[-1]['id']-1)
             for i in twitter:
-                if i['user']['id_str'] not in users.keys(): # have not added under the query
+                if i['user']['id_str'] not in ulist:
+                # if i['user']['id_str'] not in users.keys(): # have not added under the query
+                    ulist.append(i['user']['id_str'])
                     count += 1 
                     user = dict()
                     # store[count]['_id'] = i['users']['id_str'] # does the format is right?
                     # store[count]['city'] = city
                     user['_id'] = i['user']['id_str']
                     user['city'] = city
+                    # user_json = json.dumps(user)
+                    # couch.save('userdb', user) # save each tweet into CouchDB
                     print('user is', user, count)
-                    users[user['_id']] = user # does the format is right?
+                    # users[user['_id']] = user # does the format is right?
+                    users.append(user)
                     # if len(store.keys()) == 100: # feed 100 uid to CouchDB
                     #     print(store) # feed this part to CouchDB
                     #     store = {} # empty the store
-                    if count == 10: # each city get 10 unique uid
+                    if count == 6: # each city get 10 unique uid
                         # if len(store.keys()) != 0:
                         #     print(store) # feed this part to CouchDB
                         #     store = {} # empty the store
@@ -87,11 +98,16 @@ def user_search(query: str, city: str, api, ID = None):
     # save uid locally
     print('save??')
     print(users)
-    df = pd.DataFrame.from_dict(users, orient='index') # dict to pd
+    # df = pd.DataFrame.from_dict(users, orient='index') # dict to pd
     t = str(datetime.datetime.now()) # time 
-    name = city + ' ' + t + '.csv' # to avoid duplication
-    path = './' + name 
-    df.to_csv(path_or_buf = path, header=True, index=True) # save pd to csv in current dir
+    # name = city + ' ' + t + '.csv' # to avoid duplication
+    # path = './twitterlance/analyser/twitter_search/' + name 
+    # df.to_csv(path_or_buf = path, header=True, index=True) # save pd to csv in current dir
+    name = city + ' ' + t + '.json' # to json
+    path = './twitterlance/analyser/twitter_search/' + name 
+    with open(path, 'w') as output: # save as json
+        json.dump(users, output)
+    couch.bulk_save('userdb', users)
     return True, maxid
 
 if __name__ == '__main__':
