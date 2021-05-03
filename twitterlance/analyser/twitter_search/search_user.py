@@ -5,6 +5,7 @@ import pandas as pd
 import datetime
 import config 
 import couch as couch
+import time
 
 def toJson(tweets):
     twitter = []
@@ -26,7 +27,8 @@ def user_search(query: str, city: str, api, ID = None):
     assert city in ('Melbourne', 'Sydney', 'Canberra', 'Adelaide'), "The city only accepts 'Melbourne', 'Sydney', 'Canberra', and 'Adelaide'."
     users = [] # list of {uid:, city:,}
     ulist = [] # list of uid
-    count = 0
+    count = 0 
+    rate_limit = 500 # how many users we wanna count in this city
     # store = {} # dict
     geocode = config.Geocode[city] # get geocode
     if not ID: # ID = None
@@ -42,12 +44,13 @@ def user_search(query: str, city: str, api, ID = None):
         user_search('covid', city, api, ID) # can it work well??
         return False, None
     maxid = str(first[0]['id']-1)
+    t1 = time.time()
     while True:
         # convert search results into Json file
         try:
-            twitter = toJson(api.search(q = query, geocode = geocode, count = 5, max_id = maxid))
+            twitter = toJson(api.search(q = query, geocode = geocode, count = 200, max_id = maxid))
         except:
-            if count == 5000:
+            if count == rate_limit:
                 print('unable to search new tweets, but meet the rate requirement.')
                 break
             else:
@@ -64,7 +67,7 @@ def user_search(query: str, city: str, api, ID = None):
                 #     json.dump(users, output)
                 couch.bulk_save('userdb', users)
                 return False, maxid # to be continued
-        if len(twitter) != 0 and count != 5000: # search query return tweets
+        if len(twitter) != 0 and count != rate_limit: # search query return tweets
             maxid = str(twitter[-1]['id']-1)
             for i in twitter:
                 if i['user']['id_str'] not in ulist:
@@ -84,11 +87,16 @@ def user_search(query: str, city: str, api, ID = None):
                     # if len(store.keys()) == 100: # feed 100 uid to CouchDB
                     #     print(store) # feed this part to CouchDB
                     #     store = {} # empty the store
-                    if count == 5000: # each city get 10 unique uid
+                    if count == rate_limit: # each city get 10 unique uid
                         # if len(store.keys()) != 0:
                         #     print(store) # feed this part to CouchDB
                         #     store = {} # empty the store
-                        break                    
+                        break
+            t2 = time.time()
+            print('Progress {c}/{t}.'.format(c = count, t = rate_limit))
+            print('Have cost {t:.3f} seconds; average cost time {s:.3f} seconds'.format(t = t2 - t1, s = (t2-t1)/count))
+            print('Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60))
+            print('\n')                    
         else: # search query return None
             # if store: # len(store) < 100, but query return None
             #     print(store) feed this part to CouchDB
@@ -97,7 +105,7 @@ def user_search(query: str, city: str, api, ID = None):
             #     break
             break
     # save uid locally
-    print(users)
+    # print(users)
     # df = pd.DataFrame.from_dict(users, orient='index') # dict to pd
     # t = str(datetime.datetime.now()) # time 
     # name = city + ' ' + t + '.csv' # to avoid duplication
@@ -107,8 +115,11 @@ def user_search(query: str, city: str, api, ID = None):
     # path = './twitterlance/analyser/twitter_search/' + name 
     # with open(path, 'w') as output: # save as json
     #     json.dump(users, output)
-    couch.bulk_save('userdb', users)
-    print('success to save the users into CouchDB')
+    couch.bulk_save('userdb', users) # save 2 CouchDB at once
+    print('success to save {c}/{t} users into CouchDB'.format(c = count, t = rate_limit))
+    t2 = time.time()
+    print('{c} has cost {t:.3f} seconds; average {s:.3f} seconds for each user'.format(c = city, t = t2 - t1, s = (t2-t1)/count))
+    print('\n')  
     return True, maxid
 
 if __name__ == '__main__':
