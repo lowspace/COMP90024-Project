@@ -66,8 +66,8 @@ class Command(BaseCommand):
         self.create_db('_users', False)
         self.create_db('_replicator', False)
         self.create_db('_global_changes', False)
-        self.create_db('twitters', True)
-        self.create_db('users', True)
+        self.create_db('tweetdb', True)
+        self.create_db('userdb', True)
         self.create_design_docs()
         self.stdout.write(self.style.SUCCESS('Successfully initilised databases.'))
             
