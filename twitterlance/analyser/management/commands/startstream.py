@@ -10,6 +10,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        try:
+            stream.api.verify_credentials()
+            print("Authentication OK")
+        except:
+            print("Error during authentication")
+
         # consumer_key = 'wku1JIpNi4pXukXp510Hzylj2'
         # consumer_secret = 'JZPuJKqMZu929iu8XxgTQAOw0up1LLJj6hKUjFDPE4aSNsp1KP'
         # access_token = '1382968455989583874-9DiykvjpUlnYtq2fJAgScghh9TMBs2'
