@@ -3,7 +3,7 @@ import tweepy
 from tweepy import OAuthHandler
 import os
 import config
-import couch as couch
+import couchdb.couch as couch
 import time
 import search_user
 
