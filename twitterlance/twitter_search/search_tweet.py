@@ -2,12 +2,12 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-# import twitter_search.config as config
-import config
+import twitter_search.config as config
+# import config
 import couchdb.couch as couch
 import time
-# import twitter_search.search_user as search_user
-import search_user
+import twitter_search.search_user as search_user
+# import search_user
 
 global total_num_retrieve_tweets
 
@@ -189,7 +189,8 @@ if __name__ == '__main__':
                     continue # use next token 
             t2 = time.time()
             print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
+            print('success to save {c}/{t} users into CouchDB'.format(c = i+1, t = len(users)))
             print('Have cost {t:.3f} seconds in {c}; average cost time {s:.3f} seconds for each user'.format(c = city, t = t2-t1, s = (t2-t1)/(i+1)))
-            print('Total cost time is {t:.3f}.'.format(t = t0 - t2))
+            print('Total cost time is {t:.3f}.'.format(t = t2 - t0))
             print('Estimated time to complete {t:.3f} mins.'.format(t = (len(users)-i-1)*(t2-t1)/(i+1)/60))
             print('\n')

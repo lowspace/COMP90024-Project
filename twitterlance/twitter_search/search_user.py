@@ -3,12 +3,14 @@ import tweepy
 from tweepy import OAuthHandler
 import pandas as pd
 import datetime
-import config 
-import couch as couch
+from twitter_search import config as config
+# import config 
+from couchdb import couch as couch
+# import couchdb.couch as couch
 import time
 
 global rate_limit
-rate_limit = 3 # how many users we wanna count in this city
+rate_limit = 20 # how many users we wanna count in this city
 
 def toJson(tweets):
     twitter = []
