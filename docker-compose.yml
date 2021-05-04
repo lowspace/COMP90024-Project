@@ -31,12 +31,14 @@ services:
       COUCHDB_PASSWORD: "pass"
       COUCHDB_SECRET: "92de07df7e7a3fe14808cef90a7cc0d91"
       ERL_FLAGS: "-setcookie a20b37d83ef18efce400b3ace400036e"
-    entrypoint: /bin/bash -c "cp -f /couchdb_conf /opt/couchdb/etc/local.d/docker.ini && cat /opt/couchdb/etc/local.d/docker.ini && /docker-entrypoint.sh /opt/couchdb/bin/couchdb && echo \"-name {{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}} \" > /opt/couchdb/etc/vm.args"
+    entrypoint: /bin/bash -c "cp -f /couchdb_conf /opt/couchdb/etc/local.d/docker.ini && cat /opt/couchdb/etc/local.d/docker.ini && /docker-entrypoint.sh /opt/couchdb/bin/couchdb && echo \"-name  \" > /opt/couchdb/etc/"
     configs:
       - couchdb_conf
     deploy:
       mode: replicated
       replicas: 2
+      placement:
+        constraints: [node.labels.CouchDB == true ]
 
   app:
     image: "yangzy3/twitterlance"

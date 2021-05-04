@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'couchdb',
-    'analyser'
+    'analyser',
+    'twitter_search',
+    'twitter_stream'
 ]
 
 MIDDLEWARE = [

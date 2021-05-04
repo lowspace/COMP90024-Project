@@ -2,7 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from django.core.management import call_command
 import couchdb.couch as couch
+import twitter_search.search_tweet as search
+import twitter_stream.streamzihao as stream
 import json
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
@@ -24,7 +27,7 @@ class TweetViewSet(viewsets.ViewSet):
         return Response(couch.get('twitter',pk).json())
 
     # GET analyser/tweets/:count
-    @action(detail=Faslse, methods=['get'], name="Get the total numbers of tweets")
+    @action(detail=False, methods=['get'], name="Get the total numbers of tweets")
     def get_total_number_of_tweets(self, request):
         res = couch.get(f'twitter/_all_docs')
         rows = res.json()['total_rows']
@@ -45,7 +48,13 @@ class TweetViewSet(viewsets.ViewSet):
         query = f'lat_min:[{lat_min} TO 0] AND lat_max:[-90 TO {lat_max}] AND lon_min:[{lon_min} TO 180] AND lon_max:[0 TO {lon_max}]'
         res = couch.get(f'twitter/_design/geo/_search/box?q={query}')
         return Response({'total_rows': int(res.json()['total_rows'])})
+        
+    @action(detail=False, methods=['get'], name="test python import")
+    def test(self, request):
+        call_command('startsearch')
+        return Response({search.test(): stream.test()})
 
+    
 class UserViewSet(viewsets.ViewSet):
 
     # GET analyser/users:count
@@ -62,6 +71,5 @@ class ManagerViewSet(viewsets.ViewSet):
     # POST analyser/couchdb
     @action(detail=False, methods=['post'], name="Initialisation")
     def couchdb(self, request):
-        from django.core.management import call_command
         call_command('initcouchdb')
->>>>>>> 243143fe78349453188ca813b8e996ddf7f3e4ba
+>>>>>>> 3753208f46022203ee2f511948de7ccebedff376
