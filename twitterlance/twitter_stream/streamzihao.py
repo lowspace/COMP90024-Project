@@ -7,8 +7,6 @@ import time
 from shapely.geometry import Point, Polygon
 from http.client import IncompleteRead as http_incompleteRead
 from urllib3.exceptions import IncompleteRead as urllib3_incompleteRead
-from couchdb.couch import couch
-
 import couchdb.couch as couch
 
 def test():
@@ -54,33 +52,36 @@ def new_user(tweetJson, area):
     for i in json_data: # get the user list
         users.append(i['id'])
     if user["_id"] in users:
+        print('not a new user')
         return False # return ???
     else:
+        print("got new user in", area)
         couch.save('userdb', user)
         return True
 
 
 def new_tweet(tweetJson, area):
+    # save new tweet to couchdb
     tweettemp = {}
     tweettemp["_id"] = area + ':' + tweetJson["id_str"]
     tweettemp["uid"] = tweetJson["user"]["id_str"]
     tweettemp["city"] = area
     tweettemp["value"] = tweetJson
     try: # save directly, no need to retrive all, since too slow?
+        print('got new tweet')
         couch.save('tweetdb', tweettemp)
         return True
     except:
-        print("unable to save tweet to CouchDB.")
+        print("error new tweet")
         return False
 
 
 def new_timeline(tweetJson, area):
     # add user's tweet to database
     uid = tweetJson["user"]["id"]
-    #     tweepy.Cursor(api.user_timeline, user_id=uid, max_id=maxid, tweet_mode="extended")
     cursor = tweepy.Cursor(api.user_timeline, user_id=uid)
     tweets = [] # return object
-    for tweet in cursor.items(200): # how come?
+    for tweet in cursor.items(200):
         tweettemp = {}
         tjson = tweet._json
         tweettemp["_id"] = area + ':' + tjson["id_str"]
@@ -89,10 +90,11 @@ def new_timeline(tweetJson, area):
         tweettemp["value"] = tjson
         tweets.append(tweettemp) 
     try:
+        print("got new timeline")
         couch.bulk_save('tweetdb', tweets)
         return True
     except:
-        print("error: tweet exist")
+        print("error: new timeline")
         return False
 
 
@@ -116,6 +118,8 @@ def AddUserTweet2DB(tweetJson):
             new_timeline(tweetJson, t_area)
         else:
             new_tweet(tweetJson, t_area)
+    else:
+        print('Not in target area')
 
 
 class MyStreamListener(tweepy.StreamListener):
@@ -157,6 +161,7 @@ if __name__ == '__main__':
     Can = [148.747, -35.926, 149.420, -35.106]
     Mel = [144.312, -38.506, 145.894, -37.160]
     Ade = [138.422, -35.355, 139.052, -34.493]
+    overall = [144.312, -38.506, 151.645, -32.976]
 
     # read melbourne shape json
     areas = json_load("TOP4city.json")["features"]
@@ -165,6 +170,7 @@ if __name__ == '__main__':
     area_list = []
     for i in areas:
         area_list.append(i["attributes"]["GCC_NAME16"])
+
 
     # Generate Authentication
     config = configparser.ConfigParser()
@@ -188,28 +194,14 @@ if __name__ == '__main__':
         print("Error during authentication")
 
     # Create CouchDB dataset
-    server = couchdb.Server("http://admin:Aa123456789@localhost:5984")
     server = "http://admin:Aa123456789@localhost:5984"
     couch.base_url = server
-
-    couch.save('userdb', udb)
-    couch.save('twitter', )
-
-    if 'tweetdb' in server:
-        tdb = server['tweetdb']
-    else:
-        tdb = server.create('tweetdb')
-    if 'userdb' in server:
-        udb = server['userdb']
-    else:
-        udb = server.create('userdb')
 
     # Loop to save the tweets that meet the requirements in CouchDB
     while True:
         try:
             myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
-            myStream.filter(locations=Syd)
+            myStream.filter(locations=overall)
 
         except Exception as e:
             print(e)
-
