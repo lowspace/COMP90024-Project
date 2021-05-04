@@ -10,12 +10,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        Syd = [149.928, -34.345, 151.645, -32.976]
-        Can = [148.747, -35.926, 149.420, -35.106]
-        Mel = [144.312, -38.506, 145.894, -37.160]
-        Ade = [138.422, -35.355, 139.052, -34.493]
-        overall = [144.312, -38.506, 151.645, -32.976]
-
         # consumer_key = 'wku1JIpNi4pXukXp510Hzylj2'
         # consumer_secret = 'JZPuJKqMZu929iu8XxgTQAOw0up1LLJj6hKUjFDPE4aSNsp1KP'
         # access_token = '1382968455989583874-9DiykvjpUlnYtq2fJAgScghh9TMBs2'
@@ -31,11 +25,16 @@ class Command(BaseCommand):
         # except:
         #     print("Error during authentication")
 
+        # connect local CouchDB dataset
+        server = "http://admin:Aa123456789@localhost:5984"
+        couch.base_url = server
+
         # Loop to save the tweets that meet the requirements in CouchDB
+
         while True:
             try:
                 myStream = stream.tweepy.Stream(auth=stream.api.auth, listener=stream.MyStreamListener())
-                myStream.filter(locations=overall)
+                myStream.filter(locations=stream.overall)
 
             except Exception as e:
                 print(e)
