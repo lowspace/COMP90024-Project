@@ -118,7 +118,7 @@ div {
   text-align: left;
 }
 .map-right {
-  overflow-y: auto;
+  overflow: hidden;
   height: 100%;
   background-color: #ffffff;
   border-radius: 10px;
