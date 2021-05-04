@@ -32,6 +32,7 @@ area_list = []
 for i in areas:
     area_list.append(i["attributes"]["GCC_NAME16"])
 
+# generate authon
 
 consumer_key = 'wku1JIpNi4pXukXp510Hzylj2'
 consumer_secret = 'JZPuJKqMZu929iu8XxgTQAOw0up1LLJj6hKUjFDPE4aSNsp1KP'
@@ -70,7 +71,7 @@ def new_user(tweetJson, area):
     user["city"] = area
     # get the userlist
     users = []
-    response = couch.get(path = 'userdb/_all_docs', body = '') # get users list of dict
+    response = couch.get(path = 'userdb/_all_docs', body='') # get users list of dict
     json_data = response.json()['rows'] # load response as json
     for i in json_data: # get the user list
         users.append(i['id'])
@@ -81,6 +82,18 @@ def new_user(tweetJson, area):
         print("got new user in", area)
         couch.save('userdb', user)
         return True
+
+    # # issue get userlist from couchdb consume lot of overhead
+    # # maybe not to check user from list and directly add single tweet
+
+    # try:
+    #     couch.save('userdb', user)
+    #     print('got a new user in',area)
+    #     return True
+    # except:
+    #     print('not a new user')
+    #     return False
+
 
 
 def new_tweet(tweetJson, area):
@@ -179,28 +192,6 @@ class MyStreamListener(tweepy.StreamListener):
 
 
 if __name__ == '__main__':
-
-
-    # Generate Authentication
-    # config = configparser.ConfigParser()
-    # try:
-    #     config.read("tokenzihao.conf")
-    # except:
-    #     print("token Configuration not found")
-    #
-    # consumer_key = config.get('Token', 'Consumer Key')
-    # consumer_secret = config.get('Token', 'Consumer Secret')
-    # access_token = config.get('Token', 'Access Token')
-    # access_token_secret = config.get('Token', 'Access Token Secret')
-
-    # consumer_key = 'wku1JIpNi4pXukXp510Hzylj2'
-    # consumer_secret = 'JZPuJKqMZu929iu8XxgTQAOw0up1LLJj6hKUjFDPE4aSNsp1KP'
-    # access_token = '1382968455989583874-9DiykvjpUlnYtq2fJAgScghh9TMBs2'
-    # access_token_secret = 'k6C6Yx8LNkNp5FtyG55d6WZ0lwePYbAYAmnkg5xOd65G6'
-    #
-    # auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    # auth.set_access_token(access_token, access_token_secret)
-    # api = tweepy.API(auth)
 
     try:
         api.verify_credentials()
