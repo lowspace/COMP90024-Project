@@ -4,8 +4,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.core.management import call_command
 import couchdb.couch as couch
-import twitter_search.search_tweet as search
-import twitter_stream.streamzihao as stream
+# import twitter_search.search_tweet as search
+import twitter_stream.stream as stream
 import json
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
@@ -55,21 +55,21 @@ class TweetViewSet(viewsets.ViewSet):
         return Response({search.test(): stream.test()})
 
     
-class UserViewSet(viewsets.ViewSet):
+# class UserViewSet(viewsets.ViewSet):
 
     # GET analyser/users:count
-    @action(detail=False, methods=['get'], name="Get the total numbers of users")
-    def get_total_number_of_users(self, request):
-        res = self.couch.get(f'userdb/_all_docs')
-        rows = res.json()['total_rows']
-<<<<<<< HEAD
-        return Response({"total_rows": rows})
-=======
-        return Response({"rows": rows})
-
-class ManagerViewSet(viewsets.ViewSet):
-    # POST analyser/couchdb
-    @action(detail=False, methods=['post'], name="Initialisation")
-    def couchdb(self, request):
-        call_command('initcouchdb')
->>>>>>> 3753208f46022203ee2f511948de7ccebedff376
+#     @action(detail=False, methods=['get'], name="Get the total numbers of users")
+#     def get_total_number_of_users(self, request):
+#         res = self.couch.get(f'userdb/_all_docs')
+#         rows = res.json()['total_rows']
+# <<<<<<< HEAD
+#         return Response({"total_rows": rows})
+# =======
+#         return Response({"rows": rows})
+#
+# class ManagerViewSet(viewsets.ViewSet):
+#     # POST analyser/couchdb
+#     @action(detail=False, methods=['post'], name="Initialisation")
+#     def couchdb(self, request):
+#         call_command('initcouchdb')
+# >>>>>>> 3753208f46022203ee2f511948de7ccebedff376

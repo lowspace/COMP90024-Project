@@ -5,7 +5,7 @@ import json, requests, time, docker
 
 import couchdb.couch as couch
 import twitter_search.search_tweet as search
-import twitter_stream.streamzihao as stream
+import twitter_stream.stream as stream
 
 class Command(BaseCommand):
     help = 'Initialise the databses required by this app'
@@ -13,4 +13,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options): 
         search.test()
         self.stdout.write(self.style.SUCCESS('Successfully completed search.'))
-            
+
