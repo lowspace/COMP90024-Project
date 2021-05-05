@@ -4,8 +4,7 @@ from tweepy import OAuthHandler
 import os
 # import twitter_search.config as config
 import config
-# import couchdb.couch as couch
-import couch
+import couchdb.couch as couch
 import time
 # import twitter_search.search_user as search_user
 import search_user

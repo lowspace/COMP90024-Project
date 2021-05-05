@@ -2,13 +2,12 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-# import twitter_search.config as config
-import config
-# import couchdb.couch as couch
-import couch
+import twitter_search.config as config
+# import config
+import couchdb.couch as couch
 import time
-# import twitter_search.search_user as search_user
-import search_user
+import twitter_search.search_user as search_user
+# import search_user
 
 global total_num_retrieve_tweets
 
@@ -162,14 +161,10 @@ if __name__ == '__main__':
         # !!!???: this query always returns a warning: warning":"no matching index found, create an index to optimize
         #           query time". REF: https://docs.couchdb.org/en/stable/api/database/find.html#creating-selector-expressions
         ###
-        # query = dict(selector = {"city": city}, fields = ["_id", "city"], limit = search_user.rate_limit)
-        query = dict(selector = {"city": city}, fields = ["_id", "city"], limit = 10)
+        query = dict(selector = {"city": city}, fields = ["_id", "city"], limit = search_user.rate_limit)
         response = couch.post(path = 'userdb/_find', body = query) # get users list of dict
         json_data = response.json()['docs'] # load response as json
-        print(json_data)
-
-
-        dalksfja;sd
+        # print(json_data)
         for i in json_data: # get the user list
             users.append(i['_id'])
         t1 = time.time()
