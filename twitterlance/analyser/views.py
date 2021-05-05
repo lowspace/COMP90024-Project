@@ -34,6 +34,7 @@ class TweetViewSet(viewsets.ViewSet):
             res = couch.get(f'tweetdb/_partition/{city}')
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
+        # count["res"] = Response({"tweet_stats": 12312})
         return Response({"tweet_stats": count})
 
     # GET analyser/tweets/box_tweets?lat_min=-9.1457534&lat_max=-0.4000327&lon_min=134.505904&lon_max=141.0549412
@@ -64,6 +65,15 @@ class TweetViewSet(viewsets.ViewSet):
         return Response({'a':res.json()})
     
 class UserViewSet(viewsets.ViewSet):
+
+    # GET analyser/tweets?options 
+    # Add include_docs=true
+    def list(self, request):
+        url = f'userdb/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
 
     # GET analyser/users/stats
     @action(detail=False, methods=['get'], name="Get the stats of users")
