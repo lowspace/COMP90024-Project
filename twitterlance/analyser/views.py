@@ -63,7 +63,7 @@ class TweetViewSet(viewsets.ViewSet):
         res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
         return Response({'a':res.json()})
     
-# class UserViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.ViewSet):
 
     # GET analyser/users/stats
     @action(detail=False, methods=['get'], name="Get the stats of users")
