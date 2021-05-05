@@ -54,6 +54,12 @@ class TweetViewSet(viewsets.ViewSet):
         call_command('startsearch')
         return Response({search.test(): stream.test()})
 
+    # GET analyser/tweets/sum
+    @action(detail=False, methods=['get'], name="Xin test ")
+    def sum(self, request):
+        res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
+        return Response({'a':res.json()})
+
     
 # class UserViewSet(viewsets.ViewSet):
 
