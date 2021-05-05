@@ -17,8 +17,8 @@ class Command(BaseCommand):
             print("Error during authentication")
 
         # connect local CouchDB dataset
-        server = "http://admin:Aa123456789@localhost:5984"
-        couch.base_url = server
+        # server = "http://admin:Aa123456789@localhost:5984"
+        # couch.base_url = server
 
         # Loop to save the tweets that meet the requirements in CouchDB
 
