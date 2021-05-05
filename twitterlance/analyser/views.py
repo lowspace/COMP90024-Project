@@ -15,7 +15,7 @@ class TweetViewSet(viewsets.ViewSet):
     # GET analyser/tweets?options 
     # Add include_docs=true
     def list(self, request):
-        url = f'twitter/_all_docs'
+        url = f'tweetdb/_all_docs'
         if len(request.query_params) > 0: 
             url += f'?{request.query_params.urlencode()}'
         res = couch.get(url)
@@ -23,15 +23,18 @@ class TweetViewSet(viewsets.ViewSet):
 
     # GET analyser/tweets/:id
     def retrieve(self, request, pk=None):
-        res = couch.get(f'twitter/{pk}')
+        res = couch.get(f'tweetdb/{pk}')
         return Response(couch.get('twitter',pk).json())
 
-    # GET analyser/tweets/:count
-    @action(detail=False, methods=['get'], name="Get the total numbers of tweets")
-    def get_total_number_of_tweets(self, request):
-        res = couch.get(f'twitter/_all_docs')
-        rows = res.json()['total_rows']
-        return Response({"total_rows": rows})
+    # GET analyser/tweets/stats
+    @action(detail=False, methods=['get'], name="Get the stats of tweets")
+    def stats(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            res = couch.get(f'tweetdb/_partition/{city}')
+            count[city] = res.json()["doc_count"]
+        count["total_tweets"] = sum(count.values())
+        return Response({"tweet_stats": count})
 
     # GET analyser/tweets/box_tweets?lat_min=-9.1457534&lat_max=-0.4000327&lon_min=134.505904&lon_max=141.0549412
     @action(detail=False, methods=['get'], name="Get Tweets within box")
@@ -59,19 +62,20 @@ class TweetViewSet(viewsets.ViewSet):
     def sum(self, request):
         res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
         return Response({'a':res.json()})
-
     
 # class UserViewSet(viewsets.ViewSet):
 
-    # GET analyser/users:count
-#     @action(detail=False, methods=['get'], name="Get the total numbers of users")
-#     def get_total_number_of_users(self, request):
-#         res = self.couch.get(f'userdb/_all_docs')
-#         rows = res.json()['total_rows']
-# <<<<<<< HEAD
-#         return Response({"total_rows": rows})
-# =======
-#         return Response({"rows": rows})
+    # GET analyser/users/stats
+    @action(detail=False, methods=['get'], name="Get the stats of users")
+    def stats(self, request):
+        count = {}
+        for city in ["mel", "syd", "cbr", "adl"]:
+            res = couch.get(f'userdb/_design/wei/_view/{city}')
+            # count[city] = res.json()
+            count[city] = res.json()["total_rows"]
+        count["total_users"] = sum(count.values())
+        count['info'] = couch.get(f'userdb/_design/wei').json()
+        return Response({"user_stats": count})
 #
 # class ManagerViewSet(viewsets.ViewSet):
 #     # POST analyser/couchdb
