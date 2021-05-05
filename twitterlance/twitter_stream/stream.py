@@ -180,9 +180,9 @@ class MyStreamListener(tweepy.StreamListener):
         if status_code == 429:
             time.sleep(15 * 60 + 1)
         if status_code == 420:
-            time.sleep(10)
+            time.sleep(60)
         else:
-            time.sleep(10)
+            time.sleep(60)
         return True
 
 
