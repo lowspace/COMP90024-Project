@@ -179,3 +179,9 @@ div {
   border-radius: 10px;
   overflow-y: auto;
 }
+.statistic-right .hide {
+  height: 0 !important;
+}
+.statistic-right .show {
+  height: 100% !important;
+}
