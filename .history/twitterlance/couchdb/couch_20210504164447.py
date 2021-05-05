@@ -3,7 +3,6 @@ from django.conf import settings
 
 # Module with functions serve a Singleton
 base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}:5984'
-base_url = f'http://user:pass@h34.87.251.230:5984:5984'
 
 # Generate a new uuid for CouchDB document
 def new_id():
