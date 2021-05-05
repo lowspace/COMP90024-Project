@@ -7,8 +7,8 @@ import config
 # import couchdb.couch as couch
 import couch
 import time
-# import twitter_search.search_user as search_user
-import search_user
+import twitter_search.search_user as search_user
+# import search_user
 
 global total_num_retrieve_tweets
 
