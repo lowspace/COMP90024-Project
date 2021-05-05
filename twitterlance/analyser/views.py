@@ -2,11 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
+import time
 from django.core.management import call_command
+# from django.http import
 import couchdb.couch as couch
 # import twitter_search.search_tweet as search
 import twitter_stream.stream as stream
 import json
+from django.shortcuts import HttpResponse
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
@@ -48,28 +51,16 @@ class TweetViewSet(viewsets.ViewSet):
         query = f'lat_min:[{lat_min} TO 0] AND lat_max:[-90 TO {lat_max}] AND lon_min:[{lon_min} TO 180] AND lon_max:[0 TO {lon_max}]'
         res = couch.get(f'twitter/_design/geo/_search/box?q={query}')
         return Response({'total_rows': int(res.json()['total_rows'])})
-        
-    @action(detail=False, methods=['get'], name="test python import")
-    def test(self, request):
-        call_command('startsearch')
-        return Response({search.test(): stream.test()})
 
-    
-# class UserViewSet(viewsets.ViewSet):
 
-    # GET analyser/users:count
-#     @action(detail=False, methods=['get'], name="Get the total numbers of users")
-#     def get_total_number_of_users(self, request):
-#         res = self.couch.get(f'userdb/_all_docs')
-#         rows = res.json()['total_rows']
-# <<<<<<< HEAD
-#         return Response({"total_rows": rows})
-# =======
-#         return Response({"rows": rows})
-#
-# class ManagerViewSet(viewsets.ViewSet):
-#     # POST analyser/couchdb
-#     @action(detail=False, methods=['post'], name="Initialisation")
-#     def couchdb(self, request):
-#         call_command('initcouchdb')
-# >>>>>>> 3753208f46022203ee2f511948de7ccebedff376
+    # GET analyser/tweets/demo
+    @action(detail=False, methods=['get'], name="demo")
+    def demo(self, request):
+        var = {'twitter':6666,'user':606,'sport':99}
+        return HttpResponse(json.dumps(var))
+
+    @action(detail=False, methods=['get'], name="demo time")
+    def demotime(self, request):
+        time1 = time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())
+        print(time1)
+        return HttpResponse(json.dumps(time1))
