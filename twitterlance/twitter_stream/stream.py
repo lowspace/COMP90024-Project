@@ -43,6 +43,18 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
+# connect CouchDB dataset
+server = "http://admin:Aa123456789@localhost:5984"
+couch.base_url = server
+
+# get the userlist
+users = []
+response = couch.get(path = 'userdb/_all_docs', body='') # get users list of dict
+json_data = response.json()['rows'] # load response as json
+for i in json_data:  # get the user list
+    users.append(i['id'])
+
+
 def area_match(longitude, latitude, area):
     # if the point is in a polygon returns True
     within = False
@@ -69,31 +81,14 @@ def new_user(tweetJson, area):
     user = {}
     user["_id"] = tweetJson["user"]["id_str"]
     user["city"] = area
-    # get the userlist
-    users = []
-    response = couch.get(path = 'userdb/_all_docs', body='') # get users list of dict
-    json_data = response.json()['rows'] # load response as json
-    for i in json_data: # get the user list
-        users.append(i['id'])
     if user["_id"] in users:
         print('not a new user')
         return False # return ???
     else:
         print("got new user in", area)
+        users.append(user["_id"])
         couch.save('userdb', user)
         return True
-
-    # # issue get userlist from couchdb consume lot of overhead
-    # # maybe not to check user from list and directly add single tweet
-
-    # try:
-    #     couch.save('userdb', user)
-    #     print('got a new user in',area)
-    #     return True
-    # except:
-    #     print('not a new user')
-    #     return False
-
 
 
 def new_tweet(tweetJson, area):
@@ -198,10 +193,6 @@ if __name__ == '__main__':
         print("Authentication OK")
     except:
         print("Error during authentication")
-
-    # Create CouchDB dataset
-    server = "http://admin:Aa123456789@localhost:5984"
-    couch.base_url = server
 
     # Loop to save the tweets that meet the requirements in CouchDB
     while True:
