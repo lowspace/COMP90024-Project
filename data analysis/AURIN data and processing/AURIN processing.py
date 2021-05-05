@@ -71,8 +71,11 @@ for city in cities:
         
 cities_profile  
 
-with open('citiesProfile.json', 'w') as f:
-    for value in cities_profile.items():
-        print(json.dumps(value, sort_keys=True)) 
-        f.write(json.dumps(value, sort_keys=True, indent=0))
-        f.write('\n')
+#with open('citiesProfile.json', 'w') as f:
+#    for value in cities_profile.items():
+#        print(json.dumps(value, sort_keys=True)) 
+#        f.write(json.dumps(value, sort_keys=True, indent=0))
+#        f.write('\n')
+
+with open('cities profile.json', 'w') as json_file:
+  json.dump(cities_profile, json_file)
