@@ -64,6 +64,18 @@ class TweetViewSet(viewsets.ViewSet):
         res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
         return Response({'a':res.json()})
     
+    # GET sport related tweets
+    @action(detail=False, methods=['get'], name="sport tweets total")
+    def sports(self, request):
+        res = couch.get('twitters/_design/filter/_view/new-view')
+        return Response(res.json())
+   
+    # GET a month of tweets
+    @action(detail=False, methods=['get'], name="month tweets total")
+    def month(self, request):
+        res = couch.get('twitters/_design/time/_view/timefilt')
+        return Response(res.json())
+    
 class UserViewSet(viewsets.ViewSet):
 
     # GET analyser/tweets?options 
