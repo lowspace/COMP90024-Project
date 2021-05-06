@@ -187,6 +187,7 @@ class UserViewSet(viewsets.ViewSet):
             count[city] = res.json()["total_rows"]
         count["total_users"] = sum(count.values())
         count['info'] = couch.get(f'userdb/_design/wei').json()
+        count['test'] = Response({"asf": 123}).data
         return Response({"user_stats": count})
 #
 # class ManagerViewSet(viewsets.ViewSet):

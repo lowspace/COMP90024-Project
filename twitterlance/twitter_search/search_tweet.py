@@ -2,13 +2,13 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-# import twitter_search.config as config
-import config
-# import couchdb.couch as couch
-import couch
+import twitter_search.config as config
+# import config
+import couchdb.couch as couch
+# import couch
 import time
-# import twitter_search.search_user as search_user
-import search_user
+import twitter_search.search_user as search_user
+# import search_user
 
 global total_num_retrieve_tweets
 
@@ -166,10 +166,6 @@ if __name__ == '__main__':
         query = dict(selector = {"city": city}, fields = ["_id", "city"], limit = 10)
         response = couch.post(path = 'userdb/_find', body = query) # get users list of dict
         json_data = response.json()['docs'] # load response as json
-        print(json_data)
-
-
-        dalksfja;sd
         for i in json_data: # get the user list
             users.append(i['_id'])
         t1 = time.time()
