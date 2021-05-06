@@ -137,7 +137,7 @@ class SportViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'], name="try")
     def try1(self, request):
-        res = couch.get(f'tweetdb/_partition/Melbourne/_design/sports/_view/total')
+        res = couch.get(f'tiny_tweets/_partition/Melbourne/_design/try/_view/new-view')
         res = res.json()
         return Response(res)
 
@@ -158,4 +158,4 @@ sports =  {'_id': '_design/sports',
  'language': 'javascript',
  'options': {'partitioned': True}}
 
-couch.put('tweetdb/_design/sports', body=sports)
+couch.put('small_twitters/_design/sports', body=sports)
