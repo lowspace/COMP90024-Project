@@ -7,6 +7,7 @@ import couchdb.couch as couch
 # import twitter_search.search_tweet as search
 import twitter_stream.stream as stream
 import json
+from collections import Counter
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
@@ -67,7 +68,7 @@ class TweetViewSet(viewsets.ViewSet):
     # GET sport related tweets
     @action(detail=False, methods=['get'], name="sport tweets total")
     def sports(self, request):
-        res = couch.get('twitters/_design/filter/_view/new-view')
+        res = couch.get('tweetdb/_partition/Melbourne/_design/filter/_view/new-view')
         return Response(res.json())
    
     # GET a month of tweets
@@ -99,6 +100,45 @@ class UserViewSet(viewsets.ViewSet):
         count['info'] = couch.get(f'userdb/_design/wei').json()
         count['test'] = Response({"asf": 123}).data
         return Response({"user_stats": count})
+
+class SportViewSet(viewsets.ViewSet):
+
+
+    # GET analyser/sports/static_stats
+    @action(detail=False, methods=['get'], name="Get the static_stats of sports")
+    def static_stats(self, request):
+        sports = ['wrestling', 'weights', 'skiing', 'water polo', 'volleyball', 
+            'tennis', 'team handball', 'table tennis', 'swimming', 'surfing', 'sprinting', 
+            'skating', 'soccer', 'skateboarding', 'shooting', 'rugby', 'rowing', 'rodeo', 
+            'racquetball', 'squash', 'pole vault', 'running', 'martial arts', 'jumps', 'lacrosse', 
+            'ice hockey', 'jump', 'gymnastics', 'golf', 'football', 'fishing', 'field hockey', 'fencing', 
+            'equestrian', 'diving', 'running', 'cycling', 'curling', 'cheerleading', 'canoe', 'kayak', 'bull', 
+            'bareback', 'bronc riding', 'boxing', 'bowling', 'bobsledding', 'luge', 'billiards', 'basketball', 
+            'baseball', 'softball', 'badminton', 'racing', 'archery']
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            val = Counter() 
+            for sport in sports: # get the count of each sport in every city
+                res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{sport}')
+                try:
+                    val[sport] = res.json()['rows'][0]["value"]
+                except:
+                    val[sport] = 0
+            count[city] = val
+        total = Counter() # all sports
+        for k in count.keys():
+            total += count[k]
+        count['total'] = total
+        return Response(count)
+
+    @action(detail=False, methods=['get'], name="try")
+    def try1(self, request):
+        res = couch.get(f'tweetdb/_partition/Melbourne/_design/sports/_view/golf')
+        res = res.json()['rows'][0]["value"]
+        return Response(res)
+
+
+
 #
 # class ManagerViewSet(viewsets.ViewSet):
 #     # POST analyser/couchdb
