@@ -1,6 +1,7 @@
 # This python script looks for isolated couchdb instances on the current docker host and add them to the couchdb cluster.
 # Run recluster on each couchdb nodes, and then run reshard on all couchdb nodes
 
+from typing import AsyncIterable
 import requests, time, docker, configparser, os
 
 help = 'Initialise the databses required by this app'
@@ -17,65 +18,44 @@ COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
 REPEAT = int(config.get('CouchDB', 'repeat'))
 
+def is_connected(node):
+    res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/{node}')
+    print(res.text)
+    if res.json().get('error') is None:
+        return True
+    else: 
+        return False
+
 def reconsolidate_cluster():
     # Get all nodes
-    local_nodes = []
+    avail_nodes = []
     client = docker.from_env()
-    networks = client.networks.list(greedy=True)
-    for network in networks: 
-        if network.name == 'twitterlance_default':
-            for container in network.attrs['Containers'].values():
-                if 'twitterlance_couchdb' == container['Name'].split('.')[0]:
-                    node = 'couchdb@' + container['Name']
-                    local_nodes.append(node)
+    services = client.services.list()
+    for service in services:
+        for task in service.tasks():
+            if 'couchdb' in service.name:
+                avail_nodes.append(f'couchdb@{service.name}.{task["Slot"]}.{task["ID"]}')
 
-    print(f'CouchDB node on this host: {local_nodes}')
-    assert len(local_nodes) == 1, f'The host should have and only have 1 CouchDB node' 
+    print(f'CouchDB nodes available: {avail_nodes}')
+    
+    for node in avail_nodes:
+        for i in range(1, REPEAT):
+            print(f'Adding {node}')
+            res = requests.post(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_cluster_setup',json={"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "user", "password":"pass", "node_count":len(avail_nodes)})
+            if res.json().get('reason') is not None and res.json().get('reason') != 'Cluster is already enabled':
+                print(res.text) 
+                return res.json()
+            res = requests.put(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/_local/_nodes/{node}', json={})
+            print(res.text)
+            time.sleep(0.5)
 
-    local_node = local_nodes[0]
-    
-    new_connection = None
-    count = 0
-    while True:
-        url = f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/_local/_nodes/{local_node}'
-        res = requests.put(url, json={})
-        if res.json().get('error') == 'conflict':
-            print(f'{local_node} already in cluster')
-        else: 
-            new_connection = local_node
-            print(f'{local_node} {res.text}')
-        time.sleep(0.5)
-        if count > REPEAT and res.json().get('error') is not None:
-            break
-        count += 1
-    
-    
-    if new_connection is not None:
-        print('Waiting for the new nodes to connect...')
-        time.sleep(5)
-        while True:  
-            res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/{new_connection}')
-            if res.json().get('error') is None or res.json().get('error') != 'nodedown':
-                break
-            else: 
-                print(f'{node} is not connected.')
-                time.sleep(5)
-    
-    # Remove disconnected
+        
+    # Remove disconnected nodes
     res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_membership')
     cluster_nodes = res.json().get('cluster_nodes') + res.json().get('all_nodes') 
     for node in cluster_nodes: 
-        res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/{node}')
-        if res.json().get('error') == 'nodedown':
+        if node not in avail_nodes:
             print(f'Removing {node} due to disconnection.')
-            while True:
-                res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_active_tasks')
-                print(f'Checking active tasks: {res.text}')
-                if len(res.json()) == 0 or res.json is None: 
-                    break
-                else: 
-                    print(f'Waiting for tasks to complete: {res.json()}')
-                    time.sleep(5)
             res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_node/_local/_nodes/{node}')
             if res.json().get('_rev') is not None: 
                 rev = res.json().get('_rev')
@@ -85,6 +65,14 @@ def reconsolidate_cluster():
     res = requests.get(f'http://{COUCHDB_USERNAME}:{COUCHDB_PASSWORD}@{COUCHDB_ENDPOINT}/_membership')
     cluster_nodes = res.json().get('cluster_nodes')
     print(f'Current nodes: {cluster_nodes}')
+
+    print('Sync Shards...')
+    res = requests.get('http://user:pass@127.0.0.1:5984/_all_dbs')
+    for db in res.json(): 
+        res = requests.post(f'http://user:pass@127.0.0.1:5984/{db}/_sync_shards')
+        print(res.text)
+
+    return len(cluster_nodes) == len(avail_nodes)
 
 if __name__ == '__main__':
   reconsolidate_cluster()

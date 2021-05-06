@@ -58,16 +58,20 @@
           </div>
           <div class="col-md-12 column">
             <div class = options>
-              <a class = "col-md-2" href="#barchart" id="user">Population&nbsp;&nbsp;</a>
-              <a class = "col-md-2" href="#barchart" id="tweets">Education level&nbsp;&nbsp;</a>
-              <a class = "col-md-2" href="sport.html" id="sporttype">Sport Type&nbsp;&nbsp;</a>
-              <a class = "col-md-2" href="#barchart" id="deathrate">Deathrate&nbsp;&nbsp;</a>
+              <a class = "col-md-2" href="#barchart" id="scenario1">scenario1</a>
+              <a class = "col-md-2" href="#barchart" id="scenario2">scenario2</a>
+              <a class = "col-md-2" href="#barchart" id="scenario3">scenario3</a>
+              <a class = "col-md-2" href="sport.html" id="sporttype">Sport Type</a>
             </div>
           </div>
           <div class="statistic-detail" >
             <div class="charts">
-              <canvas class= "chart"></canvas>
-              <canvas class= "chart"></canvas>
+              <canvas id="Statisticchart1"></canvas>
+              <canvas id="Statisticchart2"></canvas>
+              <canvas id="Statisticchart3"></canvas>
+              <canvas id="Statisticchart4"></canvas>
+              <canvas id="Statisticchart5"></canvas>
+              <canvas id="Statisticchart6"></canvas>
             </div>
           </div>
         </div>
@@ -77,205 +81,267 @@
 
   <script>
     window.onload = function () {
-
-      var frontjson = {"twitter":6000,"user":600}
-      var tuser = document.getElementById('total_user')
-      var ttweet = document.getElementById('total_tweet')
-      var tsport = document.getElementById('sportcount')
-      var xhr = new XMLHttpRequest();
-      // 初始化 true表示异步 false为同步
-      xhr.open('GET', 'http://localhost:8000/font-end', true);
-      // 发送
-      xhr.send();
-      // 事件绑定
-      xhr.onreadystatechange = function (){
-        if (xhr.readyState === 4){
-          if(xhr.status >= 200 && xhr.status < 300){
-            //  处理结果 行 头空行 体
-            console.log(xhr.status);
-            console.log(xhr.statusText);
-            console.log(xhr.getAllResponseHeaders());
-            console.log(xhr.response);
-            // 将获取的jsonstr转化为json
-            ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
-            tuser.innerHTML = eval("("+xhr.response+")")["user"];
-            tsport.innerHTML = JSON.parse(xhr.response)["sport"];
+      const tuser = document.getElementById('total_user')
+      const ttweet = document.getElementById('total_tweet')
+      const tsport = document.getElementById('sportcount')
+      // ajax request function
+      function ajax(url, method, success, error) {
+        var request = new XMLHttpRequest();
+        // for (var key in header) {
+        //   request.setRequestHeader(key, header[key]);
+        // }
+        request.open(method, url, true);
+        request.send();
+        request.onreadystatechange = function () {
+          if (request.readyState === 4) {
+            if (request.status  >= 200 && request.status < 300) {
+              success(request.response)
+            } else {
+              error();
+            }
           }
         }
-      };
+      }
 
+      function showtotal(response){
+        ttweet.innerHTML = $.parseJSON(response)["twitter"];
+        tuser.innerHTML = eval("("+response+")")["user"];
+        tsport.innerHTML = JSON.parse(response)["sport"];
+      }
+
+      function error(){
+        console.log('error')
+      }
+
+      {#ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)#}
+
+
+      // var xhr1 = new XMLHttpRequest();
+      // xhr1.open('GET', 'http://localhost:8000/analyser/tweets/demotime/', true);
+      // xhr1.send();
+      // // xhr1.setRequestHeader()
+      // xhr1.onreadystatechange = function (){
+      //   if (xhr1.readyState === 4){
+      //     if(xhr1.status >= 200 && xhr1.status < 300){
+      //       //  处理结果 行 头空行 体
+      //       // console.log(xhr.status);
+      //       // console.log(xhr.statusText);
+      //       console.log(xhr.getAllResponseHeaders());
+      //       console.log(xhr1.response);
+      //     }
+      //   }
+      // };
+
+      // var xhr = new XMLHttpRequest();
+      // // 初始化 true表示异步 false为同步
+      // xhr.open('GET', 'http://localhost:8000/analyser/tweets/demo/', true);
+      // // 发送
+      // xhr.send();
+      // // 事件绑定
+      // xhr.onreadystatechange = function (){
+      //   if (xhr.readyState === 4){
+      //     if(xhr.status >= 200 && xhr.status < 300){
+      //       //  处理结果 行 头空行 体
+      //       // console.log(xhr.status);
+      //       // console.log(xhr.statusText);
+      //       // console.log(xhr.getAllResponseHeaders());
+      //       // console.log(xhr.response);
+      //       // 将获取的jsonstr转化为json
+      //       // ttweet.innerHTML = xhr.response["twitter"];
+      //       ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
+      //       tuser.innerHTML = eval("("+xhr.response+")")["user"];
+      //       tsport.innerHTML = JSON.parse(xhr.response)["sport"];
+      //     }
+      //   }
+      // };
+      let canvas = document.getElementsByTagName('canvas')
+      let canvas1 = canvas[0];
+      let canvas2 = canvas[1];
+      let canvas3 = canvas[2];
+      let canvas4 = canvas[3];
+      let canvas5 = canvas[4];
+      let canvas6 = canvas[5];
+
+    //
+    //scenario1
+    //
+      document.getElementById('scenario1').addEventListener('click', function() {
+        // canvas.className = 'hide';
+        canvas1.className = 'show';
+        canvas2.className = 'show';
+        canvas3.className = 'hide';
+        canvas4.className = 'hide';
+        canvas5.className = 'hide';
+        canvas6.className = 'hide';
+        let piechartdata1 = [12,19,2,3];
+        let piecharttitle1 = 'scenario1';
+        let barchartdata1 = [10,40,40,10];
+        let barcharttitle1 = 'scenario1';
+        let Users1 = {
+          datasets:[{
+            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+            data: piechartdata1,
+          }],
+          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+        };
+        let optionsEC1 = {
+          title:{display: true, text:piecharttitle1, fontSize:'24', fontFamily:'sans-serif'},
+          legend:{display:true, position:'bottom', align:'center'}
+        };
+
+        var Pie1 = canvas1.getContext('2d');
+        var Piechart1 = new Chart(Pie1, {type:'pie', data: Users1, options: optionsEC1});
+
+        //barchart
+        let UsersBar1={
+          datasets: [{
+            data: barchartdata1,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
+        }
+        let optionBar1={
+          title: {display: true,text: barcharttitle1,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+
+        var Bar1 = canvas2.getContext('2d');
+        const Barchart1 = new Chart(Bar1, {type:'bar', data: UsersBar1, options: optionBar1});
+      })
+
+      //
+      //scenario2
+      //
+      document.getElementById('scenario2').addEventListener('click', function() {
+        canvas1.className = 'hide';
+        canvas2.className = 'hide';
+        canvas3.className = 'show';
+        canvas4.className = 'show';
+        canvas5.className = 'hide';
+        canvas6.className = 'hide';
+        let barchartdata2 = [1,4,4,1];
+        let piechartdata2 = [3,5,2,3];
+        let piecharttitle2 = 'Popolation across four cities';
+        let barcharttitle2 = 'Sport relate tweets over all tweets';
+
+        let Users2 = {
+          datasets:[{
+            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+            data: barchartdata2,
+          }],
+          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+        };
+        let optionsEC2 = {
+          title:{display: true, text:piecharttitle2, fontSize:'24', fontFamily:'sans-serif'},
+          legend:{display:true, position:'bottom', align:'center'}
+        };
+
+        var Pie2 = canvas3.getContext('2d');
+        const Piechart = new Chart(Pie2, {type:'pie', data: Users2, options: optionsEC2});
+
+        //barchart
+        let UsersBar2={
+          datasets: [{
+            data: piechartdata2,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
+        }
+
+        let optionBar2={
+          title: {display: true,text: barcharttitle2,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        var Bar2 = canvas4.getContext('2d');
+        const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
+      })
+
+
+      //
+      //scenario3
+      //
+      document.getElementById('scenario3').addEventListener('click', function() {
+        canvas1.className = 'hide';
+        canvas2.className = 'hide';
+        canvas3.className = 'hide';
+        canvas4.className = 'hide';
+        canvas5.className = 'show';
+        canvas6.className = 'show';
+
+        let barchartdata3 = [1,1,1,1];
+        let piechartdata3 = [1,2,3,4];
+        let piecharttitle3 = 'scenario3'
+        let barcharttitle3 = 'scenario3'
+
+        let Users3 = {
+          datasets:[{
+            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+            data: barchartdata3,
+          }],
+          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+        };
+        let optionsEC3 = {
+          title:{display: true, text:piecharttitle3, fontSize:'24', fontFamily:'sans-serif'},
+          legend:{display:true, position:'bottom', align:'center'}
+        };
+
+        var Pie3 = canvas5.getContext('2d');
+        const Piechart3 = new Chart(Pie3, {type:'pie', data: Users3, options: optionsEC3});
+
+        //barchart
+        let UsersBar3={
+          datasets: [{
+            data: piechartdata3,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
+        }
+
+        let optionBar3={
+          title: {display: true,text: barcharttitle3,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+
+        var Bar3 = canvas6.getContext('2d');
+        const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
+      })
     }
-  </script>
-
-  <script>
-    var Users = {
-      datasets:[{
-        backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
-        data: [10,40,40,10],
-      }],
-      labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
-    };
-    var optionsEC = {
-      title:{display: true, text:'Popolation level across all cities', fontSize:'24', fontFamily:'sans-serif'},
-      legend:{display:true, position:'bottom', align:'center'}
-    };
-    var canvas = document.getElementsByTagName('canvas')[0];
-    var Pie = canvas.getContext('2d');
-    PieChart = new Chart(Pie, {type:'pie', data: Users, options: optionsEC});
-
-    var UsersBar={
-      datasets: [{
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
-      }],
-      labels: ["Melbourne", "Sydney", "Canberry", "Adelede", "Purple", "Orange"]
-    }
-    var optionBar={
-      title: {
-        display: true,
-        text: 'Populations against sport for Cities in Victoria',
-        fontColor: '#cccccc',
-        fontSize: 30,
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero:true
-          }}] }
-    }
-    var canvas1 = document.getElementsByTagName('canvas')[1];
-    var Bar = canvas1.getContext('2d');
-    BarChart = new Chart(Bar, {type:'bar', data: UsersBar, options: optionBar});
-
-    document.getElementById('user').addEventListener('click', function() {
-      var Users = {
-        datasets:[{
-          backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
-          data: [30,20,40,10],
-        }]
-        ,
-        labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
-      };
-      var optionsEC = {
-        title:{display: true, text:'Users mentioned sport per city', fontSize:'24', fontFamily:'sans-serif'},
-        legend:{display:true, position:'bottom', align:'center'}
-      };
-      var canvas = document.getElementsByTagName('canvas')[0];
-      var Pie = canvas.getContext('2d');
-      PieChart = new Chart(Pie, {type:'pie', data: Users, options: optionsEC});
-      var UsersBar={
-        datasets: [{
-          data: [12, 40, 3, 5, 9, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-        }],
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]
-      }
-      var optionBar={
-        title: {
-          display: true,
-          text: 'Populations against sport for Cities in Victoria',
-          fontColor: '#cccccc',
-          fontSize: 30,
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero:true
-            }}] }
-      }
-      var canvas1 = document.getElementsByTagName('canvas')[1];
-      var Bar = canvas1.getContext('2d');
-      BarChart = new Chart(Bar, {type:'bar', data: UsersBar, options: optionBar});
-    });
-    document.getElementById('tweets').addEventListener('click', function() {
-      var Users = {
-        datasets:[{
-          backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
-          data: [10,40,40,10],
-        }]
-        ,
-        labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
-      };
-      var optionsEC = {
-        title:{display: true, text:'Users mentioned sport per city', fontSize:'24', fontFamily:'sans-serif'},
-        legend:{display:true, position:'bottom', align:'center'}
-      };
-      var canvas = document.getElementsByTagName('canvas')[0];
-      var Pie = canvas.getContext('2d');
-      PieChart = new Chart(Pie, {type:'pie', data: Users, options: optionsEC});
-      var UsersBar={
-        datasets: [{
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-        }],
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]
-      }
-      var optionBar={
-        title: {
-          display: true,
-          text: 'Populations against sport for Cities in Victoria',
-          fontColor: '#cccccc',
-          fontSize: 30,
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero:true
-            }}] }
-      }
-      var canvas1 = document.getElementsByTagName('canvas')[1];
-      var Bar = canvas1.getContext('2d');
-      BarChart = new Chart(Bar, {type:'bar', data: UsersBar, options: optionBar});
-
-    });
   </script>
 </body>
 </html>

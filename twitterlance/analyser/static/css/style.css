@@ -118,7 +118,7 @@ div {
   text-align: left;
 }
 .map-right {
-  overflow-y: auto;
+  overflow: hidden;
   height: 100%;
   background-color: #ffffff;
   border-radius: 10px;
@@ -178,4 +178,10 @@ div {
   background-color: #ffffff;
   border-radius: 10px;
   overflow-y: auto;
+}
+.statistic-right .hide {
+  height: 0 !important;
+}
+.statistic-right .show {
+  height: 100% !important;
 }
