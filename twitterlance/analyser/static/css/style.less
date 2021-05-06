@@ -131,7 +131,7 @@ html,body,div{
 
 
 .map-right{
-  overflow-y: auto;
+  overflow: hidden;
   height: 100%;
   background-color: #ffffff;
   border-radius: 10px;
@@ -195,6 +195,12 @@ html,body,div{
     background-color:#ffffff;
     border-radius:10px;
     overflow-y: auto
+  }
+  .hide{
+    height: 0 !important;
+  }
+  .show{
+    height: 100% !important;
   }
 }
 
