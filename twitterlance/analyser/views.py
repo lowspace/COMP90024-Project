@@ -28,7 +28,7 @@ class TweetViewSet(viewsets.ViewSet):
     # GET analyser/tweets/:id
     def retrieve(self, request, pk=None):
         res = couch.get(f'tweetdb/{pk}')
-        return Response(couch.get('twitter',pk).json())
+        return Response(couch.get('twitter', pk).json())
 
     # GET analyser/tweets/stats
     @action(detail=False, methods=['get'], name="Get the stats of tweets")
@@ -38,8 +38,7 @@ class TweetViewSet(viewsets.ViewSet):
             res = couch.get(f'tweetdb/_partition/{city}')
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
-        # count["res"] = Response({"tweet_stats": 12312})
-        return Response({"tweet_stats": count})
+        return HttpResponse(json.dumps({"tweet_stats": count}))
 
     # GET analyser/tweets/box_tweets?lat_min=-9.1457534&lat_max=-0.4000327&lon_min=134.505904&lon_max=141.0549412
     @action(detail=False, methods=['get'], name="Get Tweets within box")
@@ -140,6 +139,7 @@ class SportViewSet(viewsets.ViewSet):
         count['total'] = total
         return Response(count)
 
+# analyser/sports/try1
     @action(detail=False, methods=['get'], name="try")
     def try1(self, request):
         res = couch.get(f'tweetdb/_partition/Melbourne/_design/sports/_view/golf')
@@ -156,7 +156,7 @@ class AurinViewSet(viewsets.ViewSet):
 
     # Get /analyser/aurin/aurin/
     @action(detail=False, methods=['get'], name="Get aurin")
-    def aurin(self,request):
+    def aurin(self, request):
         #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
         res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
         return Response(res.json())

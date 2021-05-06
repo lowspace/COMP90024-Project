@@ -7,7 +7,7 @@
           Yuqi Zhang
           Xin Li
           Zihao Hu -->
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>COMP90024 Project Home</title>
   <!--import bootstrap and jquery -->
   <link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
@@ -104,16 +104,31 @@
       }
 
       function showtotal(response){
-        ttweet.innerHTML = $.parseJSON(response)["twitter"];
+        // ttweet.innerHTML = $.parseJSON(response)["twitter"];
         tuser.innerHTML = eval("("+response+")")["user"];
         tsport.innerHTML = JSON.parse(response)["sport"];
       }
+      // tweets in four city
+      let tifc;
+      //total number of tweets
+      let tnt;
 
       function error(){
         console.log('error')
       }
+      
+      function showget(response){
+        response = JSON.parse(response)["tweet_stats"];
+        tifc = [response["Melbourne"],
+              response["Sydney"],
+              response["Canberra"],
+              response["Adelaide"]];
+        tnt = response["total_tweets"];
+        ttweet.innerHTML = tnt;
+      }
+      ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error);
+      ajax('http://localhost:8000/analyser/tweets/stats/','GET', showget, error);
 
-      {#ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)#}
 
 
       // var xhr1 = new XMLHttpRequest();
@@ -173,10 +188,10 @@
         canvas4.className = 'hide';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
-        let piechartdata1 = [12,19,2,3];
-        let piecharttitle1 = 'scenario1';
-        let barchartdata1 = [10,40,40,10];
-        let barcharttitle1 = 'scenario1';
+        let piechartdata1 = tifc;
+        let piecharttitle1 = 'Total tweets across four City';
+        let barchartdata1 = tifc;
+        let barcharttitle1 = 'Total tweets across four City';
         let Users1 = {
           datasets:[{
             backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
