@@ -7,6 +7,7 @@ import couchdb.couch as couch
 # import twitter_search.search_tweet as search
 import twitter_stream.stream as stream
 import json
+import requests
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
@@ -35,6 +36,8 @@ class TweetViewSet(viewsets.ViewSet):
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
         # count["res"] = Response({"tweet_stats": 12312})
+
+
         return Response({"tweet_stats": count})
 
     # GET analyser/tweets/box_tweets?lat_min=-9.1457534&lat_max=-0.4000327&lon_min=134.505904&lon_max=141.0549412
@@ -75,7 +78,94 @@ class TweetViewSet(viewsets.ViewSet):
     def month(self, request):
         res = couch.get('twitters/_design/time/_view/timefilt')
         return Response(res.json())
+
+
+
+class AurinViewSet(viewsets.ViewSet):
+    def list(self, request):
+        url = f'aurin/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+
+    # Get /analyser/aurin/aurin/
+    @action(detail=False, methods=['get'], name="Get aurin")
+    def aurin(self,request):
+        #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
+        res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
+        return Response(res.json())
+
     
+    
+
+    
+class SportsTweets20ViewSet(viewsets.ViewSet):
+ 
+    # Add include_docs=true
+    def list(self, request):
+        url = f'tiny_tweets/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+    
+    # GET /analyser/sportstweets/sport_tweets2019/
+    @action(detail=False, methods=['get'], name="Get sport tweets in cities2019")
+    def sport_tweets2019(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            res = couch.get(f'tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2019_total')
+            #res = requests.get(f"http://34.87.251.230:5984/tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2019_total")
+            value = res.json()["rows"]
+            if value:
+                count[city] = res.json()["rows"][0]["value"]
+            else:
+                count[city]=0
+        count["total_sports_tweets_2019"] = sum(count.values())
+        count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
+        return Response({"sports_Tweets_2019": count})
+        
+
+    # GET /analyser/sportstweets/sport_tweets2020/
+    @action(detail=False, methods=['get'], name="Get sport tweets in cities2020")
+    def sport_tweets2020(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            res = couch.get(f'tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2020_total')
+            #res = requests.get(f"http://34.87.251.230:5984/tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2020_total")
+            value = res.json()["rows"]
+            if value:
+                count[city] = res.json()["rows"][0]["value"]
+            else:
+                count[city]=0
+        count["total_sports_tweets_2020"] = sum(count.values())
+        count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
+        return Response({"sports_Tweets_2020": count})
+        
+
+    # GET /analyser/sportstweets/sport_tweets2021/
+    @action(detail=False, methods=['get'], name="Get sport tweets in cities2021")
+    def sport_tweets2021(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            res = couch.get(f'tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2021_total')
+            #res = requests.get(f"http://34.87.251.230:5984/tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2021_total")
+            value = res.json()["rows"]
+            if value:
+                count[city] = res.json()["rows"][0]["value"]
+            else:
+                count[city]=0
+        count["total_sports_tweets_2021"] = sum(count.values())
+        count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
+        return Response({"sports_Tweets_2021": count})
+
+    
+
+
+
+
+
 class UserViewSet(viewsets.ViewSet):
 
     # GET analyser/tweets?options 
