@@ -103,7 +103,6 @@ class UserViewSet(viewsets.ViewSet):
 
 class SportViewSet(viewsets.ViewSet):
 
-
     # GET analyser/sports/static_stats
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
     def static_stats(self, request):
