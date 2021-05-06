@@ -136,6 +136,21 @@ class SportViewSet(viewsets.ViewSet):
         res = res.json()['rows'][0]["value"]
         return Response(res)
 
+class AurinViewSet(viewsets.ViewSet):
+    def list(self, request):
+        url = f'aurin/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+
+    # Get /analyser/aurin/aurin/
+    @action(detail=False, methods=['get'], name="Get aurin")
+    def aurin(self,request):
+        #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
+        res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
+        return Response(res.json())
+
 
 
 #
