@@ -2,11 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
+import time
 from django.core.management import call_command
+# from django.http import
 import couchdb.couch as couch
 # import twitter_search.search_tweet as search
 import twitter_stream.stream as stream
 import json
+from django.shortcuts import HttpResponse
 from collections import Counter
 import time
 
@@ -54,11 +57,18 @@ class TweetViewSet(viewsets.ViewSet):
         query = f'lat_min:[{lat_min} TO 0] AND lat_max:[-90 TO {lat_max}] AND lon_min:[{lon_min} TO 180] AND lon_max:[0 TO {lon_max}]'
         res = couch.get(f'twitter/_design/geo/_search/box?q={query}')
         return Response({'total_rows': int(res.json()['total_rows'])})
-        
-    @action(detail=False, methods=['get'], name="test python import")
-    def test(self, request):
-        call_command('startsearch')
-        return Response({search.test(): stream.test()})
+
+    # GET analyser/tweets/demo
+    @action(detail=False, methods=['get'], name="demo")
+    def demo(self, request):
+        var = {'twitter':6666,'user':606,'sport':99}
+        return HttpResponse(json.dumps(var))
+
+    @action(detail=False, methods=['get'], name="demo time")
+    def demotime(self, request):
+        time1 = time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())
+        print(time1)
+        return HttpResponse(json.dumps(time1))
 
     # GET analyser/tweets/sum
     @action(detail=False, methods=['get'], name="Xin test ")
@@ -141,6 +151,46 @@ class SportViewSet(viewsets.ViewSet):
         res = res.json()
         return Response(res)
 
+class AurinViewSet(viewsets.ViewSet):
+    def list(self, request):
+        url = f'aurin/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+
+    # Get /analyser/aurin/aurin/
+    @action(detail=False, methods=['get'], name="Get aurin")
+    def aurin(self,request):
+        #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
+        res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
+        return Response(res.json())
+
+
+class YearlySportsTweetsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        url = f'aurin/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+    
+    @action(detail=False, methods=['get'], name="Get yearly sports tweets")
+    def sport_tweet_yearly(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            for year in [2019,2020,2021]:
+                res = couch.get(f'tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets{year}_total')
+                #res = requests.get(f"http://34.87.251.230:5984/tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2019_total")
+                value = res.json()["rows"]
+                if value:
+                    count[city][year] = res.json()["rows"][0]["value"]
+                else:
+                    count[city][year]=0
+        count[f"total_sports_tweets"] = sum(count.values())
+        #count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
+        return Response(count)
+        
 
 
 #
@@ -149,6 +199,7 @@ class SportViewSet(viewsets.ViewSet):
 #     @action(detail=False, methods=['post'], name="Initialisation")
 #     def couchdb(self, request):
 #         call_command('initcouchdb')
+<<<<<<< HEAD
 # >>>>>>> 3753208f46022203ee2f511948de7ccebedff376
 
 sports =  {'_id': '_design/sports',
@@ -159,3 +210,5 @@ sports =  {'_id': '_design/sports',
  'options': {'partitioned': True}}
 
 couch.put('tweetdb/_design/sports', body=sports)
+=======
+>>>>>>> 35a62bc79a249d727829a8da480b407465d4b451

@@ -2,9 +2,15 @@ import requests, uuid, json
 from django.conf import settings
 
 # Module with functions serve a Singleton
+<<<<<<< HEAD
 base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}:5984'
 base_url = f'http://user:pass@34.87.251.230:5984'
 # base_url = f'http://admin:ccc@127.0.0.1:5984/'
+=======
+# base_url = f'http://admin:Aa123456789@localhost:5984'
+# base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}:5984'
+base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}'
+>>>>>>> 35a62bc79a249d727829a8da480b407465d4b451
 
 # Generate a new uuid for CouchDB document
 def new_id():
