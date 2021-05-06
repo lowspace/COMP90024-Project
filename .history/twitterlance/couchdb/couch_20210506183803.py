@@ -5,6 +5,7 @@ from django.conf import settings
 base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}:5984'
 base_url = f'http://user:pass@34.87.251.230:5984'
 # base_url = f'http://admin:ccc@127.0.0.1:5984/'
+base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{settings.COUCHDB_ENDPOINT}'
 
 # Generate a new uuid for CouchDB document
 def new_id():
