@@ -136,6 +136,46 @@ class SportViewSet(viewsets.ViewSet):
         res = res.json()['rows'][0]["value"]
         return Response(res)
 
+class AurinViewSet(viewsets.ViewSet):
+    def list(self, request):
+        url = f'aurin/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+
+    # Get /analyser/aurin/aurin/
+    @action(detail=False, methods=['get'], name="Get aurin")
+    def aurin(self,request):
+        #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
+        res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
+        return Response(res.json())
+
+
+class YearlySportsTweetsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        url = f'aurin/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+    
+    @action(detail=False, methods=['get'], name="Get yearly sports tweets")
+    def sport_tweet_yearly(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            for year in [2019,2020,2021]:
+                res = couch.get(f'tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets{year}_total')
+                #res = requests.get(f"http://34.87.251.230:5984/tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2019_total")
+                value = res.json()["rows"]
+                if value:
+                    count[city][year] = res.json()["rows"][0]["value"]
+                else:
+                    count[city][year]=0
+        count[f"total_sports_tweets"] = sum(count.values())
+        #count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
+        return Response(count)
+        
 
 
 #
@@ -144,4 +184,3 @@ class SportViewSet(viewsets.ViewSet):
 #     @action(detail=False, methods=['post'], name="Initialisation")
 #     def couchdb(self, request):
 #         call_command('initcouchdb')
-# >>>>>>> 3753208f46022203ee2f511948de7ccebedff376
