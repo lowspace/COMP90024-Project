@@ -31,19 +31,16 @@
         <img alt="140x140" src="../static/img/404.jpg" />
         <ul>
           <li>
-            <a href="home.html">&nbsp<i class="fas fa-home">&nbsp&nbspHome</i></a>
+            <a href="http://localhost:8000/home/">&nbsp<i class="fas fa-home">&nbsp&nbspHome</i></a>
           </li>
           <li>
-            <a href="about.html">&nbsp<i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
+            <a href="http://localhost:8000/about/">&nbsp<i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
           </li>
           <li>
-            <a href="map.html">&nbsp<i class="fas fa-map">&nbsp&nbspMap</i></a>
+            <a href="http://localhost:8000/map/">&nbsp<i class="fas fa-map">&nbsp&nbspMap</i></a>
           </li>
-          <li class="this">
-            <a href="#">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
-          </li>
-          <li>
-            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspTBA</i></a>
+          <li  class="this">
+            <a href="http://localhost:8000/statistics/">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
           </li>
         </ul>
       </div>
@@ -84,6 +81,7 @@
       const tuser = document.getElementById('total_user')
       const ttweet = document.getElementById('total_tweet')
       const tsport = document.getElementById('sportcount')
+
       // ajax request function
       function ajax(url, method, success, error) {
         var request = new XMLHttpRequest();
@@ -94,7 +92,7 @@
         request.send();
         request.onreadystatechange = function () {
           if (request.readyState === 4) {
-            if (request.status  >= 200 && request.status < 300) {
+            if (request.status >= 200 && request.status < 300) {
               success(request.response)
             } else {
               error();
@@ -103,32 +101,33 @@
         }
       }
 
-      function showtotal(response){
+      function showtotal(response) {
         // ttweet.innerHTML = $.parseJSON(response)["twitter"];
-        tuser.innerHTML = eval("("+response+")")["user"];
+        tuser.innerHTML = eval("(" + response + ")")["user"];
         tsport.innerHTML = JSON.parse(response)["sport"];
       }
+
       // tweets in four city
       let tifc;
       //total number of tweets
       let tnt;
 
-      function error(){
+      function error() {
         console.log('error')
       }
-      
-      function showget(response){
+
+      function showget(response) {
         response = JSON.parse(response)["tweet_stats"];
         tifc = [response["Melbourne"],
-              response["Sydney"],
-              response["Canberra"],
-              response["Adelaide"]];
+          response["Sydney"],
+          response["Canberra"],
+          response["Adelaide"]];
         tnt = response["total_tweets"];
         ttweet.innerHTML = tnt;
       }
-      ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error);
-      ajax('http://localhost:8000/analyser/tweets/stats/','GET', showget, error);
 
+      ajax('http://localhost:8000/analyser/tweets/demo/', 'GET', showtotal, error);
+      ajax('http://localhost:8000/analyser/tweets/stats/', 'GET', showget, error);
 
 
       // var xhr1 = new XMLHttpRequest();
@@ -177,10 +176,10 @@
       let canvas5 = canvas[4];
       let canvas6 = canvas[5];
 
-    //
-    //scenario1
-    //
-      document.getElementById('scenario1').addEventListener('click', function() {
+      //
+      //scenario1
+      //
+      document.getElementById('scenario1').addEventListener('click', function () {
         // canvas.className = 'hide';
         canvas1.className = 'show';
         canvas2.className = 'show';
@@ -193,22 +192,22 @@
         let barchartdata1 = tifc;
         let barcharttitle1 = 'Total tweets across four City';
         let Users1 = {
-          datasets:[{
-            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+          datasets: [{
+            backgroundColor: ['#f96be3', '#3970dd', '#754af7', '#36a2eb'],
             data: piechartdata1,
           }],
-          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+          labels: ['Sydney', 'Melboune', 'Adelede', 'Canberry']
         };
         let optionsEC1 = {
-          title:{display: true, text:piecharttitle1, fontSize:'24', fontFamily:'sans-serif'},
-          legend:{display:true, position:'bottom', align:'center'}
+          title: {display: true, text: piecharttitle1, fontSize: '24', fontFamily: 'sans-serif'},
+          legend: {display: true, position: 'bottom', align: 'center'}
         };
 
         var Pie1 = canvas1.getContext('2d');
-        var Piechart1 = new Chart(Pie1, {type:'pie', data: Users1, options: optionsEC1});
+        var Piechart1 = new Chart(Pie1, {type: 'pie', data: Users1, options: optionsEC1});
 
         //barchart
-        let UsersBar1={
+        let UsersBar1 = {
           datasets: [{
             data: barchartdata1,
             backgroundColor: [
@@ -227,47 +226,47 @@
           }],
           labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
         }
-        let optionBar1={
-          title: {display: true,text: barcharttitle1,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        let optionBar1 = {
+          title: {display: true, text: barcharttitle1, fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero: true}}]}
         }
 
         var Bar1 = canvas2.getContext('2d');
-        const Barchart1 = new Chart(Bar1, {type:'bar', data: UsersBar1, options: optionBar1});
+        const Barchart1 = new Chart(Bar1, {type: 'bar', data: UsersBar1, options: optionBar1});
       })
 
       //
       //scenario2
       //
-      document.getElementById('scenario2').addEventListener('click', function() {
+      document.getElementById('scenario2').addEventListener('click', function () {
         canvas1.className = 'hide';
         canvas2.className = 'hide';
         canvas3.className = 'show';
         canvas4.className = 'show';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
-        let barchartdata2 = [1,4,4,1];
-        let piechartdata2 = [3,5,2,3];
+        let barchartdata2 = [1, 4, 4, 1];
+        let piechartdata2 = [3, 5, 2, 3];
         let piecharttitle2 = 'Popolation across four cities';
         let barcharttitle2 = 'Sport relate tweets over all tweets';
 
         let Users2 = {
-          datasets:[{
-            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+          datasets: [{
+            backgroundColor: ['#f96be3', '#3970dd', '#754af7', '#36a2eb'],
             data: barchartdata2,
           }],
-          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+          labels: ['Sydney', 'Melboune', 'Adelede', 'Canberry']
         };
         let optionsEC2 = {
-          title:{display: true, text:piecharttitle2, fontSize:'24', fontFamily:'sans-serif'},
-          legend:{display:true, position:'bottom', align:'center'}
+          title: {display: true, text: piecharttitle2, fontSize: '24', fontFamily: 'sans-serif'},
+          legend: {display: true, position: 'bottom', align: 'center'}
         };
 
         var Pie2 = canvas3.getContext('2d');
-        const Piechart = new Chart(Pie2, {type:'pie', data: Users2, options: optionsEC2});
+        const Piechart = new Chart(Pie2, {type: 'pie', data: Users2, options: optionsEC2});
 
         //barchart
-        let UsersBar2={
+        let UsersBar2 = {
           datasets: [{
             data: piechartdata2,
             backgroundColor: [
@@ -287,19 +286,19 @@
           labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
         }
 
-        let optionBar2={
-          title: {display: true,text: barcharttitle2,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        let optionBar2 = {
+          title: {display: true, text: barcharttitle2, fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero: true}}]}
         }
         var Bar2 = canvas4.getContext('2d');
-        const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
+        const Barchart2 = new Chart(Bar2, {type: 'bar', data: UsersBar2, options: optionBar2});
       })
 
 
       //
       //scenario3
       //
-      document.getElementById('scenario3').addEventListener('click', function() {
+      document.getElementById('scenario3').addEventListener('click', function () {
         canvas1.className = 'hide';
         canvas2.className = 'hide';
         canvas3.className = 'hide';
@@ -307,28 +306,28 @@
         canvas5.className = 'show';
         canvas6.className = 'show';
 
-        let barchartdata3 = [1,1,1,1];
-        let piechartdata3 = [1,2,3,4];
+        let barchartdata3 = [1, 1, 1, 1];
+        let piechartdata3 = [1, 2, 3, 4];
         let piecharttitle3 = 'scenario3'
         let barcharttitle3 = 'scenario3'
 
         let Users3 = {
-          datasets:[{
-            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
+          datasets: [{
+            backgroundColor: ['#f96be3', '#3970dd', '#754af7', '#36a2eb'],
             data: barchartdata3,
           }],
-          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
+          labels: ['Sydney', 'Melboune', 'Adelede', 'Canberry']
         };
         let optionsEC3 = {
-          title:{display: true, text:piecharttitle3, fontSize:'24', fontFamily:'sans-serif'},
-          legend:{display:true, position:'bottom', align:'center'}
+          title: {display: true, text: piecharttitle3, fontSize: '24', fontFamily: 'sans-serif'},
+          legend: {display: true, position: 'bottom', align: 'center'}
         };
 
         var Pie3 = canvas5.getContext('2d');
-        const Piechart3 = new Chart(Pie3, {type:'pie', data: Users3, options: optionsEC3});
+        const Piechart3 = new Chart(Pie3, {type: 'pie', data: Users3, options: optionsEC3});
 
         //barchart
-        let UsersBar3={
+        let UsersBar3 = {
           datasets: [{
             data: piechartdata3,
             backgroundColor: [
@@ -348,13 +347,13 @@
           labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
         }
 
-        let optionBar3={
-          title: {display: true,text: barcharttitle3,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        let optionBar3 = {
+          title: {display: true, text: barcharttitle3, fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero: true}}]}
         }
 
         var Bar3 = canvas6.getContext('2d');
-        const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
+        const Barchart3 = new Chart(Bar3, {type: 'bar', data: UsersBar3, options: optionBar3});
       })
     }
   </script>
