@@ -61,7 +61,7 @@
               <a class = "col-md-2" href="#barchart" id="scenario1">scenario1</a>
               <a class = "col-md-2" href="#barchart" id="scenario2">scenario2</a>
               <a class = "col-md-2" href="#barchart" id="scenario3">scenario3</a>
-              <a class = "col-md-2" href="sport.html" id="sporttype">Sport Type</a>
+              <a class = "col-md-2" href="#sport" id="sporttype">Sport Type</a>
             </div>
           </div>
           <div class="statistic-detail" >
@@ -72,6 +72,9 @@
               <canvas id="Statisticchart4"></canvas>
               <canvas id="Statisticchart5"></canvas>
               <canvas id="Statisticchart6"></canvas>
+              <canvas id="Statisticchart7"></canvas>
+              <canvas id="Statisticchart8"></canvas>
+            
             </div>
           </div>
         </div>
@@ -113,7 +116,7 @@
         console.log('error')
       }
 
-      {#ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)#}
+      //{#ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)#}
 
 
       // var xhr1 = new XMLHttpRequest();
@@ -161,6 +164,9 @@
       let canvas4 = canvas[3];
       let canvas5 = canvas[4];
       let canvas6 = canvas[5];
+      let canvas7 = canvas[6];
+      let canvas8 = canvas[7];
+
 
     //
     //scenario1
@@ -173,26 +179,13 @@
         canvas4.className = 'hide';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
-        let piechartdata1 = [12,19,2,3];
-        let piecharttitle1 = 'scenario1';
-        let barchartdata1 = [10,40,40,10];
-        let barcharttitle1 = 'scenario1';
-        let Users1 = {
-          datasets:[{
-            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
-            data: piechartdata1,
-          }],
-          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
-        };
-        let optionsEC1 = {
-          title:{display: true, text:piecharttitle1, fontSize:'24', fontFamily:'sans-serif'},
-          legend:{display:true, position:'bottom', align:'center'}
-        };
-
-        var Pie1 = canvas1.getContext('2d');
-        var Piechart1 = new Chart(Pie1, {type:'pie', data: Users1, options: optionsEC1});
-
-        //barchart
+        canvas7.className = 'hide';
+        canvas8.className = 'hide';
+        let barchartdata1 = [0.49,0.49,0.49,0.49];
+        let barcharttitle1 = 'Gender ratio';
+        let barchartdata2 = [36,36,39,35];
+        let barcharttitle2 = 'Average age';
+        
         let UsersBar1={
           datasets: [{
             data: barchartdata1,
@@ -210,51 +203,20 @@
             ],
             borderWidth: 3
           }],
-          labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
         }
         let optionBar1={
           title: {display: true,text: barcharttitle1,fontSize: 30,},
           scales: {yAxes: [{ticks: {beginAtZero:true}}] }
         }
 
-        var Bar1 = canvas2.getContext('2d');
+        var Bar1 = canvas1.getContext('2d');
         const Barchart1 = new Chart(Bar1, {type:'bar', data: UsersBar1, options: optionBar1});
-      })
-
-      //
-      //scenario2
-      //
-      document.getElementById('scenario2').addEventListener('click', function() {
-        canvas1.className = 'hide';
-        canvas2.className = 'hide';
-        canvas3.className = 'show';
-        canvas4.className = 'show';
-        canvas5.className = 'hide';
-        canvas6.className = 'hide';
-        let barchartdata2 = [1,4,4,1];
-        let piechartdata2 = [3,5,2,3];
-        let piecharttitle2 = 'Popolation across four cities';
-        let barcharttitle2 = 'Sport relate tweets over all tweets';
-
-        let Users2 = {
-          datasets:[{
-            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
-            data: barchartdata2,
-          }],
-          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
-        };
-        let optionsEC2 = {
-          title:{display: true, text:piecharttitle2, fontSize:'24', fontFamily:'sans-serif'},
-          legend:{display:true, position:'bottom', align:'center'}
-        };
-
-        var Pie2 = canvas3.getContext('2d');
-        const Piechart = new Chart(Pie2, {type:'pie', data: Users2, options: optionsEC2});
-
+    
         //barchart
         let UsersBar2={
           datasets: [{
-            data: piechartdata2,
+            data: barchartdata2,
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
@@ -269,15 +231,87 @@
             ],
             borderWidth: 3
           }],
-          labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
         }
-
         let optionBar2={
           title: {display: true,text: barcharttitle2,fontSize: 30,},
           scales: {yAxes: [{ticks: {beginAtZero:true}}] }
         }
-        var Bar2 = canvas4.getContext('2d');
+
+        var Bar2 = canvas2.getContext('2d');
         const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
+      })
+  
+      //
+      //scenario2
+      //
+      document.getElementById('scenario2').addEventListener('click', function() {
+        canvas1.className = 'hide';
+        canvas2.className = 'hide';
+        canvas3.className = 'show';
+        canvas4.className = 'show';
+        canvas5.className = 'hide';
+        canvas6.className = 'hide';
+        canvas7.className = 'hide';
+        canvas8.className = 'hide';
+        let barchartdata3 = [6.1,6.8,7.8,4.8];
+        let barcharttitle3 = 'Unemployment rate';
+        let barchartdata4 = [0.51,0.5,0.48,0.55];
+        let barcharttitle4 = 'Educated rate';
+
+        let UsersBar3={
+          datasets: [{
+            data: barchartdata3,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
+        }
+
+        let optionBar3={
+          title: {display: true,text: barcharttitle3,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        var Bar3 = canvas3.getContext('2d');
+        const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
+        //barchart
+        let UsersBar4={
+          datasets: [{
+            data: barchartdata4,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
+        }
+
+        let optionBar4={
+          title: {display: true,text: barcharttitle4,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        var Bar4 = canvas4.getContext('2d');
+        const Barchart4 = new Chart(Bar4, {type:'bar', data: UsersBar4, options: optionBar4});
       })
 
 
@@ -291,31 +325,18 @@
         canvas4.className = 'hide';
         canvas5.className = 'show';
         canvas6.className = 'show';
+        canvas7.className = 'hide';
+        canvas8.className = 'hide';
 
-        let barchartdata3 = [1,1,1,1];
-        let piechartdata3 = [1,2,3,4];
-        let piecharttitle3 = 'scenario3'
-        let barcharttitle3 = 'scenario3'
 
-        let Users3 = {
-          datasets:[{
-            backgroundColor: ['#f96be3', '#3970dd', '#754af7','#36a2eb'],
-            data: barchartdata3,
-          }],
-          labels: ['Sydney','Melboune', 'Adelede', 'Canberry']
-        };
-        let optionsEC3 = {
-          title:{display: true, text:piecharttitle3, fontSize:'24', fontFamily:'sans-serif'},
-          legend:{display:true, position:'bottom', align:'center'}
-        };
+        let barchartdata5 = [717,672,614,997];
+        let barcharttitle5 = 'Average income';
+        let barchartdata6 = [717,672,614,997];
+        let barcharttitle6 = 'Total user/tweets ratio';
 
-        var Pie3 = canvas5.getContext('2d');
-        const Piechart3 = new Chart(Pie3, {type:'pie', data: Users3, options: optionsEC3});
-
-        //barchart
-        let UsersBar3={
+        let UsersBar5={
           datasets: [{
-            data: piechartdata3,
+            data: barchartdata5,
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
@@ -330,17 +351,118 @@
             ],
             borderWidth: 3
           }],
-          labels: ["Melbourne", "Sydney", "Canberry", "Adelede"]
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
         }
 
-        let optionBar3={
-          title: {display: true,text: barcharttitle3,fontSize: 30,},
+        let optionBar5={
+          title: {display: true,text: barcharttitle5,fontSize: 30,},
           scales: {yAxes: [{ticks: {beginAtZero:true}}] }
         }
+        var Bar5 = canvas5.getContext('2d');
+        const Barchart5 = new Chart(Bar5, {type:'bar', data: UsersBar5, options: optionBar5});
+        //barchart
+        let UsersBar6={
+          datasets: [{
+            data: barchartdata6,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
+        }
 
-        var Bar3 = canvas6.getContext('2d');
-        const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
+        let optionBar6={
+          title: {display: true,text: barcharttitle6,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        var Bar6 = canvas6.getContext('2d');
+        const Barchart6 = new Chart(Bar6, {type:'bar', data: UsersBar6, options: optionBar6});
       })
+      //
+      document.getElementById('sporttype').addEventListener('click', function(){
+
+        canvas1.className = 'hide';
+        canvas2.className = 'hide';
+        canvas3.className = 'hide';
+        canvas4.className = 'hide';
+        canvas5.className = 'hide';
+        canvas6.className = 'hide';
+        canvas7.className = 'show';
+        canvas8.className = 'show';
+        //tweets
+        let barchartdata7 = [717,672,614,997];
+        let barcharttitle7 = 'Total tweets in each city';
+        let barchartdata8 = [717,672,614,997];
+        let barcharttitle8 = 'Total sport tweets/tweets ratio';
+
+        let UsersBar7={
+          datasets: [{
+            data: barchartdata7,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
+        }
+
+        let optionBar7={
+          title: {display: true,text: barcharttitle7,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        var Bar7 = canvas7.getContext('2d');
+        const Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
+        //barchart
+        let UsersBar8={
+          datasets: [{
+            data: barchartdata8,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 3
+          }],
+          labels: ["Sydney", "Melbourne", "Adelede", "Canberry"]
+        }
+
+        let optionBar8={
+          title: {display: true,text: barcharttitle8,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        var Bar8 = canvas8.getContext('2d');
+        const Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+
+    })
+
+
+
     }
   </script>
 </body>
