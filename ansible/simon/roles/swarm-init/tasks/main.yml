@@ -1,0 +1,33 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/community/docker/docker_swarm_module.html
+- name: Leave swarm
+  community.docker.docker_swarm:
+    state: absent
+    force: yes
+  register: result
+- debug:
+    msg: "{{ result }}"  
+
+- set_fact:
+    manager_ip: '{{ hostvars[item]["ansible_host"] + ":2377" }}'
+  when: hostvars[item]["openstack"]["name"] == 'instance1'
+  with_items: '{{ hostvars }}'
+- debug:
+    msg: "{{ manager_ip }}"
+
+- name: Init docker swarm manager
+  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'
+  community.docker.docker_swarm:
+    state: present
+    advertise_addr: '{{ manager_ip }}'
+  register: swarm_manager_info
+- debug:
+    msg: '{{ swarm_manager_info }}'
+
+- name: Get info on Docker Swarm and list of registered nodes
+  community.docker.docker_swarm_info:
+    nodes: yes
+  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'
+  register: result
+- debug:
+    msg: "{{ result }}"

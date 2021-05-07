@@ -1,0 +1,53 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/community/docker/docker_swarm_module.html
+- name: Leave swarm
+  community.docker.docker_swarm:
+    state: absent
+    force: yes
+  when: hostvars[inventory_hostname]["openstack"]["name"] != 'instance1'
+  register: result
+- debug:
+    msg: "{{ result }}"  
+
+- set_fact:
+    join_tokens: '{{ hostvars[item]["swarm_manager_info"]["swarm_facts"]["JoinTokens"] }}'
+  when: hostvars[item]["openstack"]["name"] == 'instance1'
+  with_items: '{{ hostvars }}'
+- debug:
+    msg: "{{ join_tokens }}"
+
+- set_fact:
+    manager_ip: '{{ hostvars[item]["manager_ip"] }}'
+  when: hostvars[item]["openstack"]["name"] == 'instance1'
+  with_items: '{{ hostvars }}'
+- debug:
+    msg: "{{ manager_ip }}"
+
+
+- name: Add manager nodes
+  community.docker.docker_swarm:
+    state: join
+    join_token: '{{ join_tokens["Manager"] }}'
+    remote_addrs: ['{{ manager_ip }}']
+  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance2'
+  register: swarm_node_info
+- debug:
+    msg: "{{ swarm_node_info }}"
+
+- name: Add worker nodes
+  community.docker.docker_swarm:
+    state: join
+    join_token: '{{ join_tokens["Worker"] }}'
+    remote_addrs: ['{{ manager_ip }}']
+  when: hostvars[inventory_hostname]["openstack"]["name"] not in ['instance1', 'instance2']
+  register: swarm_node_info
+- debug:
+    msg: "{{ swarm_node_info }}"
+
+- name: Get info on Docker Swarm and list of registered nodes
+  community.docker.docker_swarm_info:
+    nodes: yes
+  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'
+  register: result
+- debug:
+    msg: "{{ result }}"
