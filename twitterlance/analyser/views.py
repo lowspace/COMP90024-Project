@@ -165,11 +165,14 @@ class SportViewSet(viewsets.ViewSet):
     
     # GET analyser/sports/stats_2020
     @action(detail=False, methods=['get'], name="Get the last 30 days tweets of sports")
-    def stats_2020(self, request):
+    def stats_30(self, request):
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'small_twitters/_partition/{city}/_design/sports/_view/last30')
-            res = res.json()['rows'][0]["value"]
+            if res.json()['rows']:
+                res = res.json()['rows'][0]["value"]
+            else:
+                res = Counter()
             count[city] = Counter(res)
         total = Counter() # all sports
         for k in count.keys():
