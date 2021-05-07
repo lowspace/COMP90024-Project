@@ -200,6 +200,36 @@ class AurinViewSet(viewsets.ViewSet):
         #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
         res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
         return Response(res.json())
+
+
+class YearlySportsTweetsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        url = f'tiny_tweets/_all_docs'
+        if len(request.query_params) > 0: 
+            url += f'?{request.query_params.urlencode()}'
+        res = couch.get(url)
+        return Response(res.json())
+    
+    @action(detail=False, methods=['get'], name="Get yearly sports tweets")
+    def sport_tweet_yearly(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            for year in [2019,2020,2021]:
+                res = couch.get(f'tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets{year}_total')
+                #res = requests.get(f"http://34.87.251.230:5984/tiny_tweets/_partition/{city}/_design/xin/_view/sportsTweets2019_total")
+                val = Counter() 
+                try:
+                    val[year] = res.json()['rows'][0]["value"]
+                #else:
+                except:
+                    val[year] = 0
+                count[city] = val
+                total = Counter() 
+        for k in count.keys():
+            total += count[k]
+        count['total'] = total
+        #count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
+        return Response(count)
         
 #
 # class ManagerViewSet(viewsets.ViewSet):
