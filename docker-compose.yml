@@ -1,5 +1,19 @@
 version: "3.8"
 services:
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints: [node.role == manager ]
+
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
@@ -10,6 +24,9 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints: [node.role == manager ]
 
   couchdb:
     image: "couchdb:3.0.1"
@@ -36,7 +53,7 @@ services:
       - couchdb_conf
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints: [node.labels.couchdb == true ]
