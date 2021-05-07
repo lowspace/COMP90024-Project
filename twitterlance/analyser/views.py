@@ -197,7 +197,6 @@ class AurinViewSet(viewsets.ViewSet):
         #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
         res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
         return Response(res.json())
-<<<<<<< HEAD
 
 
 class YearlySportsTweetsViewSet(viewsets.ViewSet):
@@ -228,8 +227,6 @@ class YearlySportsTweetsViewSet(viewsets.ViewSet):
         count['total'] = total
         #count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
         return Response(count)
-=======
->>>>>>> 8f012dc536c7d0fc8d8ce09c89427554808d1392
         
 #
 # class ManagerViewSet(viewsets.ViewSet):
