@@ -144,7 +144,7 @@ class SportViewSet(viewsets.ViewSet):
     def stats_2019(self, request):
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tiny_tweets/_partition/{city}/_design/sports/_view/2019')
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2019')
             if res.json()['rows']:
                 res = res.json()['rows'][0]["value"]
             else:
@@ -161,7 +161,7 @@ class SportViewSet(viewsets.ViewSet):
     def stats_2020(self, request):
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tiny_tweets/_partition/{city}/_design/sports/_view/2020')
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2020')
             if res.json()['rows']:
                 res = res.json()['rows'][0]["value"]
             else:
@@ -178,10 +178,10 @@ class SportViewSet(viewsets.ViewSet):
     def stats_2021(self, request):
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tiny_tweets/_partition/{city}/_design/sports/_view/2021')
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2021')
             if res.json()['rows']:
                 res = res.json()['rows'][0]["value"]
-            else:
+            else:   
                 res = Counter()
             count[city] = Counter(res)
         total = Counter() # all sports
@@ -195,7 +195,7 @@ class SportViewSet(viewsets.ViewSet):
     def stats_30(self, request):
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tiny_tweets/_partition/{city}/_design/sports/_view/last30')
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/last30')
             if res.json()['rows']:
                 res = res.json()['rows'][0]["value"]
             else:
