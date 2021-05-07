@@ -8,15 +8,10 @@ router.register(r'tweets', views.TweetViewSet, basename="Tweet")
 router.register(r'users', views.UserViewSet, basename="User")
 router.register(r'sports', views.SportViewSet, basename="Sport")
 router.register(r'aurin', views.AurinViewSet, basename="Aurin")
-<<<<<<< HEAD
 router.register(r'yearly', views.YearlySportsTweetsViewSet, basename="Yearly")
 
 
 
-=======
-
-
->>>>>>> 8f012dc536c7d0fc8d8ce09c89427554808d1392
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
