@@ -1,0 +1,130 @@
+---
+- name: Add proxy
+  become: yes
+  ansible.builtin.copy:
+    src: environment
+    dest: /etc/environment
+    owner: ubuntu
+    group: ubuntu
+    mode: '0664'
+
+- name: Install packages
+  become: yes
+  apt:
+    name: ['python3', 'python3-pip', 'docker.io']
+    state: latest
+    update_cache: yes
+
+- name: Update pip
+  pip:
+    name: ['pip']
+    state: latest
+    executable: pip3
+  
+- name: Install python docker sdk 
+  pip:
+    name: ['docker']
+    state: latest
+    executable: pip3
+
+- name: Ensure group docker exists
+  become: yes
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add the user ubuntu to docker group
+  become: yes
+  ansible.builtin.user:
+    name: ubuntu
+    group: docker
+
+- name: Create a ext2 filesystem on /dev/sdb1
+  become: yes
+  community.general.filesystem:
+    fstype: ext4
+    dev: /dev/vdb
+  
+- name: Create data directory if it does not exist
+  become: yes
+  ansible.builtin.file:
+    path: /data
+    state: directory
+    mode: '0755'
+    owner: ubuntu
+    group: docker
+  
+- name: Mount up disk
+  become: yes
+  ansible.posix.mount:
+    path: /data
+    src: /dev/vdb
+    fstype: ext4
+    state: present
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/data
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/etc/
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/etc/local.d
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Grant permission on docker socket
+  become: yes
+  ansible.builtin.file:
+    path: /var/run/docker.sock
+    mode: '0666'
+
+- name: Restart docker daemon
+  become: yes
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+
+- name: Reset ssh connection to get permissions for docker
+  meta: reset_connection
+
+- name: Make sure docker daemon is running
+  become: yes
+  ansible.builtin.systemd:
+    state: started
+    name: docker
