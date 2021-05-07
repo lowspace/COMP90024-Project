@@ -69,10 +69,10 @@ class TweetViewSet(viewsets.ViewSet):
         return HttpResponse(json.dumps(time1))
 
     # GET analyser/tweets/sum
-    @action(detail=False, methods=['get'], name="Xin test ")
-    def sum(self, request):
-        res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
-        return Response({'a':res.json()})
+    # @action(detail=False, methods=['get'], name="Xin test ")
+    # def sum(self, request):
+    #     res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
+    #     return Response({'a':res.json()})
     
     # GET sport related tweets
     @action(detail=False, methods=['get'], name="sport tweets total")

@@ -6,3 +6,4 @@ requests == 2.25.1
 uwsgi == 2.0.19.1
 docker == 5.0.0
 django-cors-headers == 3.7.0
+tweepy == 3.10.0
