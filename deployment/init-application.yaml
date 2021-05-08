@@ -4,7 +4,9 @@
   remote_user: ubuntu
   gather_facts: true
   roles:
-
+    - role: environment
+    - role: swarm-init
+    - role: swarm-nodes
     - role: applications
       when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'  
 
