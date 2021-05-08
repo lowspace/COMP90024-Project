@@ -8,18 +8,17 @@
     msg: "{{ join_tokens }}"
 
 - set_fact:
-    manager_ip: '{{ hostvars[item]["manager_ip"] }}'
+    swarm_lead_ip: '{{ hostvars[item]["swarm_lead_ip"] }}'
   when: hostvars[item]["openstack"]["name"] == 'instance1'
   with_items: '{{ hostvars }}'
 - debug:
-    msg: "{{ manager_ip }}"
-
+    msg: "{{ swarm_lead_ip }}"
 
 - name: Add manager nodes
   community.docker.docker_swarm:
     state: join
     join_token: '{{ join_tokens["Manager"] }}'
-    remote_addrs: ['{{ manager_ip }}']
+    remote_addrs: ['{{ swarm_lead_ip + ":2377"  }}']
   when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance2'
   register: swarm_node_info
 - debug:
@@ -29,7 +28,7 @@
   community.docker.docker_swarm:
     state: join
     join_token: '{{ join_tokens["Worker"] }}'
-    remote_addrs: ['{{ manager_ip }}']
+    remote_addrs: ['{{ swarm_lead_ip + ":2377"  }}']
   when: hostvars[inventory_hostname]["openstack"]["name"] not in ['instance1', 'instance2']
   register: swarm_node_info
 - debug:
