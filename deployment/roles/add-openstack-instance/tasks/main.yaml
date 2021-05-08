@@ -1,6 +1,5 @@
 ---
-# 2c9g
-- name: Create instanceses
+- name: Create new instances
   os_server:
     name: '{{ item.name }}'
     image: '{{ instance_image }}'

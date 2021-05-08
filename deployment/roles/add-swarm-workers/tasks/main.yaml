@@ -1,0 +1,33 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/community/docker/docker_swarm_module.html
+
+- set_fact:
+    token: '{{ hostvars[item]["join_token_str"]["results"][0]["stdout_lines"][2].split(" ")[8] }}'
+  when: hostvars[item]["openstack"]["name"] == 'instance1'
+  with_items: '{{ hostvars }}'
+- debug:
+    msg: '{{ token }}'
+
+- set_fact:
+    swarm_lead_addr: '{{ hostvars[item]["join_token_str"]["results"][0]["stdout_lines"][2].split(" ")[9] }}'
+  when: hostvars[item]["openstack"]["name"] == 'instance1'
+  with_items: '{{ hostvars }}'
+- debug:
+    msg: '{{ swarm_lead_addr }}'
+
+- name: Add worker nodes
+  community.docker.docker_swarm:
+    state: join
+    join_token: '{{ token }}'
+    remote_addrs: ['{{ swarm_lead_addr  }}']
+  register: swarm_node_info
+- debug:
+    msg: '{{ swarm_node_info }}'
+
+- name: Get info on Docker Swarm and list of registered nodes
+  community.docker.docker_swarm_info:
+    nodes: yes
+  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'
+  register: result
+- debug:
+    msg: '{{ result }}'

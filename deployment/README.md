@@ -4,9 +4,9 @@ The entire deployment process is done by Ansible.
 
 ## Steps to deploy
 
-mrc.yaml creates the instances with correct volumes and security groups on Melbourne Research Cloud. 
+init-instances.yaml creates the instances with correct volumes and security groups on Melbourne Research Cloud. 
 
-deployment.yaml deploys the project to the instances. 
+init-application.yaml deploys the project to the instances. 
 
 To deploy the project to the team 39 project on Melbourne Research Cloud, run 
 ```
@@ -19,19 +19,19 @@ Sometimes there is a network issue on apt, pip, or docker pull. Delete the insta
 
 To deploy the project to other projects on Melbourne Research Cloud, you need to download the openrc.sh from the project, and put the private key named "Group39key.pem" in this directory. 
 
-To deploy the project out of Melbourne Research Cloud, you need to re-configure the Ansible hosts in deployment.yaml. 
+To deploy the project out of Melbourne Research Cloud, you need to re-configure the Ansible hosts in init-application.yaml. 
 
 ## Deployment Methods
 
 The deployment process is divided up to 2 phases, the instances phase and the applications phase.
 
-### Instances
+### Cloud Instances
 
-In the instances phase, Ansible will communicate with the Cloud via openstacksdk to create the instances, security groups, and volumes that the project needs. The steps are defined in mrc.yaml. 
+In the cloud instances phase, Ansible will communicate with the Cloud via openstacksdk to create the instances, security groups, and volumes that the project needs. The steps are defined in init-instances.yaml. 
 
 ### Applications
 
-All the configuration and deployment on each instance will be conducted in the applications phase. The steps are defined in deployment.yaml. 
+All the configuration and deployment on each instance will be conducted in the applications phase. The steps are defined in init-application.yaml. 
 
 List of tasks in deployment: 
 
@@ -58,3 +58,5 @@ Only 1 instance needs to deploy the Docker stack defined in docker-compose.yml. 
 After CouchDB is set up, all CouchDB nodes are programmatically added to the CouchDB cluster by Python in recluster.py, which is launched by Ansible. 
 
 Another Python script reshard.py is used to recover database shards when the services are restarted, or when Docker Swarm nodes are restarted/moved/removed. This is not needed in deployment, but prepared for disaster recovery. When a service is deployed, Docker Swarm will assign a random task ID to each service, and the task ID is a part of CouchDB's node name. Since CouchDB maintains a map (database) between shards and CouchDB node name, it will not be able to open shards if the node name does not match the shards ID in the map. Thus, reshard.py is provided to fix the shard mapping. No data loss will occur in this fix. 
+
+### Instance Scalability 
