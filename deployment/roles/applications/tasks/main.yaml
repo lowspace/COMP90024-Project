@@ -69,6 +69,7 @@
 - debug:
     msg: '{{ result }}'
 
+# uri module has an issue with couchdb authentication 
 - name: Init couchdb default database
   shell: curl -X PUT http://user:pass@127.0.0.1:5984/_users
   register: result
