@@ -8,5 +8,7 @@
   roles:
     - role: find-swarm-join-token
     - role: environment
-      when: hostvars[inventory_hostname]["openstack"]["name"] in instances
+      when: hostvars[inventory_hostname]["openstack"]["name"] in instance_names
     - role: add-swarm-workers
+    - role: add-swarm-workers-labels
+      when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'

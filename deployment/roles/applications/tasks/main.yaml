@@ -1,4 +1,41 @@
 ---
+- name: Create data directory if it does not exist
+  become: yes
+  ansible.builtin.file:
+    path: /home/ubuntu/twitterlance/
+    state: directory
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy docker compose file
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/docker-compose.yml
+    dest: /home/ubuntu/twitterlance/
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy shared couchdb configuration
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/couchdb.ini
+    dest: /home/ubuntu/twitterlance/
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy couchdb cluster tools
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/couchdb_cluster/
+    dest: /home/ubuntu/twitterlance/
+    directory_mode: yes
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
 - name: Deploy twitterlance stack
   community.docker.docker_stack:
     state: present

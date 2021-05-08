@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible-playbook -i openstack_inventory.py mrc.yaml
+ansible-playbook -i openstack_inventory.py init-instances.yaml
