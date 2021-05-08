@@ -15,6 +15,8 @@ chomd -x all.sh
 ```
 Enter the password from MRCpassword.txt.
 
+Sometimes there is a network issue on apt, pip, or docker pull. Delete the instance and volumes and retry. 
+
 To deploy the project to other projects on Melbourne Research Cloud, you need to download the openrc.sh from the project, and put the private key named "Group39key.pem" in this directory. 
 
 To deploy the project out of Melbourne Research Cloud, you need to re-configure the Ansible hosts in deployment.yaml. 

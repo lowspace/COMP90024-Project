@@ -11,15 +11,25 @@
 - name: Install packages
   become: yes
   apt:
-    name: ['python3', 'python3-pip', 'docker.io', 'python-setuptools']
+    name: ['python3', 'python3-pip', 'docker.io']
     state: latest
     update_cache: yes
 
+- name: Upgrade pip
+  pip:
+    name: ['pip']
+    state: latest
+  environment:
+    HTTP_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/' # For some reason pip ignores /etc/environment proxy
+    HTTPS_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/'
+
 - name: Install Python packages 
   pip:
-    name: '{{ ["pip", "jsondiff", "docker", "pyyaml", "docker-compose"] }}'
-    executable: pip3 
+    name: ['jsondiff', 'docker', 'pyyaml', 'docker-compose']
     state: latest
+  environment:
+    HTTP_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/'
+    HTTPS_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/'
 
 - name: Ensure group docker exists
   become: yes

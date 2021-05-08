@@ -64,26 +64,34 @@
   command: python3 /home/ubuntu/twitterlance/recluster.py
   register: result
   when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'  
+  args:
+    warn: no
 - debug:
-    msg: '{{ result.stdout }}'
+    msg: '{{ result }}'
 
 - name: Init couchdb default database
   shell: curl -X PUT http://user:pass@127.0.0.1:5984/_users
   register: result
-  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'  
+  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'
+  args:
+    warn: no  
 - debug:
-    msg: '{{ result.stdout}}' 
+    msg: '{{ result}}' 
 
 - name: Init couchdb default database
   shell: curl -X PUT http://user:pass@127.0.0.1:5984/_replicator
   when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'  
   register: result
+  args:
+    warn: no
 - debug:
-    msg: '{{ result.stdout}}' 
+    msg: '{{ result}}' 
 
 - name: Init couchdb default database
   shell: curl -X PUT http://user:pass@127.0.0.1:5984/_global_changes
   when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'  
   register: result
+  args:
+    warn: no
 - debug:
-    msg: '{{ result.stdout}}' 
+    msg: '{{ result}}' 
