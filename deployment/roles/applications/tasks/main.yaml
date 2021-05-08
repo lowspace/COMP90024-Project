@@ -42,16 +42,13 @@
 - debug:
     msg: '{{ result.stdout }}'
 
-- name: Deploy stack from a compose file
+- name: Deploy twitterlance stack
   community.docker.docker_stack:
     state: present
     name: twitterlance
     compose:
       - /home/ubuntu/twitterlance/docker-compose.yml
   when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'
-  register: result
-- debug:
-    msg: "{{ result }}"
 
 - name: Wait for port 5984 of any IP to close active connections, don't start checking for 10 seconds
   wait_for:
@@ -67,7 +64,7 @@
   args:
     warn: no
 - debug:
-    msg: '{{ result }}'
+    msg: '{{ result.stdout | default("Message empty.") }}'
 
 # uri module has an issue with couchdb authentication 
 - name: Init couchdb default database
@@ -77,7 +74,7 @@
   args:
     warn: no  
 - debug:
-    msg: '{{ result}}' 
+    msg: '{{ result.stdout | default("Message empty.") }}'
 
 - name: Init couchdb default database
   shell: curl -X PUT http://user:pass@127.0.0.1:5984/_replicator
@@ -86,7 +83,7 @@
   args:
     warn: no
 - debug:
-    msg: '{{ result}}' 
+    msg: '{{ result.stdout | default("Message empty.") }}' 
 
 - name: Init couchdb default database
   shell: curl -X PUT http://user:pass@127.0.0.1:5984/_global_changes
@@ -95,4 +92,4 @@
   args:
     warn: no
 - debug:
-    msg: '{{ result}}' 
+    msg: '{{ result.stdout | default("Message empty.") }}' 
