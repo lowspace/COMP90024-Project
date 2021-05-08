@@ -47,12 +47,12 @@ Permissions of all files and programs need to be correct for Docker to access an
 
 The automated deployment of docker swarm requires Ansible to know the IP of each instance. We utilised openstack_inventory.py to import hosts gathered from the Cloud, so that all the IP addresses and instance names are stored in Ansible hostvars. When Ansible is initialising Swarm mode on instance1, the join token is saved into a variable in  dummy host so that other hosts can access this variable. 
 
-#### Applications
+#### Containers 
 
 All scripts and files are copied to the instances via Ansible. 
 
-Only 1 instance needs to deploy the Docker stack. Docker Swarm will automatically assign the servies to instances in the swarm. 
+Only 1 instance needs to deploy the Docker stack defined in docker-compose.yml. Docker Swarm will automatically assign the servies to instances in the swarm. 
 
-After CouchDB is set up, all CouchDB nodes are programmatically added to the CouchDB cluster by Python in recluster.py. 
+After CouchDB is set up, all CouchDB nodes are programmatically added to the CouchDB cluster by Python in recluster.py, which is launched by Ansible. 
 
-Another Python script reshard.py is used to recover database shards when instance/nodes are restarted. When a service is deployed, Docker Swarm will assign a random task ID to each service, and the task ID is a part of CouchDB's node name. Since CouchDB maintains a map between shards and node name, it will not be able to open shards if the map is incorrect, as a CouchDB instance with a new node name cannot open shards belong to another node. Thus, reshard.py is provided to fix the shard mapping. No data loss will occur in this fix. 
+Another Python script reshard.py is used to recover database shards when the services are restarted, or when Docker Swarm nodes are restarted/moved/removed. This is not needed in deployment, but prepared for disaster recovery. When a service is deployed, Docker Swarm will assign a random task ID to each service, and the task ID is a part of CouchDB's node name. Since CouchDB maintains a map (database) between shards and CouchDB node name, it will not be able to open shards if the node name does not match the shards ID in the map. Thus, reshard.py is provided to fix the shard mapping. No data loss will occur in this fix. 
