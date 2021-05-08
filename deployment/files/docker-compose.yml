@@ -6,6 +6,7 @@ services:
     ports:
       - 8000:8000
       - 9000:9000
+    command: --admin-password '$$2y$$05$$GjehVn/GD6lW.HjUcCVF4uT9a02r1oSkE8qzxKLzxeVocb9oQ5142'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
@@ -37,7 +38,7 @@ services:
       - "4369:4369"
       - "9100-9200:9100-9200"
     volumes:
-      - type: bind 
+      - type: bind
         source: /data/opt/couchdb/data
         target: /opt/couchdb/data
       - type: bind 
