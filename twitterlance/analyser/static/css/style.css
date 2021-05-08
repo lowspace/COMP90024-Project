@@ -124,6 +124,7 @@ div {
   padding: 0;
 }
 .about-right .member .col-md-2 ul .name {
+  color: #094183;
   font-size: 2em;
   font-weight: bolder;
 }
@@ -244,3 +245,4 @@ div {
 .statistic-right .show {
   height: 100% !important;
 }
+/*# sourceMappingURL=style.css.map */
