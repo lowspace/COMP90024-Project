@@ -1,0 +1,5 @@
+docker
+jsondiff
+pyyaml
+ansible
+openstacksdk==0.52
