@@ -27,51 +27,66 @@
   <div class="container">
     <div class="row clearfix">
   <!--    side nav-->
-      <div class="col-md-3 column sidenav">
-        <img alt="140x140" src="../static/img/404.jpg" />
+      <div class="col-md-2 column sidenav">
+        <img alt="140x140" src="../static/img/unimelb.png" />
         <ul>
           <li>
-            <a href="http://localhost:8000/home/">&nbsp<i class="fas fa-home">&nbsp&nbspHome</i></a>
+            <a href="http://localhost:8000/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
           </li>
           <li>
-            <a href="http://localhost:8000/about/">&nbsp<i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
+            <a href="http://localhost:8000/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
           </li>
           <li>
-            <a href="http://localhost:8000/map/">&nbsp<i class="fas fa-map">&nbsp&nbspMap</i></a>
+            <a href="http://localhost:8000/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
           </li>
           <li  class="this">
-            <a href="http://localhost:8000/statistics/">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
+            <a style="color: #094183" href="http://localhost:8000/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
           </li>
         </ul>
       </div>
   <!--    content for this page-->
-      <div class="col-md-9 column right-content">
+      <div class="col-md-10 column right-content">
         <div class="statistic-right">
           <div class="col-md-12 column">
-            <div class="frame data-analysis">Data Analysis</div>
-            <div class="col-md-3 user"><i class="fas fa-user">&nbsp</i>Users: <span id="total_user">loading</span></div>
-            <div class="col-md-3 tweet" style="margin: 5px 2%"><i class="fab fa-twitter">&nbsp</i>Tweet: <span id="total_tweet">loading</span></div>
-            <div class="col-md-3 tweetsport"><i class="fas fa-running">&nbsp</i>Sports: <span id="sportcount">loading</span></div>
-          </div>
-          <div class="col-md-12 column">
-            <div class = options>
-              <a class = "col-md-2" href="#barchart" id="scenario1">scenario1</a>
-              <a class = "col-md-2" href="#barchart" id="scenario2">scenario2</a>
-              <a class = "col-md-2" href="#barchart" id="scenario3">scenario3</a>
-              <a class = "col-md-2" href="#sport" id="sporttype">Sport Type</a>
+            <div class="frame">Statistics</div>
+            <div class="col-md-4 user">
+              <i class="fas fa-user"style="color: #A5DFDF"></i>
+              <p>Users:</p>
+              <span id="total_user">loading</span>
+            </div>
+            <div class="col-md-4 tweet" >
+              <i class="fab fa-twitter" style="color: #289FF0"></i>
+              <p>Tweets:</p>
+              <span id="total_tweet">loading</span>
+            </div>
+            <div class="col-md-4 tweetsport">
+              <i class="fas fa-running"  style="color: #D93241"></i>
+              <p>Sport related tweets:</p>
+              <span id="sportcount">loading</span>
             </div>
           </div>
-          <div class="statistic-detail" >
-            <div class="charts">
-              <canvas id="Statisticchart1"></canvas>
-              <canvas id="Statisticchart2"></canvas>
-              <canvas id="Statisticchart3"></canvas>
-              <canvas id="Statisticchart4"></canvas>
-              <canvas id="Statisticchart5"></canvas>
-              <canvas id="Statisticchart6"></canvas>
+          <div class="col-md-12 column" style="margin-top: 3%">
+            <div class = options>
+              <a class = "col-md-3" href="#barchart" id="scenario1">scenario1</a>
+              <a class = "col-md-3" href="#barchart" id="scenario2">scenario2</a>
+              <a class = "col-md-3" href="#barchart" id="scenario3" style="margin-right: 4%;box-shadow:5px 5px 5px #909090;">scenario3</a>
+              <a class = "col-md-3" href="#sport" id="sporttype">Sport Type</a>
+            </div>
+          </div>
+          <div class="col-md-12 column statistic-detail" >
+            <div class="col-md-6" style="margin-right: 4%">
+              <div class="charts">
+                <canvas id="Statisticchart1"></canvas>
+                <canvas id="Statisticchart2"></canvas>
+                <canvas id="Statisticchart3"></canvas>
+                <canvas id="Statisticchart4"></canvas>
+                <canvas id="Statisticchart5"></canvas>
+                <canvas id="Statisticchart6"></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
               <canvas id="Statisticchart7"></canvas>
               <canvas id="Statisticchart8"></canvas>
-            
             </div>
           </div>
         </div>
@@ -114,7 +129,7 @@
         console.log('error')
       }
 
-      //{#ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)#}
+      ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)
 
 
       // var xhr1 = new XMLHttpRequest();
@@ -172,8 +187,9 @@
       canvas4.className = 'hide';
       canvas5.className = 'hide';
       canvas6.className = 'hide';
-      canvas7.className = 'hide';
-      canvas8.className = 'hide';
+      canvas7.className = 'show';
+      canvas8.className = 'show';
+
       let barchartdata1 = [0.49,0.49,0.49,0.49];
       let barcharttitle1 = 'Gender ratio';
       let barchartdata2 = [36,36,39,35];
@@ -235,7 +251,69 @@
       const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
 
 
-    //
+      canvas7.className = 'show';
+      canvas8.className = 'show';
+      //tweets
+      let barchartdata7 = [717,672,614,997];
+      let barcharttitle7 = 'Total tweets in each city';
+      let barchartdata8 = [717,672,614,997];
+      let barcharttitle8 = 'Total sport tweets/tweets ratio';
+
+      let UsersBar7={
+        datasets: [{
+          data: barchartdata7,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+          ],
+          borderColor: [
+            'rgba(255,99,132,0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+          ],
+          borderWidth: 3
+        }],
+        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+      }
+
+      let optionBar7={
+        title: {display: true,text: barcharttitle7,fontSize: 30,},
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+      }
+      var Bar7 = canvas7.getContext('2d');
+      const Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
+      //barchart
+      let UsersBar8={
+        datasets: [{
+          data: barchartdata8,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+          ],
+          borderColor: [
+            'rgba(255,99,132,0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+          ],
+          borderWidth: 3
+        }],
+        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+      }
+
+      let optionBar8={
+        title: {display: true,text: barcharttitle8,fontSize: 30,},
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+      }
+      var Bar8 = canvas8.getContext('2d');
+      const Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+
+      //
     //scenario1
     //
       document.getElementById('scenario1').addEventListener('click', function() {
@@ -246,8 +324,6 @@
         canvas4.className = 'hide';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
-        canvas7.className = 'hide';
-        canvas8.className = 'hide';
         let barchartdata1 = [0.49,0.49,0.49,0.49];
         let barcharttitle1 = 'Gender ratio';
         let barchartdata2 = [36,36,39,35];
@@ -319,8 +395,6 @@
         canvas4.className = 'show';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
-        canvas7.className = 'hide';
-        canvas8.className = 'hide';
         let barchartdata3 = [6.1,6.8,7.8,4.8];
         let barcharttitle3 = 'Unemployment rate';
         let barchartdata4 = [0.51,0.5,0.48,0.55];
@@ -392,9 +466,6 @@
         canvas4.className = 'hide';
         canvas5.className = 'show';
         canvas6.className = 'show';
-        canvas7.className = 'hide';
-        canvas8.className = 'hide';
-
 
         let barchartdata5 = [717,672,614,997];
         let barcharttitle5 = 'Average income';
@@ -458,12 +529,6 @@
       //
       document.getElementById('sporttype').addEventListener('click', function(){
 
-        canvas1.className = 'hide';
-        canvas2.className = 'hide';
-        canvas3.className = 'hide';
-        canvas4.className = 'hide';
-        canvas5.className = 'hide';
-        canvas6.className = 'hide';
         canvas7.className = 'show';
         canvas8.className = 'show';
         //tweets
