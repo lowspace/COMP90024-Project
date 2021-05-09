@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-03#co%=wfne2!y2c6ax=l#dr36(9xwn(9j=aewyjn3upvup2sp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Load CouchDB endpoint and credentials
@@ -35,6 +35,7 @@ try:
     config.read("couchdb.conf")
 except:
     print("CouchDB Configuration not found")
+
 COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
@@ -81,7 +82,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://hostname.example.com',
     'http://localhost:8000',
     'http://127.0.0.1:9000',
-    'http://localhost:63343'
+    # 'http://localhost:63343'
 ]
 
 ROOT_URLCONF = 'twitterlance.urls'
@@ -89,7 +90,7 @@ ROOT_URLCONF = 'twitterlance.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'analyser/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,6 +154,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "analyser/static")
+]
+
+# STATIC_ROOT = os.path.join(BASE_DIR,)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

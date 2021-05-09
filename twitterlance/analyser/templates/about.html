@@ -8,7 +8,7 @@
           Xin Li
           Zihao Hu -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>COMP90024 Project Home</title>
+  <title>About</title>
   <!--import bootstrap and jquery -->
   <link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
   <link rel="stylesheet" href="../static/bootcss/bootstrap.min.css">
@@ -25,33 +25,32 @@
   <div class="container">
     <div class="row clearfix">
   <!--    side nav-->
-      <div class="col-md-3 column sidenav">
-        <img alt="140x140" src="../static/img/404.jpg" />
-        <ul>
-          <li>
-            <a href="home.html">&nbsp<i class="fas fa-home">&nbsp&nbspHome</i></a>
-          </li>
-          <li class="this">
-            <a href="#">&nbsp<i class="fas fa-project-diagram">&nbsp&nbspAbout</i></a>
-          </li>
-          <li>
-            <a href="map.html">&nbsp<i class="fas fa-map">&nbsp&nbspMap</i></a>
-          </li>
-          <li>
-            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspStatistics</i></a>
-          </li>
-          <li>
-            <a href="statistics.html">&nbsp<i class="fas fa-chart-bar">&nbsp&nbspTBA</i></a>
-          </li>
-        </ul>
+      <div class="col-md-2 column sidenav">
+        <img alt="140x140" src="../static/img/unimelb.png" />
+          <ul>
+            <li>
+              <a href="http://localhost:8000/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+            </li>
+            <li class="this">
+              <a style="color: #094183" href="http://localhost:8000/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
+            </li>
+            <li>
+              <a href="http://localhost:8000/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+            </li>
+            <li>
+              <a href="http://localhost:8000/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+            </li>
+          </ul>
       </div>
   <!--    content for this page-->
-      <div class="col-md-9 column right-content">
+      <div class="col-md-10 column right-content">
         <div class="about-right">
           <div class="frame">Frame</div>
           <div class="frame-detail">
-            <img src="../static/img/404.jpg" alt="frame pic">
-            <p>
+<!--            <p>-->
+              <img src="../static/img/404.jpg" alt="frame pic">
+<!--            </p>-->
+<!--            <p>-->
               The purpose of this project is to analyse a large amount of data from social media in the
               context of the increasing importance of social media. The main method is to count the number
               of swear words contained in tweets in different cities and analyse the emotions of tweets,
@@ -65,42 +64,83 @@
               this system, we combine the processed data with the statistical data of the Australian
               Urban Research Infrastructure Network (AURIN) platform to explore the story between different
               factors, different emotions and the frequency of swear word.
-            </p>
+<!--            </p>-->
           </div>
-          <div class="frame">Member</div>
-          <div class="frame-detail">
-            <table class="member">
-              <tr>
-                <th>Name</th>
-                <th>Student Number</th>
-                <th>Allocate task</th>
-              </tr>
-              <tr>
-                <td>Zihao Yang</td>
-                <td>666666</td>
-                <td>1,2,3</td>
-              </tr>
-              <tr>
-                <td>Wei Li</td>
-                <td>666666</td>
-                <td>1,2,3</td>
-              </tr>
-              <tr>
-                <td>Xin Li</td>
-                <td>666666</td>
-                <td>1,2,3</td>
-              </tr>
-              <tr>
-                <td>Yuqi Zhang</td>
-                <td>666666</td>
-                <td>1,2,3</td>
-              </tr>
-              <tr>
-                <td>Zihao Hu</td>
-                <td>977716</td>
-                <td>1,2,3</td>
-              </tr>
-            </table>
+          <div class="frame">Members</div>
+          <div class="col-md-12 column member">
+            <div class="col-md-2 column">
+              <ul>
+                <li class="pic"><img src="../static/img/zhyhead.png" alt="member"></li>
+                <li class="name">Zihao Yang</li>
+                <li class="number">1252410</li>
+                <li class="task">Backend, Ansible, Docker, CouchDB, Spark</li>
+              </ul>
+            </div>
+            <div class="col-md-2 column">
+              <ul>
+                <li class="pic"><img src="../static/img/wlhead.png" alt="member"></li>
+                <li class="name">Wei Li</li>
+                <li class="number">977716</li>
+                <li class="task">Twitter search, Backend, CouchDB view</li>
+              </ul>
+            </div>
+            <div class="col-md-2 column">
+              <ul>
+                <li class="pic"><img src="../static/img/yqzhead.png" alt="member"></li>
+                <li class="name">Yuqi Zhang</li>
+                <li class="number">777603</li>
+                <li class="task">UI chart, Twitter search, CouchDB view</li>
+              </ul>
+            </div>
+            <div class="col-md-2 column">
+              <ul>
+                <li class="pic"><img src="../static/img/xlhead.png" alt="member"></li>
+                <li class="name">Xin Li</li>
+                <li class="number">1029029</li>
+                <li class="task">UI map, Data analysis, CouchDB view</li>
+              </ul>
+            </div>
+            <div class="col-md-2 column">
+              <ul>
+                <li class="pic"><img src="../static/img/zhhhead.png" alt="member"></li>
+                <li class="name">Zihao Hu</li>
+                <li class="number">977716</li>
+                <li class="task">Twitter stream, UI overall, Ansible</li>
+              </ul>
+            </div>
+
+<!--            <table class="member">-->
+<!--              <tr>-->
+<!--                <th>Name</th>-->
+<!--                <th>Student Number</th>-->
+<!--                <th>Allocate task</th>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td>Zihao Yang</td>-->
+<!--                <td>666666</td>-->
+<!--                <td>1,2,3</td>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td>Wei Li</td>-->
+<!--                <td>666666</td>-->
+<!--                <td>1,2,3</td>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td>Xin Li</td>-->
+<!--                <td>666666</td>-->
+<!--                <td>1,2,3</td>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td>Yuqi Zhang</td>-->
+<!--                <td>666666</td>-->
+<!--                <td>1,2,3</td>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td>Zihao Hu</td>-->
+<!--                <td>977716</td>-->
+<!--                <td>1,2,3</td>-->
+<!--              </tr>-->
+<!--            </table>-->
           </div>
         </div>
       </div>
