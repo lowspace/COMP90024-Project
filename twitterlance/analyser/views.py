@@ -10,6 +10,7 @@ import couchdb.couch as couch
 import json
 from django.shortcuts import HttpResponse
 from collections import Counter
+import time
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
@@ -32,12 +33,14 @@ class TweetViewSet(viewsets.ViewSet):
     # GET analyser/tweets/stats
     @action(detail=False, methods=['get'], name="Get the stats of tweets")
     def stats(self, request):
+        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}')
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
-        # count["res"] = Response({"tweet_stats": 12312})
+        t2 = time.time()
+        count['time'] = t2 - t1
         return Response({"tweet_stats": count})
 
     # GET analyser/tweets/box_tweets?lat_min=-9.1457534&lat_max=-0.4000327&lon_min=134.505904&lon_max=141.0549412
@@ -104,14 +107,15 @@ class UserViewSet(viewsets.ViewSet):
     # GET analyser/users/stats
     @action(detail=False, methods=['get'], name="Get the stats of users")
     def stats(self, request):
+        t1 = time.time()
         count = {}
         for city in ["mel", "syd", "cbr", "adl"]:
             res = couch.get(f'userdb/_design/wei/_view/{city}')
-            # count[city] = res.json()
             count[city] = res.json()["total_rows"]
         count["total_users"] = sum(count.values())
         count['info'] = couch.get(f'userdb/_design/wei').json()
-        count['test'] = Response({"asf": 123}).data
+        t2 = time.time()
+        count['time'] = t2 - t1
         return Response({"user_stats": count})
 
 class SportViewSet(viewsets.ViewSet):
@@ -128,6 +132,7 @@ class SportViewSet(viewsets.ViewSet):
     # GET analyser/sports/stats_all
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
     def stats_all(self, request):
+        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
@@ -137,11 +142,14 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
+        t2 = time.time()
+        count['time'] = t2 - t1
         return Response(count)
 
     # GET analyser/sports/stats_2019
     @action(detail=False, methods=['get'], name="Get the 2019 tweets of sports")
     def stats_2019(self, request):
+        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2019')
@@ -154,11 +162,14 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
+        t2 = time.time()
+        count['time'] = t2 - t1
         return Response(count)
     
     # GET analyser/sports/stats_2020
     @action(detail=False, methods=['get'], name="Get the 2020 tweets of sports")
     def stats_2020(self, request):
+        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2020')
@@ -171,11 +182,14 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
+        t2 = time.time()
+        count['time'] = t2 - t1
         return Response(count)
 
     # GET analyser/sports/stats_2021
     @action(detail=False, methods=['get'], name="Get the 2020 tweets of sports")
     def stats_2021(self, request):
+        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2021')
@@ -188,6 +202,8 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
+        t2 = time.time()
+        count['time'] = t2 - t1
         return Response(count)
     
     # GET analyser/sports/stats_30
