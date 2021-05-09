@@ -67,10 +67,11 @@
           </div>
           <div class="col-md-12 column" style="margin-top: 3%">
             <div class = options>
-              <a class = "col-md-3" href="#barchart" id="scenario1">scenario1</a>
-              <a class = "col-md-3" href="#barchart" id="scenario2">scenario2</a>
-              <a class = "col-md-3" href="#barchart" id="scenario3" style="margin-right: 4%;box-shadow:5px 5px 5px #909090;">scenario3</a>
-              <a class = "col-md-3" href="#sport" id="sporttype">Sport Type</a>
+              <a class = "col-md-3" href="#" id="scenario1">Gender <br> Age</a>
+              <a class = "col-md-3" href="#" id="scenario2">Employment <br> Education</a>
+              <a class = "col-md-3" href="#" id="scenario3" style="margin-right: 4%;box-shadow:5px 5px 5px #909090;">Income
+                <br> tweets frequency</a>
+              <a class = "col-md-3" href="#" id="sporttype">Sports rank <br> Sports tweets rank</a>
             </div>
           </div>
           <div class="col-md-12 column statistic-detail" >
@@ -100,6 +101,7 @@
       const tuser = document.getElementById('total_user')
       const ttweet = document.getElementById('total_tweet')
       const tsport = document.getElementById('sportcount')
+
       // ajax request function
       function ajax(url, method, success, error) {
         var request = new XMLHttpRequest();
@@ -170,6 +172,7 @@
       //     }
       //   }
       // };
+
       let canvas = document.getElementsByTagName('canvas')
       let canvas1 = canvas[0];
       let canvas2 = canvas[1];
@@ -189,6 +192,8 @@
       canvas6.className = 'hide';
       canvas7.className = 'show';
       canvas8.className = 'show';
+
+      //default chart when the page is refreshed
 
       let barchartdata1 = [0.49,0.49,0.49,0.49];
       let barcharttitle1 = 'Gender ratio';
@@ -251,9 +256,7 @@
       const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
 
 
-      canvas7.className = 'show';
-      canvas8.className = 'show';
-      //tweets
+      // default right page includes tweets related status
       let barchartdata7 = [717,672,614,997];
       let barcharttitle7 = 'Total tweets in each city';
       let barchartdata8 = [717,672,614,997];
@@ -283,7 +286,7 @@
         title: {display: true,text: barcharttitle7,fontSize: 30,},
         scales: {yAxes: [{ticks: {beginAtZero:true}}] }
       }
-      var Bar7 = canvas7.getContext('2d');
+      let Bar7 = canvas7.getContext('2d');
       const Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
       //barchart
       let UsersBar8={
@@ -310,8 +313,8 @@
         title: {display: true,text: barcharttitle8,fontSize: 30,},
         scales: {yAxes: [{ticks: {beginAtZero:true}}] }
       }
-      var Bar8 = canvas8.getContext('2d');
-      const Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+      let Bar8 = canvas8.getContext('2d');
+      let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
 
       //
     //scenario1
@@ -561,8 +564,8 @@
           title: {display: true,text: barcharttitle7,fontSize: 30,},
           scales: {yAxes: [{ticks: {beginAtZero:true}}] }
         }
-        var Bar7 = canvas7.getContext('2d');
-        const Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
+        let Bar9 = canvas7.getContext('2d');
+        let Barchart9 = new Chart(Bar9, {type:'bar', data: UsersBar7, options: optionBar7});
         //barchart
         let UsersBar8={
           datasets: [{
@@ -588,8 +591,8 @@
           title: {display: true,text: barcharttitle8,fontSize: 30,},
           scales: {yAxes: [{ticks: {beginAtZero:true}}] }
         }
-        var Bar8 = canvas8.getContext('2d');
-        const Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+        let Bar10 = canvas8.getContext('2d');
+        let Barchart10 = new Chart(Bar10, {type:'bar', data: UsersBar8, options: optionBar8});
     })
     }
   </script>
