@@ -1,4 +1,3 @@
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -218,7 +217,7 @@ class SportViewSet(viewsets.ViewSet):
         count['total'] = total
         return Response(count)
 
-# analyser/sports/try1
+    # analyser/sports/try1
     @action(detail=False, methods=['get'], name="try")
     def try1(self, request):
         res = couch.get(f'tweetdb/_partition/Melbourne/_design/try/_view/total')
@@ -236,8 +235,8 @@ class AurinViewSet(viewsets.ViewSet):
     # Get /analyser/aurin/aurin/
     @action(detail=False, methods=['get'], name="Get aurin")
     def aurin(self, request):
-        #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
-        res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
+        #res = requests.get("http://34.87.251.230:5984/aurin/_design/cities/_view/aurinInfo")
+        res = couch.get(f'aurin/_design/cities/_view/aurinInfo')
         return Response(res.json())
 
 
