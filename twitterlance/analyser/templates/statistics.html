@@ -400,8 +400,12 @@
         canvas6.className = 'hide';
         let barchartdata3 = [6.1,6.8,7.8,4.8];
         let barcharttitle3 = 'Unemployment rate';
-        let barchartdata4 = [0.51,0.5,0.48,0.55];
-        let barcharttitle4 = 'Educated rate';
+        let barcharttitle4 = 'Different education levels ratio in each city';
+        let bachelor = [0.31,0.3,0.26,0.32]
+        let postgraduate = [0.15,0.15,0.11,0.22]
+        let advance = [0.15,0.15,0.15,0.14]
+        let certificate = [0.03,0.03,0.03,0.02]
+        let others = [0.36,0.37,0.45,0.3]
 
         let UsersBar3={
           datasets: [{
@@ -412,7 +416,7 @@
               'rgba(255, 206, 86, 0.5)',
               'rgba(75, 192, 192, 0.5)',
             ],
-            borderColor: [
+            borderColor: [  
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
@@ -430,30 +434,44 @@
         var Bar3 = canvas3.getContext('2d');
         const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
         //barchart
-        let UsersBar4={
-          datasets: [{
-            data: barchartdata4,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.5)',
-              'rgba(54, 162, 235, 0.5)',
-              'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
-            ],
-            borderColor: [
-              'rgba(255,99,132,0.6)',
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
-            ],
-            borderWidth: 3
-          }],
+          UsersBar4= {
+          datasets:[{
+            label: 'Certificate level',
+            data: certificate,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)'
+          },{
+            label: 'Bachelor degree',
+            data: bachelor,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)'
+          },{
+            label: 'Advanced diploma',
+            data: advance,
+            backgroundColor: 'rgba(255, 206, 86, 0.5)'
+          },{
+            label: 'Postgraduate',
+            data: postgraduate,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+          }
+          ],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
-        }
-
-        let optionBar4={
+      }
+      optionBar4= {
+          responsive: false,
           title: {display: true,text: barcharttitle4,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
-        }
+          legend: {
+            position:'bottom'
+          },
+          scales: {
+            xAxes: [{
+                stacked: true, 
+                gridLines: {drawOnChartArea:false}
+            }],
+            yAxes: [{
+                stacked: true,
+                gridLines: {drawOnChartArea:false}
+            }]
+          }
+      }
         var Bar4 = canvas4.getContext('2d');
         const Barchart4 = new Chart(Bar4, {type:'bar', data: UsersBar4, options: optionBar4});
       })
