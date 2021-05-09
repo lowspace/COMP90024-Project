@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Load CouchDB endpoint and credentials
 config = configparser.ConfigParser()
 try:
