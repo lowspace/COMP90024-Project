@@ -121,57 +121,45 @@
         }
       }
 
-      function showtotal(response){
-        ttweet.innerHTML = $.parseJSON(response)["twitter"];
-        tuser.innerHTML = eval("("+response+")")["user"];
-        tsport.innerHTML = JSON.parse(response)["sport"];
-      }
-
       function error(){
         console.log('error')
       }
 
-      ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)
+      // function showtotal(response){
+      //   ttweet.innerHTML = $.parseJSON(response)["twitter"];
+      //   tuser.innerHTML = eval("("+response+")")["user"];
+      //   tsport.innerHTML = JSON.parse(response)["sport"];
+      // }
 
+      let user4city;
+      let tweet4city;
+      let tweetperuser;
 
-      // var xhr1 = new XMLHttpRequest();
-      // xhr1.open('GET', 'http://localhost:8000/analyser/tweets/demotime/', true);
-      // xhr1.send();
-      // // xhr1.setRequestHeader()
-      // xhr1.onreadystatechange = function (){
-      //   if (xhr1.readyState === 4){
-      //     if(xhr1.status >= 200 && xhr1.status < 300){
-      //       //  处理结果 行 头空行 体
-      //       // console.log(xhr.status);
-      //       // console.log(xhr.statusText);
-      //       console.log(xhr.getAllResponseHeaders());
-      //       console.log(xhr1.response);
-      //     }
-      //   }
-      // };
+      function tweetstat(response){
+        let temp = JSON.parse(response)["tweet_stats"];
+        tweet4city = [
+                temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+        ];
+        ttweet.innerHTML = temp["total_tweets"]
+      }
 
-      // var xhr = new XMLHttpRequest();
-      // // 初始化 true表示异步 false为同步
-      // xhr.open('GET', 'http://localhost:8000/analyser/tweets/demo/', true);
-      // // 发送
-      // xhr.send();
-      // // 事件绑定
-      // xhr.onreadystatechange = function (){
-      //   if (xhr.readyState === 4){
-      //     if(xhr.status >= 200 && xhr.status < 300){
-      //       //  处理结果 行 头空行 体
-      //       // console.log(xhr.status);
-      //       // console.log(xhr.statusText);
-      //       // console.log(xhr.getAllResponseHeaders());
-      //       // console.log(xhr.response);
-      //       // 将获取的jsonstr转化为json
-      //       // ttweet.innerHTML = xhr.response["twitter"];
-      //       ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
-      //       tuser.innerHTML = eval("("+xhr.response+")")["user"];
-      //       tsport.innerHTML = JSON.parse(xhr.response)["sport"];
-      //     }
-      //   }
-      // };
+      function userstat(response){
+        let temp = JSON.parse(response)["user_stats"];
+        tuser.innerHTML = temp["total_users"];
+        user4city=[
+                temp["syd"],temp["mel"],temp["adl"],temp["cbr"]
+        ];
+      }
+
+      function sportnum(response){
+        tsport.innerHTML = JSON.parse(response)["total"];
+      }
+      //get tweets number
+      ajax('http://localhost:8000/analyser/tweets/stats/','GET', tweetstat, error)
+      //get sports number
+      ajax('http://localhost:8000/analyser/tweets/sports/','GET', sportnum, error)
+      //get user number
+      ajax('http://localhost:8000/analyser/users/stats','GET', userstat, error)
 
       let canvas = document.getElementsByTagName('canvas')
       let canvas1 = canvas[0];
@@ -470,10 +458,20 @@
         canvas5.className = 'show';
         canvas6.className = 'show';
 
+        tweetperuser = [
+          tweet4city[0]/user4city[0],
+          tweet4city[1]/user4city[1],
+          tweet4city[2]/user4city[2],
+          tweet4city[3]/user4city[3],
+        ]
+        console.log(tweet4city)
+        console.log(user4city)
+        console.log(tweetperuser)
+
         let barchartdata5 = [717,672,614,997];
         let barcharttitle5 = 'Average income';
-        let barchartdata6 = [717,672,614,997];
-        let barcharttitle6 = 'Total user/tweets ratio';
+        let barchartdata6 = tweetperuser ;
+        let barcharttitle6 = 'Tweets/users rate';
 
         let UsersBar5={
           datasets: [{
@@ -595,6 +593,45 @@
         let Barchart10 = new Chart(Bar10, {type:'bar', data: UsersBar8, options: optionBar8});
     })
     }
+
+    // var xhr1 = new XMLHttpRequest();
+    // xhr1.open('GET', 'http://localhost:8000/analyser/tweets/demotime/', true);
+    // xhr1.send();
+    // // xhr1.setRequestHeader()
+    // xhr1.onreadystatechange = function (){
+    //   if (xhr1.readyState === 4){
+    //     if(xhr1.status >= 200 && xhr1.status < 300){
+    //       //  处理结果 行 头空行 体
+    //       // console.log(xhr.status);
+    //       // console.log(xhr.statusText);
+    //       console.log(xhr.getAllResponseHeaders());
+    //       console.log(xhr1.response);
+    //     }
+    //   }
+    // };
+
+    // var xhr = new XMLHttpRequest();
+    // // 初始化 true表示异步 false为同步
+    // xhr.open('GET', 'http://localhost:8000/analyser/tweets/demo/', true);
+    // // 发送
+    // xhr.send();
+    // // 事件绑定
+    // xhr.onreadystatechange = function (){
+    //   if (xhr.readyState === 4){
+    //     if(xhr.status >= 200 && xhr.status < 300){
+    //       //  处理结果 行 头空行 体
+    //       // console.log(xhr.status);
+    //       // console.log(xhr.statusText);
+    //       // console.log(xhr.getAllResponseHeaders());
+    //       // console.log(xhr.response);
+    //       // 将获取的jsonstr转化为json
+    //       // ttweet.innerHTML = xhr.response["twitter"];
+    //       ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
+    //       tuser.innerHTML = eval("("+xhr.response+")")["user"];
+    //       tsport.innerHTML = JSON.parse(xhr.response)["sport"];
+    //     }
+    //   }
+    // };
   </script>
 </body>
 </html>

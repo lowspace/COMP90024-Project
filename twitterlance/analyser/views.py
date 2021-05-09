@@ -95,7 +95,7 @@ class TweetViewSet(viewsets.ViewSet):
             res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
             count += res.json()['rows'][0]["value"]
         res = {"total":count}
-        return Response(res)
+        return HttpResponse(json.dumps(res))
            
     # GET a month of tweets
     #@action(detail=False, methods=['get'], name="month tweets total")
@@ -125,7 +125,7 @@ class UserViewSet(viewsets.ViewSet):
         count["total_users"] = sum(count.values())
         count['info'] = couch.get(f'userdb/_design/wei').json()
         count['test'] = Response({"asf": 123}).data
-        return Response({"user_stats": count})
+        return HttpResponse(json.dumps({"user_stats": count}))
 
 class SportViewSet(viewsets.ViewSet):
 
