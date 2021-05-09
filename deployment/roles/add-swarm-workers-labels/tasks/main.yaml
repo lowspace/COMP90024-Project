@@ -1,0 +1,20 @@
+---
+- name: Add couchdb label
+  community.docker.docker_node:
+    hostname: '{{ item }}'
+    labels:
+      couchdb: 'false'
+  with_items: '{{ instance_names }}'
+  register: result
+- debug:
+    msg: "{{ result }}"
+
+- name: Add spark_master label
+  community.docker.docker_node:
+    hostname: '{{ item }}'
+    labels:
+      spark_master: 'false'
+  with_items: '{{ instance_names }}'
+  register: result
+- debug:
+    msg: "{{ result }}"

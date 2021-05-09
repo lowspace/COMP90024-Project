@@ -3,14 +3,27 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.core.management import call_command
-# from django.http import
+from django.shortcuts import render
 import couchdb.couch as couch
 # import twitter_search.search_tweet as search
 # import twitter_stream.stream as stream
-import json
+import json, time
 from django.shortcuts import HttpResponse
 from collections import Counter
-import time
+
+# template page
+def home(request):
+    return render(request, 'home.html',)
+
+def about(request):
+    return render(request, 'about.html',)
+
+def statistics(request):
+    return render(request, 'statistics.html',)
+
+def map(request):
+    return render(request, 'map.html',)
+
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
@@ -28,20 +41,17 @@ class TweetViewSet(viewsets.ViewSet):
     # GET analyser/tweets/:id
     def retrieve(self, request, pk=None):
         res = couch.get(f'tweetdb/{pk}')
-        return Response(couch.get('twitter',pk).json())
+        return Response(couch.get('twitter', pk).json())
 
     # GET analyser/tweets/stats
     @action(detail=False, methods=['get'], name="Get the stats of tweets")
     def stats(self, request):
-        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}')
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
-        t2 = time.time()
-        count['time'] = t2 - t1
-        return Response({"tweet_stats": count})
+        return HttpResponse(json.dumps({"tweet_stats": count}))
 
     # GET analyser/tweets/box_tweets?lat_min=-9.1457534&lat_max=-0.4000327&lon_min=134.505904&lon_max=141.0549412
     @action(detail=False, methods=['get'], name="Get Tweets within box")
@@ -72,10 +82,10 @@ class TweetViewSet(viewsets.ViewSet):
         return HttpResponse(json.dumps(time1))
 
     # GET analyser/tweets/sum
-    @action(detail=False, methods=['get'], name="Xin test ")
-    def sum(self, request):
-        res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
-        return Response({'a':res.json()})
+    # @action(detail=False, methods=['get'], name="Xin test ")
+    # def sum(self, request):
+    #     res = couch.get('tiny_tweets/_partition/Melbourne/_design/simon/_view/new-view')
+    #     return Response({'a':res.json()})
     
     # GET sport related tweets: analyser/tweets/sports/
     @action(detail=False, methods=['get'], name="sport tweets total")
@@ -85,7 +95,7 @@ class TweetViewSet(viewsets.ViewSet):
             res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
             count += res.json()['rows'][0]["value"]
         res = {"total":count}
-        return Response(res)
+        return HttpResponse(json.dumps(res))
            
     # GET a month of tweets
     #@action(detail=False, methods=['get'], name="month tweets total")
@@ -107,16 +117,12 @@ class UserViewSet(viewsets.ViewSet):
     # GET analyser/users/stats
     @action(detail=False, methods=['get'], name="Get the stats of users")
     def stats(self, request):
-        t1 = time.time()
         count = {}
         for city in ["mel", "syd", "cbr", "adl"]:
-            res = couch.get(f'userdb/_design/wei/_view/{city}')
+            res = couch.get(f'userdb/_design/cities/_view/{city}')
             count[city] = res.json()["total_rows"]
         count["total_users"] = sum(count.values())
-        count['info'] = couch.get(f'userdb/_design/wei').json()
-        t2 = time.time()
-        count['time'] = t2 - t1
-        return Response({"user_stats": count})
+        return HttpResponse(json.dumps({"user_stats": count}))
 
 class SportViewSet(viewsets.ViewSet):
 
@@ -132,7 +138,6 @@ class SportViewSet(viewsets.ViewSet):
     # GET analyser/sports/stats_all
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
     def stats_all(self, request):
-        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
@@ -142,14 +147,11 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        t2 = time.time()
-        count['time'] = t2 - t1
         return Response(count)
 
     # GET analyser/sports/stats_2019
     @action(detail=False, methods=['get'], name="Get the 2019 tweets of sports")
     def stats_2019(self, request):
-        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2019')
@@ -162,14 +164,11 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        t2 = time.time()
-        count['time'] = t2 - t1
         return Response(count)
     
     # GET analyser/sports/stats_2020
     @action(detail=False, methods=['get'], name="Get the 2020 tweets of sports")
     def stats_2020(self, request):
-        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2020')
@@ -182,14 +181,11 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        t2 = time.time()
-        count['time'] = t2 - t1
         return Response(count)
 
     # GET analyser/sports/stats_2021
     @action(detail=False, methods=['get'], name="Get the 2020 tweets of sports")
     def stats_2021(self, request):
-        t1 = time.time()
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/2021')
@@ -202,8 +198,6 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        t2 = time.time()
-        count['time'] = t2 - t1
         return Response(count)
     
     # GET analyser/sports/stats_30
@@ -223,6 +217,7 @@ class SportViewSet(viewsets.ViewSet):
         count['total'] = total
         return Response(count)
 
+# analyser/sports/try1
     @action(detail=False, methods=['get'], name="try")
     def try1(self, request):
         res = couch.get(f'tweetdb/_partition/Melbourne/_design/try/_view/total')
@@ -239,7 +234,7 @@ class AurinViewSet(viewsets.ViewSet):
 
     # Get /analyser/aurin/aurin/
     @action(detail=False, methods=['get'], name="Get aurin")
-    def aurin(self,request):
+    def aurin(self, request):
         #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
         res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
         return Response(res.json())
@@ -252,7 +247,8 @@ class YearlySportsTweetsViewSet(viewsets.ViewSet):
             url += f'?{request.query_params.urlencode()}'
         res = couch.get(url)
         return Response(res.json())
-    
+
+    # /analyser/yearly/sport_tweet_yearly
     @action(detail=False, methods=['get'], name="Get yearly sports tweets")
     def sport_tweet_yearly(self, request):
         count = {}
