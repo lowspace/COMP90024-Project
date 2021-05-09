@@ -17,9 +17,12 @@ token = dict(
     access_token_secret = '847AbkKGOcEp1SeiR3wNu5xvBgDaUS0EHd9iIeMx6nv50',
     )
     
-    # token_2 = dict(
-
-    # )
+    token_2 = dict(
+    consumer_key = 'b9UKdOCbro8FfL4bOK95Argnb',
+    consumer_secret = '1vSkkEIB4hdBhuTE7BMtvgjdnuq9h755E38bQzhaf0cdcbS90M',
+    access_token_key = '1387659560098275331-hgjcBher08GC4QHuz8XYLq9ApNxKZA',
+    access_token_secret = 'UVFS6qpTaUAu8WnfuEYiBpqV7VKZTh3Bjmof8s8Whws1E',
+    )
 
 )
 
