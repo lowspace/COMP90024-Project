@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-03#co%=wfne2!y2c6ax=l#dr36(9xwn(9j=aewyjn3upvup2sp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
 
 # Load CouchDB endpoint and credentials
