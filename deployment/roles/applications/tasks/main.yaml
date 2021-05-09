@@ -1,0 +1,84 @@
+---
+- name: Create data directory if it does not exist
+  become: yes
+  ansible.builtin.file:
+    path: /home/ubuntu/twitterlance/
+    state: directory
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy docker compose file
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/docker-compose.yml
+    dest: /home/ubuntu/twitterlance/
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy shared couchdb configuration
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/couchdb.ini
+    dest: /home/ubuntu/twitterlance/
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy couchdb cluster tools
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/couchdb_cluster/
+    dest: /home/ubuntu/twitterlance/
+    directory_mode: yes
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Deploy twitterlance stack
+  community.docker.docker_stack:
+    state: present
+    name: twitterlance
+    compose:
+      - /home/ubuntu/twitterlance/docker-compose.yml
+
+- name: Wait for port 5984 of any IP to close active connections, don't start checking for 10 seconds
+  wait_for:
+    host: 127.0.0.1
+    port: 5984
+    delay: 10
+    state: present
+
+- name: Set up Couchdb cluster
+  command: python3 /home/ubuntu/twitterlance/recluster.py
+  register: result
+  args:
+    warn: no
+- debug:
+    msg: '{{ result.stdout | default("Message empty.") }}'
+
+# uri module has an issue with couchdb authentication 
+- name: Init couchdb default database
+  shell: curl -X PUT http://user:pass@127.0.0.1:5984/_users
+  register: result
+  args:
+    warn: no  
+- debug:
+    msg: '{{ result.stdout | default("Message empty.") }}'
+
+- name: Init couchdb default database
+  shell: curl -X PUT http://user:pass@127.0.0.1:5984/_replicator
+  register: result
+  args:
+    warn: no
+- debug:
+    msg: '{{ result.stdout | default("Message empty.") }}' 
+
+- name: Init couchdb default database
+  shell: curl -X PUT http://user:pass@127.0.0.1:5984/_global_changes
+  register: result
+  args:
+    warn: no
+- debug:
+    msg: '{{ result.stdout | default("Message empty.") }}' 
