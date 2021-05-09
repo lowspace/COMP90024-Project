@@ -82,7 +82,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://hostname.example.com',
     'http://localhost:8000',
     'http://127.0.0.1:9000',
-    'http://localhost:63343'
+    # 'http://localhost:63343'
 ]
 
 ROOT_URLCONF = 'twitterlance.urls'
