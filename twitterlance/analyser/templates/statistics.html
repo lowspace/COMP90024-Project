@@ -65,17 +65,16 @@
               <span id="sportcount">loading</span>
             </div>
           </div>
-          <div class="col-md-12 column" style="margin-top: 3%">
-            <div class = options>
-              <a class = "col-md-3" href="#" id="scenario1">Gender <br> Age</a>
-              <a class = "col-md-3" href="#" id="scenario2">Employment <br> Education</a>
-              <a class = "col-md-3" href="#" id="scenario3" style="margin-right: 4%;box-shadow:5px 5px 5px #909090;">Income
-                <br> tweets frequency</a>
-              <a class = "col-md-3" href="#" id="sporttype">Sports rank <br> Sports tweets rank</a>
-            </div>
-          </div>
+
           <div class="col-md-12 column statistic-detail" >
-            <div class="col-md-6" style="margin-right: 4%">
+            <div class="col-md-6" style="margin-right: 2%">
+              <div class="col-md-12 column">
+                <div class = options>
+                  <a class = "col-md-3" href="#" id="scenario1" style="border-radius: 5px 0 0 0;">Gender <br> Age</a>
+                  <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Employment <br> Education</a>
+                  <a class = "col-md-3" href="#" id="scenario3" style="border-radius: 0 5px 0 0 ;">Income <br> Tweets frequency</a>
+                </div>
+              </div>
               <div class="charts">
                 <canvas id="Statisticchart1"></canvas>
                 <canvas id="Statisticchart2"></canvas>
@@ -86,8 +85,13 @@
               </div>
             </div>
             <div class="col-md-6">
-              <canvas id="Statisticchart7"></canvas>
-              <canvas id="Statisticchart8"></canvas>
+              <div class = options>
+                <a class = "col-md-3" href="#" id="sporttype" style="border-radius: 5px 5px 0 0;width: 100%">Sports rank <br> Sports tweets rank</a>
+              </div>
+              <div class="charts">
+                <canvas id="Statisticchart7"></canvas>
+                <canvas id="Statisticchart8"></canvas>
+              </div>
             </div>
           </div>
         </div>
@@ -104,7 +108,7 @@
 
       // ajax request function
       function ajax(url, method, success, error) {
-        var request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         // for (var key in header) {
         //   request.setRequestHeader(key, header[key]);
         // }
@@ -204,7 +208,7 @@
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
         labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
@@ -233,7 +237,7 @@
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
         labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
@@ -273,7 +277,7 @@
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
         labels: labels7
       }
@@ -301,7 +305,7 @@
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
         labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
@@ -324,67 +328,6 @@
         canvas4.className = 'hide';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
-        // let barchartdata1 = [0.49,0.49,0.49,0.49];
-        // let barcharttitle1 = 'Gender ratio in each city';
-        // let barchartdata2 = [36,36,39,35];
-        // let barcharttitle2 = 'Medium age of citizens in each city';
-        //
-        // let UsersBar1={
-        //   datasets: [{
-        //     label: 'Male percentage',
-        //     data: barchartdata1,
-        //     backgroundColor: [
-        //       'rgba(255, 99, 132, 0.5)',
-        //       'rgba(54, 162, 235, 0.5)',
-        //       'rgba(255, 206, 86, 0.5)',
-        //       'rgba(75, 192, 192, 0.5)',
-        //     ],
-        //     borderColor: [
-        //       'rgba(255,99,132,0.6)',
-        //       'rgba(54, 162, 235, 0.6)',
-        //       'rgba(255, 206, 86, 0.6)',
-        //       'rgba(75, 192, 192, 0.6)',
-        //     ],
-        //     borderWidth: 3
-        //   }],
-        //   labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
-        // }
-        // let optionBar1={
-        //   title: {display: true,text: barcharttitle1,fontSize: 30,},
-        //   scales: {yAxes: [{ticks: {beginAtZero:true}}] }
-        // }
-        //
-        // var Bar1 = canvas1.getContext('2d');
-        // const Barchart1 = new Chart(Bar1, {type:'bar', data: UsersBar1, options: optionBar1});
-        //
-        // //barchart
-        // let UsersBar2={
-        //   datasets: [{
-        //     label: 'Medium age',
-        //     data: barchartdata2,
-        //     backgroundColor: [
-        //       'rgba(255, 99, 132, 0.5)',
-        //       'rgba(54, 162, 235, 0.5)',
-        //       'rgba(255, 206, 86, 0.5)',
-        //       'rgba(75, 192, 192, 0.5)',
-        //     ],
-        //     borderColor: [
-        //       'rgba(255,99,132,0.6)',
-        //       'rgba(54, 162, 235, 0.6)',
-        //       'rgba(255, 206, 86, 0.6)',
-        //       'rgba(75, 192, 192, 0.6)',
-        //     ],
-        //     borderWidth: 3
-        //   }],
-        //   labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
-        // }
-        // let optionBar2={
-        //   title: {display: true,text: barcharttitle2,fontSize: 30,},
-        //   scales: {yAxes: [{ticks: {beginAtZero:true}}] }
-        // }
-        //
-        // var Bar2 = canvas2.getContext('2d');
-        // const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
       })
 
       //
@@ -422,7 +365,7 @@
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
@@ -434,7 +377,7 @@
         var Bar3 = canvas3.getContext('2d');
         const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
         //barchart
-          UsersBar4= {
+        let  UsersBar4= {
           datasets:[{
             label: 'Certificate level',
             data: certificate,
@@ -455,7 +398,7 @@
           ],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
-      optionBar4= {
+      let optionBar4= {
           responsive: true,
           title: {display: true,text: barcharttitle4,fontSize: 25,},
           legend: {
@@ -469,11 +412,10 @@
             yAxes: [{
                 stacked: true,
                 ticks: {beginAtZero:true}
-  
             }]
           }
       }
-        var Bar4 = canvas4.getContext('2d');
+        let Bar4 = canvas4.getContext('2d');
         const Barchart4 = new Chart(Bar4, {type:'bar', data: UsersBar4, options: optionBar4});
       })
 
@@ -495,6 +437,7 @@
           tweet4city[2]/user4city[2],
           tweet4city[3]/user4city[3],
         ]
+
         console.log(tweet4city)
         console.log(user4city)
         console.log(tweetperuser)
@@ -520,7 +463,7 @@
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
@@ -548,7 +491,7 @@
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
@@ -557,8 +500,8 @@
           title: {display: true,text: barcharttitle6,fontSize: 30,},
           scales: {yAxes: [{ticks: {beginAtZero:true}}] }
         }
-        var Bar6 = canvas6.getContext('2d');
-        const Barchart6 = new Chart(Bar6, {type:'bar', data: UsersBar6, options: optionBar6});
+        let Bar6 = canvas6.getContext('2d');
+        let Barchart6 = new Chart(Bar6, {type:'bar', data: UsersBar6, options: optionBar6});
       })
       //
       document.getElementById('sporttype').addEventListener('click', function(){
@@ -592,7 +535,7 @@
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: labels7
         }
@@ -620,7 +563,7 @@
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
