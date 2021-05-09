@@ -1,3 +1,4 @@
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -119,12 +120,9 @@ class UserViewSet(viewsets.ViewSet):
     def stats(self, request):
         count = {}
         for city in ["mel", "syd", "cbr", "adl"]:
-            res = couch.get(f'userdb/_design/wei/_view/{city}')
-            # count[city] = res.json()
+            res = couch.get(f'userdb/_design/cities/_view/{city}')
             count[city] = res.json()["total_rows"]
         count["total_users"] = sum(count.values())
-        count['info'] = couch.get(f'userdb/_design/wei').json()
-        count['test'] = Response({"asf": 123}).data
         return HttpResponse(json.dumps({"user_stats": count}))
 
 class SportViewSet(viewsets.ViewSet):
