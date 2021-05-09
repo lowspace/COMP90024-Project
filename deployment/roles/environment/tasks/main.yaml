@@ -1,0 +1,197 @@
+---
+- name: Add proxy
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/environment
+    dest: /etc/environment
+    owner: ubuntu
+    group: ubuntu
+    mode: '0664'
+
+- name: Install packages
+  become: yes
+  apt:
+    name: ['python3', 'python3-pip', 'docker.io']
+    state: latest
+    update_cache: yes
+
+- name: Upgrade pip
+  pip:
+    name: ['pip']
+    state: latest
+  environment:
+    HTTP_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/' # For some reason pip ignores /etc/environment proxy
+    HTTPS_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/'
+
+- name: Install Python packages 
+  pip:
+    name: ['jsondiff', 'docker', 'pyyaml', 'docker-compose']
+    state: latest
+  environment:
+    HTTP_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/'
+    HTTPS_PROXY: 'http://wwwproxy.unimelb.edu.au:8000/'
+
+- name: Ensure group docker exists
+  become: yes
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add the user ubuntu to docker group
+  become: yes
+  ansible.builtin.user:
+    name: ubuntu
+    group: docker
+
+- name: Create a ext2 filesystem on /dev/sdb1
+  become: yes
+  community.general.filesystem:
+    fstype: ext4
+    dev: /dev/vdb
+  
+- name: Create data directory if it does not exist
+  become: yes
+  ansible.builtin.file:
+    path: /data
+    state: directory
+    mode: '0755'
+    owner: ubuntu
+    group: docker
+  
+- name: Mount up disk
+  become: yes
+  ansible.posix.mount:
+    path: /data
+    src: /dev/vdb
+    fstype: ext4
+    state: present
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/data
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/etc/
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Create directories required by couchdb
+  become: yes
+  ansible.builtin.file:
+    path: /data/opt/couchdb/etc/local.d
+    state: directory
+    mode: '0775'
+    owner: ubuntu
+    group: docker
+
+- name: Launch ip_vs for docker
+  become: yes
+  command: modprobe ip_vs
+  register: result
+- debug:
+    msg: "{{ result.stdout }}"
+
+- name: Creates directory for docker config
+  become: yes
+  file:
+    path: /etc/systemd/system/docker.service.d/
+    state: directory
+    owner: ubuntu
+    group: docker
+    mode: 0664
+    recurse: yes
+
+- name: Add proxy to docker
+  become: yes
+  ansible.builtin.copy:
+    src: http-proxy.conf
+    dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+    owner: ubuntu
+    group: docker
+    mode: '0664'
+
+- name: Restart docker daemon
+  become: yes
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+
+- name: Reset ssh connection to get permissions for docker
+  meta: reset_connection
+
+- name: Make sure docker daemon is running
+  become: yes
+  ansible.builtin.systemd:
+    state: started
+    name: docker
+
+- name: Create data directory if it does not exist
+  become: yes
+  ansible.builtin.file:
+    path: /home/ubuntu/twitterlance/
+    state: directory
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy docker compose file
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/docker-compose.yml
+    dest: /home/ubuntu/twitterlance/
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy shared couchdb configuration
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/couchdb.ini
+    dest: /home/ubuntu/twitterlance/
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Copy couchdb cluster tools
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/couchdb_cluster/
+    dest: /home/ubuntu/twitterlance/
+    directory_mode: yes
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: print files
+  command: ls /home/ubuntu/twitterlance/
+  register: result
+- debug:
+    msg: '{{ result.stdout }}'

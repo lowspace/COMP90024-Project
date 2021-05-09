@@ -1,0 +1,8 @@
+---
+- name: find join token 
+  shell: docker swarm join-token worker
+  when: hostvars[inventory_hostname]["openstack"]["name"] == 'instance1'
+  with_items: '{{ hostvars }}'
+  register: join_token_str 
+- debug:
+    msg: "{{ join_token_str | default('No stdout') }}"
