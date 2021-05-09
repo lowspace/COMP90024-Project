@@ -196,13 +196,14 @@
       //default chart when the page is refreshed
 
       let barchartdata1 = [0.49,0.49,0.49,0.49];
-      let barcharttitle1 = 'Gender ratio';
+      let barcharttitle1 = 'Gender ratio in each city';
       let barchartdata2 = [36,36,39,35];
-      let barcharttitle2 = 'Average age';
+      let barcharttitle2 = 'Medium age of citizens in each city';
 
       let UsersBar1={
         datasets: [{
           data: barchartdata1,
+          label: 'Male percentage',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
@@ -231,6 +232,7 @@
       let UsersBar2={
         datasets: [{
           data: barchartdata2,
+          label:'Medium age',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
@@ -257,29 +259,35 @@
 
 
       // default right page includes tweets related status
-      let barchartdata7 = [717,672,614,997];
-      let barcharttitle7 = 'Total tweets in each city';
+      let barchartdata7 = [717,672,614,997,700,340];
+      let barcharttitle7 = 'Most popular sports among all tweets';
       let barchartdata8 = [717,672,614,997];
-      let barcharttitle8 = 'Total sport tweets/tweets ratio';
+      let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
+      let labels7 = ['sport1','sport2','sport3','sport4','sport5','sport6']
 
       let UsersBar7={
         datasets: [{
           data: barchartdata7,
+          label:'number of tweets mentioned which sport',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
             'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
           ],
           borderColor: [
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
+            'rgba(255,99,132,0.6)',
+            'rgba(54, 162, 235, 0.6)',
           ],
           borderWidth: 3
         }],
-        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        labels: labels7
       }
 
       let optionBar7={
@@ -287,11 +295,12 @@
         scales: {yAxes: [{ticks: {beginAtZero:true}}] }
       }
       let Bar7 = canvas7.getContext('2d');
-      const Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
+      let Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
       //barchart
       let UsersBar8={
         datasets: [{
           data: barchartdata8,
+          label:'percentage of sports tweets against total tweets',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
@@ -328,12 +337,13 @@
         canvas5.className = 'hide';
         canvas6.className = 'hide';
         let barchartdata1 = [0.49,0.49,0.49,0.49];
-        let barcharttitle1 = 'Gender ratio';
+        let barcharttitle1 = 'Gender ratio in each city';
         let barchartdata2 = [36,36,39,35];
-        let barcharttitle2 = 'Average age';
+        let barcharttitle2 = 'Medium age of citizens in each city';
 
         let UsersBar1={
           datasets: [{
+            label: 'Male percentage',
             data: barchartdata1,
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
@@ -362,6 +372,7 @@
         //barchart
         let UsersBar2={
           datasets: [{
+            label: 'Medium age',
             data: barchartdata2,
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
@@ -399,7 +410,7 @@
         canvas5.className = 'hide';
         canvas6.className = 'hide';
         let barchartdata3 = [6.1,6.8,7.8,4.8];
-        let barcharttitle3 = 'Unemployment rate';
+        let barcharttitle3 = 'Unemployment rate in each city';
         let barcharttitle4 = 'Different education levels ratio in each city';
         let bachelor = [0.31,0.3,0.26,0.32]
         let postgraduate = [0.15,0.15,0.11,0.22]
@@ -409,6 +420,7 @@
 
         let UsersBar3={
           datasets: [{
+            label: 'Unemployment rate',
             data: barchartdata3,
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
@@ -440,7 +452,7 @@
             data: certificate,
             backgroundColor: 'rgba(255, 99, 132, 0.5)'
           },{
-            label: 'Bachelor degree',
+            label: 'Bachelor',
             data: bachelor,
             backgroundColor: 'rgba(54, 162, 235, 0.5)'
           },{
@@ -456,19 +468,20 @@
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
       optionBar4= {
-          responsive: false,
-          title: {display: true,text: barcharttitle4,fontSize: 30,},
+          responsive: true,
+          title: {display: true,text: barcharttitle4,fontSize: 25,},
           legend: {
-            position:'bottom'
+            position:'top'
           },
           scales: {
             xAxes: [{
                 stacked: true, 
-                gridLines: {drawOnChartArea:false}
+                
             }],
             yAxes: [{
                 stacked: true,
-                gridLines: {drawOnChartArea:false}
+                ticks: {beginAtZero:true}
+  
             }]
           }
       }
@@ -489,13 +502,14 @@
         canvas6.className = 'show';
 
         let barchartdata5 = [717,672,614,997];
-        let barcharttitle5 = 'Average income';
+        let barcharttitle5 = 'Average income in each city';
         let barchartdata6 = [717,672,614,997];
-        let barcharttitle6 = 'Total user/tweets ratio';
+        let barcharttitle6 = 'Number of tweets sent per user in each city';
 
         let UsersBar5={
           datasets: [{
             data: barchartdata5,
+            label: 'average income per week',
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
@@ -523,6 +537,7 @@
         let UsersBar6={
           datasets: [{
             data: barchartdata6,
+            label:'tweets number',
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
@@ -553,29 +568,35 @@
         canvas7.className = 'show';
         canvas8.className = 'show';
         //tweets
-        let barchartdata7 = [717,672,614,997];
-        let barcharttitle7 = 'Total tweets in each city';
+        let barchartdata7 = [717,672,614,997,700,340];
+        let barcharttitle7 = 'Most popular sports among all tweets';
         let barchartdata8 = [717,672,614,997];
-        let barcharttitle8 = 'Total sport tweets/tweets ratio';
+        let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
+        let labels7 = ['sport1','sport2','sport3','sport4','sport5','sport6']
 
         let UsersBar7={
           datasets: [{
             data: barchartdata7,
-            backgroundColor: [
+            label:'number of tweets mentioned which sport',
+            backgroundColor: [     
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
               'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
             ],
             borderWidth: 3
           }],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+          labels: labels7
         }
 
         let optionBar7={
@@ -588,6 +609,7 @@
         let UsersBar8={
           datasets: [{
             data: barchartdata8,
+            label:'percentage of sports tweets against total tweets',
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
