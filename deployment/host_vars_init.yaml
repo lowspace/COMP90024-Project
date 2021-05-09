@@ -88,14 +88,35 @@ security_groups:
     port_range_max: 7077
     remote_ip_prefix: 0.0.0.0/0
 
-  - name: spark_8081
+  - name: spark_4040
     description: "spark cluster"
+    protocol: tcp
+    port_range_min: 4040
+    port_range_max: 4040
+    remote_ip_prefix: 0.0.0.0/0
+
+  - name: spark_6066
+    description: "spark cluster"
+    protocol: tcp
+    port_range_min: 6066
+    port_range_max: 6066
+    remote_ip_prefix: 0.0.0.0/0
+  
+  - name: spark_18080
+    description: "spark cluster"
+    protocol: tcp
+    port_range_min: 18080
+    port_range_max: 18080
+    remote_ip_prefix: 0.0.0.0/0
+
+  - name: spark_worker_8081
+    description: "spark worker"
     protocol: tcp
     port_range_min: 8081
     port_range_max: 8081
     remote_ip_prefix: 0.0.0.0/0
 
-  - name: visualizer_8080
+  - name: spark_master_8080
     description: "security group for 8080"
     protocol: tcp
     port_range_min: 8080
