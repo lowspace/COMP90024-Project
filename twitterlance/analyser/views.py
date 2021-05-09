@@ -11,7 +11,7 @@ import json, time
 from django.shortcuts import HttpResponse
 from collections import Counter
 
-
+# template page
 def home(request):
     return render(request, 'home.html',)
 
