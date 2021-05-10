@@ -59,4 +59,6 @@ After CouchDB is set up, all CouchDB nodes are programmatically added to the Cou
 
 Another Python script reshard.py is used to recover database shards when the services are restarted, or when Docker Swarm nodes are restarted/moved/removed. This is not needed in deployment, but prepared for disaster recovery. When a service is deployed, Docker Swarm will assign a random task ID to each service, and the task ID is a part of CouchDB's node name. Since CouchDB maintains a map (database) between shards and CouchDB node name, it will not be able to open shards if the node name does not match the shards ID in the map. Thus, reshard.py is provided to fix the shard mapping. No data loss will occur in this fix. 
 
+Potentially the reshard job could be easily lauched by portainer web UI, but it requires a paid license. 
+
 ### Instance Scalability 

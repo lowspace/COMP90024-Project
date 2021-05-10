@@ -32,8 +32,8 @@ services:
         target: /opt/couchdb/etc/local.d
     environment:
       NODENAME: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
-      COUCHDB_USER: "user"
-      COUCHDB_PASSWORD: "pass"
+      COUCHDB_USER: "admin"
+      COUCHDB_PASSWORD: "password"
       COUCHDB_SECRET: "92de07df7e7a3fe14808cef90a7cc0d91"
       ERL_FLAGS: "-setcookie a20b37d83ef18efce400b3ace400036e"
     entrypoint: /bin/bash -c "cp -f /couchdb_conf /opt/couchdb/etc/local.d/docker.ini && cat /opt/couchdb/etc/local.d/docker.ini && /docker-entrypoint.sh /opt/couchdb/bin/couchdb"
@@ -49,7 +49,7 @@ services:
   app:
     image: "yangzy3/twitterlance"
     ports:
-      - "80:80"
+      - "81:80"
     deploy:
       mode: replicated
       replicas: 1

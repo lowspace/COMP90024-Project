@@ -35,11 +35,18 @@ security_groups:
     port_range_max: 22
     remote_ip_prefix: 0.0.0.0/0
 
-  - name: http
-    description: "security group for HTTP"
+  - name: proxy
+    description: "security group for proxy"
     protocol: tcp
     port_range_min: 80
     port_range_max: 80
+    remote_ip_prefix: 0.0.0.0/0
+
+  - name: http
+    description: "security group for HTTP"
+    protocol: tcp
+    port_range_min: 81
+    port_range_max: 81
     remote_ip_prefix: 0.0.0.0/0
 
   - name: https
