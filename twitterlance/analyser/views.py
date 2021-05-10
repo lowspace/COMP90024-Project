@@ -1,9 +1,10 @@
+from django.http import HttpResponseRedirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.core.management import call_command
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import couchdb.couch as couch
 # import twitter_search.search_tweet as search
 # import twitter_stream.stream as stream
@@ -23,6 +24,9 @@ def statistics(request):
 
 def map(request):
     return render(request, 'map.html',)
+
+def manage(request):
+    return redirect('http://127.0.0.1:9000/')
 
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
