@@ -1,7 +1,7 @@
 FROM python:3.7-alpine
 
 # Create a group and user to run our app
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN adduser -S appuser -G root
 
 # Add project code
 RUN mkdir /code/
