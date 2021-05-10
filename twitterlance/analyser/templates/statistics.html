@@ -104,6 +104,25 @@
 
 
   <script>
+    let canvas = document.getElementsByTagName('canvas')
+    let canvas1 = canvas[0];
+    let canvas2 = canvas[1];
+    let canvas3 = canvas[2];
+    let canvas4 = canvas[3];
+    let canvas5 = canvas[4];
+    let canvas6 = canvas[5];
+    let canvas7 = canvas[6];
+    let canvas8 = canvas[7];
+
+    //default
+    canvas1.className = 'show';
+    canvas2.className = 'show';
+    canvas3.className = 'hide';
+    canvas4.className = 'hide';
+    canvas5.className = 'hide';
+    canvas6.className = 'hide';
+    canvas7.className = 'show';
+    canvas8.className = 'show';
     window.onload = function () {
       const tuser = document.getElementById('total_user')
       const ttweet = document.getElementById('total_tweet')
@@ -141,6 +160,10 @@
       let user4city;
       let tweet4city;
       let tweetperuser;
+      let sport4city;
+      let sportpertweet;
+      let sportlabel;
+      let sportcounts;
 
       function tweetstat(response){
         let temp = JSON.parse(response)["tweet_stats"];
@@ -158,35 +181,107 @@
         ];
       }
 
-      function sportnum(response){
-        tsport.innerHTML = JSON.parse(response)["total"];
+      function popularsport(response){
+        let temp = JSON.parse(response)["total"];
+        temps=Object.entries(temp).sort((a,b) => b[1]-a[1]);
+        sportlabel=[
+                temps[0][0],temps[1][0],temps[2][0],temps[3][0],temps[4][0],temps[5][0]
+        ];
+        sportcounts=[
+                temps[0][1],temps[1][1],temps[2][1],temps[3][1],temps[4][1],temps[5][1]
+        ];
+        let labels7 = sportlabel
+        let barchartdata7 = sportcounts
+        let UsersBar7={
+          datasets: [{
+            data: barchartdata7,
+            label:'number of tweets mentioned which sport',
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+            ],
+            borderWidth: 0
+          }],
+          labels: labels7
+        }
+
+        let optionBar7={
+          title: {display: true,text: barcharttitle7,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        let Bar7 = canvas7.getContext('2d');
+        let Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
       }
+
+      function sportnum(response){
+        let temp = JSON.parse(response)
+        tsport.innerHTML = temp["total"];
+        sport4city=[
+                temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+        ];
+        sportpertweet = [
+          (sport4city[0]/tweet4city[0])*100,
+          (sport4city[1]/tweet4city[1])*100,
+          (sport4city[2]/tweet4city[2])*100,
+          (sport4city[3]/tweet4city[3])*100
+        ]
+        let barchartdata8 = sportpertweet;
+        let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
+        
+        //barchart
+        let UsersBar8={
+          datasets: [{
+            data: barchartdata8,
+            label:'percentage of sports tweets against total tweets',
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 0
+          }],
+          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        }
+
+        let optionBar8={
+          title: {display: true,text: barcharttitle8,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        }
+        let Bar8 = canvas8.getContext('2d');
+        let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+      }
+
+  
+
+
       //get tweets number
       ajax('http://localhost:8000/analyser/tweets/stats/','GET', tweetstat, error)
-      //get sports number
-      ajax('http://localhost:8000/analyser/tweets/sports/','GET', sportnum, error)
       //get user number
       ajax('http://localhost:8000/analyser/users/stats','GET', userstat, error)
+      //get sports number
+      ajax('http://localhost:8000/analyser/tweets/sports/','GET', sportnum, error)
+      //get sport type
+      ajax('http://localhost:8000/analyser/sports/stats_all','GET', popularsport, error)
 
-      let canvas = document.getElementsByTagName('canvas')
-      let canvas1 = canvas[0];
-      let canvas2 = canvas[1];
-      let canvas3 = canvas[2];
-      let canvas4 = canvas[3];
-      let canvas5 = canvas[4];
-      let canvas6 = canvas[5];
-      let canvas7 = canvas[6];
-      let canvas8 = canvas[7];
-
-    //default
-      canvas1.className = 'show';
-      canvas2.className = 'show';
-      canvas3.className = 'hide';
-      canvas4.className = 'hide';
-      canvas5.className = 'hide';
-      canvas6.className = 'hide';
-      canvas7.className = 'show';
-      canvas8.className = 'show';
 
       //default chart when the page is refreshed
 
@@ -252,14 +347,12 @@
       var Bar2 = canvas2.getContext('2d');
       const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
 
-
       // default right page includes tweets related status
-      let barchartdata7 = [717,672,614,997,700,340];
+      let barchartdata7 = sportcounts;
       let barcharttitle7 = 'Most popular sports among all tweets';
-      let barchartdata8 = [717,672,614,997];
+      let barchartdata8 = sportpertweet;
       let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
       let labels7 = ['sport1','sport2','sport3','sport4','sport5','sport6']
-
       let UsersBar7={
         datasets: [{
           data: barchartdata7,
@@ -319,6 +412,7 @@
       }
       let Bar8 = canvas8.getContext('2d');
       let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+
 
       //
     //scenario1
@@ -512,11 +606,17 @@
         canvas7.className = 'show';
         canvas8.className = 'show';
         //tweets
-        let barchartdata7 = [717,672,614,997,700,340];
+        sportpertweet = [
+          (sport4city[0]/tweet4city[0])*100,
+          (sport4city[1]/tweet4city[1])*100,
+          (sport4city[2]/tweet4city[2])*100,
+          (sport4city[3]/tweet4city[3])*100
+        ]
+        let barchartdata7 = sportcounts;
         let barcharttitle7 = 'Most popular sports among all tweets';
-        let barchartdata8 = [717,672,614,997];
+        let barchartdata8 = sportpertweet
         let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
-        let labels7 = ['sport1','sport2','sport3','sport4','sport5','sport6']
+        let labels7 = sportlabel
 
         let UsersBar7={
           datasets: [{
