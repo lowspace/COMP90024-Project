@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,17 +11,18 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Statistics</title>
   <!--import bootstrap and jquery -->
-  <link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
-  <link rel="stylesheet" href="../static/bootcss/bootstrap.min.css">
-  <link rel="stylesheet" href="../static/bootcss/bootstrap-theme.min.css">
-  <script src="../static/jquery/jquery.min.js"></script>
-  <script src="../static/bootjs/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{% static "/css/normalize.css"%}">
+  <link rel="stylesheet" href="{% static "/bootcss/bootstrap.min.css" %}">
+  <script src="{% static "/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>
+  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>
+
+<!--  import style sheet-->
+  <link rel="stylesheet" type="text/css" href="{% static "/css/style.css"%}"/>
+  <link rel="stylesheet" href="{% static "/css/fa/css/all.css"%}">
   <!--  import chart-->
-  <script src="../static/Chart.js/Chart.min.js"></script>
-  <script src="../static/Chart.js/samples/utils.js"></script>
-  <!--  import style sheet-->
-  <link rel="stylesheet" type="text/css" href="../static/css/style.css"/>
-  <link rel="stylesheet" href="../static/css/fa/css/all.css">
+  <script src="{% static "/Chart.js/Chart.min.js"%}"></script>
+  <script src="{% static "/Chart.js/samples/utils.js"%}"></script>
 
 </head>
 <body id="statistics">
@@ -28,19 +30,22 @@
     <div class="row clearfix">
   <!--    side nav-->
       <div class="col-md-2 column sidenav">
-        <img alt="140x140" src="../static/img/unimelb.png" />
+        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
         <ul>
           <li>
-            <a href="http://localhost:8000/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+            <a href={% url 'home' %}>&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
           </li>
           <li>
-            <a href="http://localhost:8000/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
+            <a href={% url 'about' %}>&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
           </li>
           <li>
-            <a href="http://localhost:8000/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+            <a href={% url 'map' %}>&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
           </li>
           <li  class="this">
-            <a style="color: #094183" href="http://localhost:8000/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+            <a style="color: #094183" href={% url 'statistics' %}>&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+          </li>
+          <li>
+            <a href={% url 'manage' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspManage</a>
           </li>
         </ul>
       </div>
@@ -65,17 +70,16 @@
               <span id="sportcount">loading</span>
             </div>
           </div>
-          <div class="col-md-12 column" style="margin-top: 3%">
-            <div class = options>
-              <a class = "col-md-3" href="#" id="scenario1">Gender <br> Age</a>
-              <a class = "col-md-3" href="#" id="scenario2">Employment <br> Education</a>
-              <a class = "col-md-3" href="#" id="scenario3" style="margin-right: 4%;box-shadow:5px 5px 5px #909090;">Income
-                <br> tweets frequency</a>
-              <a class = "col-md-3" href="#" id="sporttype">Sports rank <br> Sports tweets rank</a>
-            </div>
-          </div>
+
           <div class="col-md-12 column statistic-detail" >
-            <div class="col-md-6" style="margin-right: 4%">
+            <div class="col-md-6" style="margin-right: 2%">
+              <div class="col-md-12 column">
+                <div class = options>
+                  <a class = "col-md-3" href="#" id="scenario1" style="border-radius: 5px 0 0 0;">Gender <br> Age</a>
+                  <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Employment <br> Education</a>
+                  <a class = "col-md-3" href="#" id="scenario3" style="border-radius: 0 5px 0 0 ;">Income <br> Tweets frequency</a>
+                </div>
+              </div>
               <div class="charts">
                 <canvas id="Statisticchart1"></canvas>
                 <canvas id="Statisticchart2"></canvas>
@@ -86,8 +90,13 @@
               </div>
             </div>
             <div class="col-md-6">
-              <canvas id="Statisticchart7"></canvas>
-              <canvas id="Statisticchart8"></canvas>
+              <div class = options>
+                <a class = "col-md-3" href="#" id="sporttype" style="border-radius: 5px 5px 0 0;width: 100%">Sports rank <br> Sports tweets rank</a>
+              </div>
+              <div class="charts">
+                <canvas id="Statisticchart7"></canvas>
+                <canvas id="Statisticchart8"></canvas>
+              </div>
             </div>
           </div>
         </div>
@@ -97,6 +106,25 @@
 
 
   <script>
+    let canvas = document.getElementsByTagName('canvas')
+    let canvas1 = canvas[0];
+    let canvas2 = canvas[1];
+    let canvas3 = canvas[2];
+    let canvas4 = canvas[3];
+    let canvas5 = canvas[4];
+    let canvas6 = canvas[5];
+    let canvas7 = canvas[6];
+    let canvas8 = canvas[7];
+
+    //default
+    canvas1.className = 'show';
+    canvas2.className = 'show';
+    canvas3.className = 'hide';
+    canvas4.className = 'hide';
+    canvas5.className = 'hide';
+    canvas6.className = 'hide';
+    canvas7.className = 'show';
+    canvas8.className = 'show';
     window.onload = function () {
       const tuser = document.getElementById('total_user')
       const ttweet = document.getElementById('total_tweet')
@@ -104,7 +132,7 @@
 
       // ajax request function
       function ajax(url, method, success, error) {
-        var request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         // for (var key in header) {
         //   request.setRequestHeader(key, header[key]);
         // }
@@ -121,88 +149,156 @@
         }
       }
 
-      function showtotal(response){
-        ttweet.innerHTML = $.parseJSON(response)["twitter"];
-        tuser.innerHTML = eval("("+response+")")["user"];
-        tsport.innerHTML = JSON.parse(response)["sport"];
-      }
-
       function error(){
         console.log('error')
       }
 
-      ajax('http://localhost:8000/analyser/tweets/demo/','GET', showtotal, error)
+      // function showtotal(response){
+      //   ttweet.innerHTML = $.parseJSON(response)["twitter"];
+      //   tuser.innerHTML = eval("("+response+")")["user"];
+      //   tsport.innerHTML = JSON.parse(response)["sport"];
+      // }
 
+      let user4city;
+      let tweet4city;
+      let tweetperuser;
+      let sport4city;
+      let sportpertweet;
+      let sportlabel;
+      let sportcounts;
 
-      // var xhr1 = new XMLHttpRequest();
-      // xhr1.open('GET', 'http://localhost:8000/analyser/tweets/demotime/', true);
-      // xhr1.send();
-      // // xhr1.setRequestHeader()
-      // xhr1.onreadystatechange = function (){
-      //   if (xhr1.readyState === 4){
-      //     if(xhr1.status >= 200 && xhr1.status < 300){
-      //       //  处理结果 行 头空行 体
-      //       // console.log(xhr.status);
-      //       // console.log(xhr.statusText);
-      //       console.log(xhr.getAllResponseHeaders());
-      //       console.log(xhr1.response);
-      //     }
-      //   }
-      // };
+      function tweetstat(response){
+        let temp = JSON.parse(response)["tweet_stats"];
+        tweet4city = [
+                temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+        ];
+        ttweet.innerHTML = temp["total_tweets"]
+      }
 
-      // var xhr = new XMLHttpRequest();
-      // // 初始化 true表示异步 false为同步
-      // xhr.open('GET', 'http://localhost:8000/analyser/tweets/demo/', true);
-      // // 发送
-      // xhr.send();
-      // // 事件绑定
-      // xhr.onreadystatechange = function (){
-      //   if (xhr.readyState === 4){
-      //     if(xhr.status >= 200 && xhr.status < 300){
-      //       //  处理结果 行 头空行 体
-      //       // console.log(xhr.status);
-      //       // console.log(xhr.statusText);
-      //       // console.log(xhr.getAllResponseHeaders());
-      //       // console.log(xhr.response);
-      //       // 将获取的jsonstr转化为json
-      //       // ttweet.innerHTML = xhr.response["twitter"];
-      //       ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
-      //       tuser.innerHTML = eval("("+xhr.response+")")["user"];
-      //       tsport.innerHTML = JSON.parse(xhr.response)["sport"];
-      //     }
-      //   }
-      // };
+      function userstat(response){
+        let temp = JSON.parse(response)["user_stats"];
+        tuser.innerHTML = temp["total_users"];
+        user4city=[
+                temp["syd"],temp["mel"],temp["adl"],temp["cbr"]
+        ];
+      }
 
-      let canvas = document.getElementsByTagName('canvas')
-      let canvas1 = canvas[0];
-      let canvas2 = canvas[1];
-      let canvas3 = canvas[2];
-      let canvas4 = canvas[3];
-      let canvas5 = canvas[4];
-      let canvas6 = canvas[5];
-      let canvas7 = canvas[6];
-      let canvas8 = canvas[7];
+      function popularsport(response){
+        let temp = JSON.parse(response)["total"];
+        temps=Object.entries(temp).sort((a,b) => b[1]-a[1]);
+        sportlabel=[
+                temps[0][0],temps[1][0],temps[2][0],temps[3][0],temps[4][0],temps[5][0]
+        ];
+        sportcounts=[
+                temps[0][1],temps[1][1],temps[2][1],temps[3][1],temps[4][1],temps[5][1]
+        ];
+        let labels7 = sportlabel
+        let barchartdata7 = sportcounts
+        let UsersBar7={
+          datasets: [{
+            data: barchartdata7,
+            label:'number of tweets mentioned which sport',
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+            ],
+            borderWidth: 0
+          }],
+          labels: labels7
+        }
 
-    //default
-      canvas1.className = 'show';
-      canvas2.className = 'show';
-      canvas3.className = 'hide';
-      canvas4.className = 'hide';
-      canvas5.className = 'hide';
-      canvas6.className = 'hide';
-      canvas7.className = 'show';
-      canvas8.className = 'show';
+        let optionBar7={
+          title: {display: true,text: barcharttitle7,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
+        }
+        let Bar7 = canvas7.getContext('2d');
+        let Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
+      }
+
+      function sportnum(response){
+        let temp = JSON.parse(response)
+        tsport.innerHTML = temp["total"];
+        sport4city=[
+                temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+        ];
+        sportpertweet = [
+          (sport4city[0]/tweet4city[0])*100,
+          (sport4city[1]/tweet4city[1])*100,
+          (sport4city[2]/tweet4city[2])*100,
+          (sport4city[3]/tweet4city[3])*100
+        ]
+        let barchartdata8 = sportpertweet;
+        let barcharttitle8 = 'Total Sport Tweets/Tweets Ratio';
+        
+        //barchart
+        let UsersBar8={
+          datasets: [{
+            data: barchartdata8,
+            label:'percentage of sports tweets against total tweets',
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+            ],
+            borderWidth: 0
+          }],
+          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        }
+
+        let optionBar8={
+          title: {display: true,text: barcharttitle8,fontSize: 30,},
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
+        }
+        let Bar8 = canvas8.getContext('2d');
+        let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+      }
+
+      //get tweets number
+      ajax('/analyser/tweets/stats/','GET', tweetstat, error)
+      //get user number
+      ajax('/analyser/users/stats/','GET', userstat, error)
+      //get sports number
+      ajax('/analyser/tweets/sports/','GET', sportnum, error)
+      //get sport type
+      ajax('/analyser/sports/stats_all/','GET', popularsport, error)
+
 
       //default chart when the page is refreshed
 
       let barchartdata1 = [0.49,0.49,0.49,0.49];
-      let barcharttitle1 = 'Gender ratio';
+      let barcharttitle1 = 'Gender Ratio';
       let barchartdata2 = [36,36,39,35];
-      let barcharttitle2 = 'Average age';
+      let barcharttitle2 = 'Medium Age';
 
       let UsersBar1={
         datasets: [{
           data: barchartdata1,
+          label: 'Male Percentage',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
@@ -215,13 +311,17 @@
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
         labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
       let optionBar1={
         title: {display: true,text: barcharttitle1,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                },
+        gridlines: {borderWidth: 0.5}
       }
 
       var Bar1 = canvas1.getContext('2d');
@@ -231,6 +331,7 @@
       let UsersBar2={
         datasets: [{
           data: barchartdata2,
+          label:'Medium age',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
@@ -243,55 +344,66 @@
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
         labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
       let optionBar2={
         title: {display: true,text: barcharttitle2,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                }
       }
 
       var Bar2 = canvas2.getContext('2d');
       const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
 
-
       // default right page includes tweets related status
-      let barchartdata7 = [717,672,614,997];
-      let barcharttitle7 = 'Total tweets in each city';
-      let barchartdata8 = [717,672,614,997];
-      let barcharttitle8 = 'Total sport tweets/tweets ratio';
-
+      let barchartdata7 = sportcounts;
+      let barcharttitle7 = 'Most Popular Sports';
+      let barchartdata8 = sportpertweet;
+      let barcharttitle8 = 'Total Sport Tweets/Tweets Ratio';
+      let labels7 = ['sport1','sport2','sport3','sport4','sport5','sport6']
       let UsersBar7={
         datasets: [{
           data: barchartdata7,
+          label:'number of tweets mentioned which sport',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
             'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
           ],
           borderColor: [
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
+            'rgba(255,99,132,0.6)',
+            'rgba(54, 162, 235, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
-        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        labels: labels7
       }
 
       let optionBar7={
         title: {display: true,text: barcharttitle7,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                }
       }
       let Bar7 = canvas7.getContext('2d');
-      const Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
+      let Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
       //barchart
       let UsersBar8={
         datasets: [{
           data: barchartdata8,
+          label:'percentage of sports tweets against total tweets',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
@@ -304,17 +416,21 @@
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
           ],
-          borderWidth: 3
+          borderWidth: 0
         }],
         labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
       }
 
       let optionBar8={
         title: {display: true,text: barcharttitle8,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                }
       }
       let Bar8 = canvas8.getContext('2d');
       let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+
 
       //
     //scenario1
@@ -327,65 +443,6 @@
         canvas4.className = 'hide';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
-        let barchartdata1 = [0.49,0.49,0.49,0.49];
-        let barcharttitle1 = 'Gender ratio';
-        let barchartdata2 = [36,36,39,35];
-        let barcharttitle2 = 'Average age';
-
-        let UsersBar1={
-          datasets: [{
-            data: barchartdata1,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.5)',
-              'rgba(54, 162, 235, 0.5)',
-              'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
-            ],
-            borderColor: [
-              'rgba(255,99,132,0.6)',
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
-            ],
-            borderWidth: 3
-          }],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
-        }
-        let optionBar1={
-          title: {display: true,text: barcharttitle1,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
-        }
-
-        var Bar1 = canvas1.getContext('2d');
-        const Barchart1 = new Chart(Bar1, {type:'bar', data: UsersBar1, options: optionBar1});
-
-        //barchart
-        let UsersBar2={
-          datasets: [{
-            data: barchartdata2,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.5)',
-              'rgba(54, 162, 235, 0.5)',
-              'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
-            ],
-            borderColor: [
-              'rgba(255,99,132,0.6)',
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
-            ],
-            borderWidth: 3
-          }],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
-        }
-        let optionBar2={
-          title: {display: true,text: barcharttitle2,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
-        }
-
-        var Bar2 = canvas2.getContext('2d');
-        const Barchart2 = new Chart(Bar2, {type:'bar', data: UsersBar2, options: optionBar2});
       })
 
       //
@@ -400,11 +457,16 @@
         canvas6.className = 'hide';
         let barchartdata3 = [6.1,6.8,7.8,4.8];
         let barcharttitle3 = 'Unemployment rate';
-        let barchartdata4 = [0.51,0.5,0.48,0.55];
-        let barcharttitle4 = 'Educated rate';
+        let barcharttitle4 = 'Education Levels Ratio';
+        let bachelor = [0.31,0.3,0.26,0.32]
+        let postgraduate = [0.15,0.15,0.11,0.22]
+        let advance = [0.15,0.15,0.15,0.14]
+        let certificate = [0.03,0.03,0.03,0.02]
+        let others = [0.36,0.37,0.45,0.3]
 
         let UsersBar3={
           datasets: [{
+            label: 'Unemployment rate',
             data: barchartdata3,
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
@@ -412,49 +474,66 @@
               'rgba(255, 206, 86, 0.5)',
               'rgba(75, 192, 192, 0.5)',
             ],
-            borderColor: [
+            borderColor: [  
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
 
         let optionBar3={
           title: {display: true,text: barcharttitle3,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         var Bar3 = canvas3.getContext('2d');
         const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
         //barchart
-        let UsersBar4={
-          datasets: [{
-            data: barchartdata4,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.5)',
-              'rgba(54, 162, 235, 0.5)',
-              'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
-            ],
-            borderColor: [
-              'rgba(255,99,132,0.6)',
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
-            ],
-            borderWidth: 3
-          }],
+        let  UsersBar4= {
+          datasets:[{
+            label: 'Certificate level',
+            data: certificate,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)'
+          },{
+            label: 'Bachelor',
+            data: bachelor,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)'
+          },{
+            label: 'Advanced diploma',
+            data: advance,
+            backgroundColor: 'rgba(255, 206, 86, 0.5)'
+          },{
+            label: 'Postgraduate',
+            data: postgraduate,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+          }
+          ],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
-        }
-
-        let optionBar4={
+      }
+      let optionBar4= {
+          responsive: true,
           title: {display: true,text: barcharttitle4,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
-        }
-        var Bar4 = canvas4.getContext('2d');
+          legend: {
+            position:'top'
+          },
+          scales: {
+            xAxes: [{
+                stacked: true, 
+                
+            }],
+            yAxes: [{
+                stacked: true,
+                ticks: {beginAtZero:true}
+            }]
+          }
+      }
+        let Bar4 = canvas4.getContext('2d');
         const Barchart4 = new Chart(Bar4, {type:'bar', data: UsersBar4, options: optionBar4});
       })
 
@@ -470,14 +549,26 @@
         canvas5.className = 'show';
         canvas6.className = 'show';
 
+        tweetperuser = [
+          tweet4city[0]/user4city[0],
+          tweet4city[1]/user4city[1],
+          tweet4city[2]/user4city[2],
+          tweet4city[3]/user4city[3],
+        ]
+
+        console.log(tweet4city)
+        console.log(user4city)
+        console.log(tweetperuser)
+
         let barchartdata5 = [717,672,614,997];
-        let barcharttitle5 = 'Average income';
-        let barchartdata6 = [717,672,614,997];
-        let barcharttitle6 = 'Total user/tweets ratio';
+        let barcharttitle5 = 'Medium Income ';
+        let barchartdata6 = tweetperuser ;
+        let barcharttitle6 = 'Number of Tweets Sent per User';
 
         let UsersBar5={
           datasets: [{
             data: barchartdata5,
+            label: 'average income per week',
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
@@ -490,14 +581,17 @@
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
 
         let optionBar5={
           title: {display: true,text: barcharttitle5,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         var Bar5 = canvas5.getContext('2d');
         const Barchart5 = new Chart(Bar5, {type:'bar', data: UsersBar5, options: optionBar5});
@@ -505,6 +599,7 @@
         let UsersBar6={
           datasets: [{
             data: barchartdata6,
+            label:'tweets number',
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
@@ -517,17 +612,20 @@
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
 
         let optionBar6={
           title: {display: true,text: barcharttitle6,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
-        var Bar6 = canvas6.getContext('2d');
-        const Barchart6 = new Chart(Bar6, {type:'bar', data: UsersBar6, options: optionBar6});
+        let Bar6 = canvas6.getContext('2d');
+        let Barchart6 = new Chart(Bar6, {type:'bar', data: UsersBar6, options: optionBar6});
       })
       //
       document.getElementById('sporttype').addEventListener('click', function(){
@@ -535,34 +633,49 @@
         canvas7.className = 'show';
         canvas8.className = 'show';
         //tweets
-        let barchartdata7 = [717,672,614,997];
-        let barcharttitle7 = 'Total tweets in each city';
-        let barchartdata8 = [717,672,614,997];
-        let barcharttitle8 = 'Total sport tweets/tweets ratio';
+        sportpertweet = [
+          (sport4city[0]/tweet4city[0])*100,
+          (sport4city[1]/tweet4city[1])*100,
+          (sport4city[2]/tweet4city[2])*100,
+          (sport4city[3]/tweet4city[3])*100
+        ]
+        let barchartdata7 = sportcounts;
+        let barcharttitle7 = 'Most Popular Sports';
+        let barchartdata8 = sportpertweet
+        let barcharttitle8 = 'Total Sport Tweets/Tweets ratio';
+        let labels7 = sportlabel
 
         let UsersBar7={
           datasets: [{
             data: barchartdata7,
-            backgroundColor: [
+            label:'number of tweets mentioned which sport',
+            backgroundColor: [     
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
               'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+          labels: labels7
         }
 
         let optionBar7={
           title: {display: true,text: barcharttitle7,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         let Bar9 = canvas7.getContext('2d');
         let Barchart9 = new Chart(Bar9, {type:'bar', data: UsersBar7, options: optionBar7});
@@ -570,6 +683,7 @@
         let UsersBar8={
           datasets: [{
             data: barchartdata8,
+            label:'percentage of sports tweets against total tweets',
             backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
@@ -582,19 +696,61 @@
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
             ],
-            borderWidth: 3
+            borderWidth: 0
           }],
           labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
         }
 
         let optionBar8={
           title: {display: true,text: barcharttitle8,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         let Bar10 = canvas8.getContext('2d');
         let Barchart10 = new Chart(Bar10, {type:'bar', data: UsersBar8, options: optionBar8});
     })
     }
+
+    // var xhr1 = new XMLHttpRequest();
+    // xhr1.open('GET', 'http://localhost:8000/analyser/tweets/demotime/', true);
+    // xhr1.send();
+    // // xhr1.setRequestHeader()
+    // xhr1.onreadystatechange = function (){
+    //   if (xhr1.readyState === 4){
+    //     if(xhr1.status >= 200 && xhr1.status < 300){
+    //       //  处理结果 行 头空行 体
+    //       // console.log(xhr.status);
+    //       // console.log(xhr.statusText);
+    //       console.log(xhr.getAllResponseHeaders());
+    //       console.log(xhr1.response);
+    //     }
+    //   }
+    // };
+
+    // var xhr = new XMLHttpRequest();
+    // // 初始化 true表示异步 false为同步
+    // xhr.open('GET', 'http://localhost:8000/analyser/tweets/demo/', true);
+    // // 发送
+    // xhr.send();
+    // // 事件绑定
+    // xhr.onreadystatechange = function (){
+    //   if (xhr.readyState === 4){
+    //     if(xhr.status >= 200 && xhr.status < 300){
+    //       //  处理结果 行 头空行 体
+    //       // console.log(xhr.status);
+    //       // console.log(xhr.statusText);
+    //       // console.log(xhr.getAllResponseHeaders());
+    //       // console.log(xhr.response);
+    //       // 将获取的jsonstr转化为json
+    //       // ttweet.innerHTML = xhr.response["twitter"];
+    //       ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
+    //       tuser.innerHTML = eval("("+xhr.response+")")["user"];
+    //       tsport.innerHTML = JSON.parse(xhr.response)["sport"];
+    //     }
+    //   }
+    // };
   </script>
 </body>
 </html>

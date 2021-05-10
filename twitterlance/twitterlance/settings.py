@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Load CouchDB endpoint and credentials
 config = configparser.ConfigParser()
 try:
@@ -156,7 +155,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "analyser/static")
+    os.path.join(BASE_DIR, "static")
 ]
 
 # STATIC_ROOT = os.path.join(BASE_DIR,)

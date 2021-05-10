@@ -1,9 +1,10 @@
+from django.http import HttpResponseRedirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.core.management import call_command
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import couchdb.couch as couch
 # import twitter_search.search_tweet as search
 # import twitter_stream.stream as stream
@@ -23,6 +24,9 @@ def statistics(request):
 
 def map(request):
     return render(request, 'map.html',)
+
+def manage(request):
+    return redirect('http://127.0.0.1:9000/')
 
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
@@ -91,11 +95,13 @@ class TweetViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="sport tweets total")
     def sports(self, request):
         count = 0
+        res1 = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
+            res1[city]=res.json()['rows'][0]["value"]
             count += res.json()['rows'][0]["value"]
-        res = {"total":count}
-        return Response(res)
+        res1["total"] = count
+        return HttpResponse(json.dumps(res1))
            
     # GET a month of tweets
     #@action(detail=False, methods=['get'], name="month tweets total")
@@ -119,13 +125,10 @@ class UserViewSet(viewsets.ViewSet):
     def stats(self, request):
         count = {}
         for city in ["mel", "syd", "cbr", "adl"]:
-            res = couch.get(f'userdb/_design/wei/_view/{city}')
-            # count[city] = res.json()
+            res = couch.get(f'userdb/_design/cities/_view/{city}')
             count[city] = res.json()["total_rows"]
         count["total_users"] = sum(count.values())
-        count['info'] = couch.get(f'userdb/_design/wei').json()
-        count['test'] = Response({"asf": 123}).data
-        return Response({"user_stats": count})
+        return HttpResponse(json.dumps({"user_stats": count}))
 
 class SportViewSet(viewsets.ViewSet):
 
@@ -150,7 +153,7 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        return Response(count)
+        return HttpResponse(json.dumps(count))
 
     # GET analyser/sports/stats_2019
     @action(detail=False, methods=['get'], name="Get the 2019 tweets of sports")
@@ -220,7 +223,7 @@ class SportViewSet(viewsets.ViewSet):
         count['total'] = total
         return Response(count)
 
-# analyser/sports/try1
+    # analyser/sports/try1
     @action(detail=False, methods=['get'], name="try")
     def try1(self, request):
         res = couch.get(f'tweetdb/_partition/Melbourne/_design/try/_view/total')
@@ -238,8 +241,8 @@ class AurinViewSet(viewsets.ViewSet):
     # Get /analyser/aurin/aurin/
     @action(detail=False, methods=['get'], name="Get aurin")
     def aurin(self, request):
-        #res = requests.get("http://34.87.251.230:5984/aurin/_design/xin/_view/aurinInfo")
-        res = couch.get(f'aurin/_design/xin/_view/aurinInfo')
+        #res = requests.get("http://34.87.251.230:5984/aurin/_design/cities/_view/aurinInfo")
+        res = couch.get(f'aurin/_design/cities/_view/aurinInfo')
         return Response(res.json())
 
 
