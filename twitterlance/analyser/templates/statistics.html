@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,17 +11,18 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Statistics</title>
   <!--import bootstrap and jquery -->
-  <link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
-  <link rel="stylesheet" href="../static/bootcss/bootstrap.min.css">
-  <link rel="stylesheet" href="../static/bootcss/bootstrap-theme.min.css">
-  <script src="../static/jquery/jquery.min.js"></script>
-  <script src="../static/bootjs/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{% static "/css/normalize.css"%}">
+  <link rel="stylesheet" href="{% static "/bootcss/bootstrap.min.css" %}">
+  <script src="{% static "/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>
+  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>
+
+<!--  import style sheet-->
+  <link rel="stylesheet" type="text/css" href="{% static "/css/style.css"%}"/>
+  <link rel="stylesheet" href="{% static "/css/fa/css/all.css"%}">
   <!--  import chart-->
-  <script src="../static/Chart.js/Chart.min.js"></script>
-  <script src="../static/Chart.js/samples/utils.js"></script>
-  <!--  import style sheet-->
-  <link rel="stylesheet" type="text/css" href="../static/css/style.css"/>
-  <link rel="stylesheet" href="../static/css/fa/css/all.css">
+  <script src="{% static "/Chart.js/Chart.min.js"%}"></script>
+  <script src="{% static "/Chart.js/samples/utils.js"%}"></script>
 
 </head>
 <body id="statistics">
@@ -28,22 +30,22 @@
     <div class="row clearfix">
   <!--    side nav-->
       <div class="col-md-2 column sidenav">
-        <img alt="140x140" src="../static/img/unimelb.png" />
+        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
         <ul>
           <li>
-            <a href="http://localhost:8000/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+            <a href={% url 'home' %}>&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
           </li>
           <li>
-            <a href="http://localhost:8000/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
+            <a href={% url 'about' %}>&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
           </li>
           <li>
-            <a href="http://localhost:8000/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+            <a href={% url 'map' %}>&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
           </li>
           <li  class="this">
-            <a style="color: #094183" href="http://localhost:8000/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+            <a style="color: #094183" href={% url 'statistics' %}>&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
           </li>
           <li>
-            <a href="http://localhost:9000/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspManage</a>
+            <a href={% url 'manage' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspManage</a>
           </li>
         </ul>
       </div>
@@ -270,17 +272,14 @@
         let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
       }
 
-  
-
-
       //get tweets number
-      ajax('http://localhost:8000/analyser/tweets/stats/','GET', tweetstat, error)
+      ajax('/analyser/tweets/stats/','GET', tweetstat, error)
       //get user number
-      ajax('http://localhost:8000/analyser/users/stats','GET', userstat, error)
+      ajax('/analyser/users/stats/','GET', userstat, error)
       //get sports number
-      ajax('http://localhost:8000/analyser/tweets/sports/','GET', sportnum, error)
+      ajax('/analyser/tweets/sports/','GET', sportnum, error)
       //get sport type
-      ajax('http://localhost:8000/analyser/sports/stats_all','GET', popularsport, error)
+      ajax('/analyser/sports/stats_all/','GET', popularsport, error)
 
 
       //default chart when the page is refreshed
