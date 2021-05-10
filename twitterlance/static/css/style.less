@@ -36,8 +36,17 @@ html,body,div{
     list-style: none;
     margin: 0;
     padding: 0;
+    position: relative;
     li{
       list-style: none;
+    }
+    li:last-child{
+      position: fixed;
+      bottom:0;
+      a{
+        font-weight: bolder;
+        color: @unimleblue;
+      }
     }
     a{
       padding: 20px 0 20px 0;
@@ -65,7 +74,8 @@ html,body,div{
     homepage
  */
 .home-right{
-  height: 100%;
+  margin: 0.5%;
+  height: 99%;
   border-radius: 10px;
   background-image: url("../img/twitter-marketing.jpg");
   background-position: center;
@@ -74,7 +84,9 @@ html,body,div{
   color: #666666;
   padding-top: 15%;
   text-align: center;
+  box-shadow: 0 0 5px #666666;
   h1{
+    //color: @unimleblue;
     font-family: Arial Black, Gadget, sans-serif;
     //font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 77pt;
@@ -91,6 +103,7 @@ html,body,div{
 
 // about page
 
+.about-right::-webkit-scrollbar { width: 0 !important }
 .about-right{
   color: @fontgray;
   overflow-y: auto;
@@ -104,7 +117,7 @@ html,body,div{
     text-align: left;
   }
   .frame-detail{
-    margin: 0 0 20px 0;
+    margin: 0 5px 20px 5px;
     padding: 20px;
     height: auto;
     color:@fontgraydark;
@@ -112,6 +125,7 @@ html,body,div{
     border-radius: 15px;
     font-size: 1.5em;
     text-align: justify;
+    box-shadow: 0 0 5px #666666;
     img{
       margin-right: 1.5em;
       float: left;
@@ -119,17 +133,20 @@ html,body,div{
     }
   }
   .member{
-    margin: 0;
+    margin: 0 0 0.5% 0;
     padding: 0;
     width: 100%;
-    height: auto;
+    height: 50%;
+    display: table;
     .col-md-2{
-      margin: 0 .5% 0 0;
-      width: 19.6%;
+      display: table-cell;
+      margin: 0 0.5% 0 0.5%;
+      width: 19%;
       background-color: @bgcolor;
-      height: auto;
+      height: 100%;
       text-align: center;
       border-radius: 8px;
+      box-shadow: 0 0 5px #666666;
       ul{
         list-style: none;
         padding: 0;
@@ -139,6 +156,7 @@ html,body,div{
           font-weight: bolder;
         }
         .number{
+          margin: 15px 0;
           font-size: 1.5em;
           font-weight: bolder;
         }
@@ -153,9 +171,9 @@ html,body,div{
       }
 
     }
-    .col-md-2:last-child{
-      margin: 0;
-    }
+    //.col-md-2:last-child{
+    //  margin: 0;
+    //}
   }
 }
 
@@ -170,10 +188,11 @@ html,body,div{
 
 
 //statistics
-
+.statistic-right::-webkit-scrollbar { width: 0 !important }
 .statistic-right{
   overflow-y: auto;
   color: @fontgraydark;
+  margin: 0 0.5% 0.5% 0.5%;
   width: 99%;
   .col-md-12{
     padding: 0;
@@ -190,13 +209,13 @@ html,body,div{
     text-align: left;
   }
   .col-md-4 {
-    margin: 0 ;
+    margin: 0 0.5%;
     height: 100px;
     width: 31%;
     padding: 10px;
     background-color: @bgcolor;
     border-radius: 5px;
-    box-shadow:5px 5px 5px #909090;
+    box-shadow:0 0 5px #666666;
     i{
       margin-right: 10px;
       float: left;
@@ -219,46 +238,51 @@ html,body,div{
     }
   }
   .tweet{
-    margin: 0 3.5% 0 3.5%;
+    margin: 0 2% 0 2%;
   }
-  .options{
-    padding: 0;
-    margin: 0;
-    background-color: @bgcolor;
-    border-radius: 5px 5px 0 0;
-    height: auto;
-    font-size: 20px;
-    line-height: 20px;
-    a{
-      background-color: @bgcolor;
-      padding: 0;
-      color: #666666;
-      text-decoration: none;
-      display: block;
-      width: 16%;
-      margin: 0 auto;
-      text-align: center;
-      //border-radius: 5px 5px 0 0;
-    }
-    a:last-child{
-      width: 48%;
-    }
-    a:hover{
-      background-color: #8bd9ff;
-      color: @unimleblue;
-    }
-    a:active{
-      background-color: rgba(0,0,0,0.05);
-    }
-  }
+
   .statistic-detail{
     width:100%;
     height:auto;
-    border-radius:0 0 5px 5px;
     .col-md-6{
+      border-radius: 5px;
+      padding: 0;
+      margin: 3% 0.5% 0.5% 0.5%;
       width: 48%;
       background-color: @bgcolor;
-      box-shadow:5px 5px 5px #909090;
+      box-shadow:0 0 5px #909090;
+      .charts{
+        padding: 30px;
+      }
+      .options{
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        background-color: @bgcolor;
+        border-radius: 5px 5px 0 0;
+        height: auto;
+        font-size: 20px;
+        line-height: 20px;
+        a{
+          font-weight: bolder;
+          background-color: @unimleblue;
+          padding: 5px 0;
+          color: @bgcolor;
+          text-decoration: none;
+          display: block;
+          width: 33%;
+          margin: 0 auto;
+          text-align: center;
+          //border-radius: 5px 5px 0 0;
+        }
+        a:hover{
+          background-color: @bgcolor;
+          color: @unimleblue;
+        }
+        a:active{
+          background-color: rgba(0,0,0,0.05);
+        }
+      }
     }
   }
   .hide{
