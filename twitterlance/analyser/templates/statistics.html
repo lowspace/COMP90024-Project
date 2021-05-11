@@ -45,13 +45,13 @@
             <a style="color: #094183" href={% url 'statistics' %}>&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
           </li>
           <li>
-            <a href={% url 'manage' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspManage</a>
+            <a href={% url 'manage' %}>&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
           </li>
           <li>
-            <a href={% url 'Haproxy' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHaproxy</a>
+            <a href={% url 'Haproxy' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
           </li>
           <li>
-            <a href={% url 'Spark' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspSpark</a>
+            <a href={% url 'Spark' %}>&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
           </li>
         </ul>
       </div>
@@ -72,7 +72,7 @@
             </div>
             <div class="col-md-4 tweetsport">
               <i class="fas fa-running"  style="color: #D93241"></i>
-              <p>Sport related tweets:</p>
+              <p>Sport Related Tweets:</p>
               <span id="sportcount">loading</span>
             </div>
           </div>
@@ -81,9 +81,9 @@
             <div class="col-md-6" style="margin-right: 2%">
               <div class="col-md-12 column">
                 <div class = options>
-                  <a class = "col-md-3" href="#" id="scenario1" style="border-radius: 5px 0 0 0;">Gender <br> Age</a>
-                  <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Employment <br> Education</a>
-                  <a class = "col-md-3" href="#" id="scenario3" style="border-radius: 0 5px 0 0 ;">Income <br> Tweets frequency</a>
+                  <a class = "col-md-3" href="#" id="scenario1" style="border-radius: 5px 0 0 0;">Sex & Age</a>
+                  <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Emp & Edu</a>
+                  <a class = "col-md-3" href="#" id="scenario3" style="border-radius: 0 5px 0 0 ;">Income & Freq</a>
                 </div>
               </div>
               <div class="charts">
@@ -97,7 +97,7 @@
             </div>
             <div class="col-md-6">
               <div class = options>
-                <a class = "col-md-3" href="#" id="sporttype" style="border-radius: 5px 5px 0 0;width: 100%">Sports rank <br> Sports tweets rank</a>
+                <a class = "col-md-3" href="#" id="sporttype" style="border-radius: 5px 5px 0 0;width: 100%">Sports Rank & Sports Tweets Rank</a>
               </div>
               <div class="charts">
                 <canvas id="Statisticchart7"></canvas>
@@ -112,26 +112,31 @@
 
 
   <script>
-    let canvas = document.getElementsByTagName('canvas')
-    let canvas1 = canvas[0];
-    let canvas2 = canvas[1];
-    let canvas3 = canvas[2];
-    let canvas4 = canvas[3];
-    let canvas5 = canvas[4];
-    let canvas6 = canvas[5];
-    let canvas7 = canvas[6];
-    let canvas8 = canvas[7];
-
-    //default
-    canvas1.className = 'show';
-    canvas2.className = 'show';
-    canvas3.className = 'hide';
-    canvas4.className = 'hide';
-    canvas5.className = 'hide';
-    canvas6.className = 'hide';
-    canvas7.className = 'show';
-    canvas8.className = 'show';
     window.onload = function () {
+      let canvas = document.getElementsByTagName('canvas')
+      let canvas1 = canvas[0];
+      let canvas2 = canvas[1];
+      let canvas3 = canvas[2];
+      let canvas4 = canvas[3];
+      let canvas5 = canvas[4];
+      let canvas6 = canvas[5];
+      let canvas7 = canvas[6];
+      let canvas8 = canvas[7];
+
+      //default
+      canvas1.className = 'show';
+      canvas2.className = 'show';
+      canvas3.className = 'hide';
+      canvas4.className = 'hide';
+      canvas5.className = 'hide';
+      canvas6.className = 'hide';
+      canvas7.className = 'show';
+      canvas8.className = 'show';
+
+      document.getElementById('scenario1').className = 'col-md-3 activate'
+      document.getElementById('scenario2').className = 'col-md-3'
+      document.getElementById('scenario3').className = 'col-md-3'
+
       const tuser = document.getElementById('total_user')
       const ttweet = document.getElementById('total_tweet')
       const tsport = document.getElementById('sportcount')
@@ -172,12 +177,12 @@
         tweet4city = [
                 temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
         ];
-        ttweet.innerHTML = temp["total_tweets"]
+        ttweet.innerHTML = temp["total_tweets"].toLocaleString()
       }
 
       function userstat(response){
         let temp = JSON.parse(response)["user_stats"];
-        tuser.innerHTML = temp["total_users"];
+        tuser.innerHTML = temp["total_users"].toLocaleString();
         user4city=[
                 temp["syd"],temp["mel"],temp["adl"],temp["cbr"]
         ];
@@ -229,7 +234,7 @@
 
       function sportnum(response){
         let temp = JSON.parse(response)
-        tsport.innerHTML = temp["total"];
+        tsport.innerHTML = temp["total"].toLocaleString();
         sport4city=[
                 temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
         ];
@@ -424,6 +429,9 @@
         canvas4.className = 'hide';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
+        document.getElementById('scenario1').className = 'col-md-3 activate'
+        document.getElementById('scenario2').className = 'col-md-3'
+        document.getElementById('scenario3').className = 'col-md-3'
       })
 
       //
@@ -436,6 +444,11 @@
         canvas4.className = 'show';
         canvas5.className = 'hide';
         canvas6.className = 'hide';
+
+        document.getElementById('scenario1').className = 'col-md-3'
+        document.getElementById('scenario2').className = 'col-md-3 activate'
+        document.getElementById('scenario3').className = 'col-md-3'
+
         let barchartdata3 = [6.1,6.8,7.8,4.8];
         let barcharttitle3 = 'Unemployment rate in each city';
         let barcharttitle4 = 'Different education levels ratio in each city';
@@ -526,7 +539,9 @@
         canvas4.className = 'hide';
         canvas5.className = 'show';
         canvas6.className = 'show';
-
+        document.getElementById('scenario1').className = 'col-md-3'
+        document.getElementById('scenario2').className = 'col-md-3'
+        document.getElementById('scenario3').className = 'col-md-3 activate'
         tweetperuser = [
           tweet4city[0]/user4city[0],
           tweet4city[1]/user4city[1],
