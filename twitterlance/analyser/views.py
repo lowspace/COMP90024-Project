@@ -28,6 +28,12 @@ def map(request):
 def manage(request):
     return redirect('http://127.0.0.1:9000/')
 
+def Haproxy(request):
+    return redirect('http://127.0.0.1/haproxy-admin/')
+
+def Spark(request):
+    return redirect('http://127.0.0.1:8080/')
+
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
@@ -273,7 +279,6 @@ class YearlySportsTweetsViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        #count['info'] = couch.get(f'tiny_tweets/_design/xin').json()
         return Response(count)
         
 #

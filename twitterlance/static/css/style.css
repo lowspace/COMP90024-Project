@@ -36,11 +36,27 @@ div {
 .sidenav ul li {
   list-style: none;
 }
-.sidenav ul li:last-child {
+.sidenav ul li:nth-child(5) {
+  position: fixed;
+  bottom: 120px;
+}
+.sidenav ul li:nth-child(5) a {
+  font-weight: bolder;
+  color: #094183;
+}
+.sidenav ul li:nth-child(6) {
+  position: fixed;
+  bottom: 60px;
+}
+.sidenav ul li:nth-child(6) a {
+  font-weight: bolder;
+  color: #094183;
+}
+.sidenav ul li:nth-child(7) {
   position: fixed;
   bottom: 0;
 }
-.sidenav ul li:last-child a {
+.sidenav ul li:nth-child(7) a {
   font-weight: bolder;
   color: #094183;
 }
@@ -96,9 +112,10 @@ div {
   overflow-y: auto;
 }
 .about-right .frame {
+  color: #094183;
   font-family: Tahoma, Geneva, sans-serif;
   font-weight: bolder;
-  margin: 0 0 20px 0;
+  margin: 0 0 20px 5px;
   height: auto;
   font-size: 2em;
   width: 100%;
@@ -269,3 +286,4 @@ div {
 .statistic-right .show {
   height: 100% !important;
 }
+/*# sourceMappingURL=style.css.map */
