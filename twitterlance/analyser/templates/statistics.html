@@ -47,6 +47,12 @@
           <li>
             <a href={% url 'manage' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspManage</a>
           </li>
+          <li>
+            <a href={% url 'Haproxy' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHaproxy</a>
+          </li>
+          <li>
+            <a href={% url 'Spark' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspSpark</a>
+          </li>
         </ul>
       </div>
   <!--    content for this page-->
@@ -153,12 +159,6 @@
         console.log('error')
       }
 
-      // function showtotal(response){
-      //   ttweet.innerHTML = $.parseJSON(response)["twitter"];
-      //   tuser.innerHTML = eval("("+response+")")["user"];
-      //   tsport.innerHTML = JSON.parse(response)["sport"];
-      // }
-
       let user4city;
       let tweet4city;
       let tweetperuser;
@@ -185,7 +185,7 @@
 
       function popularsport(response){
         let temp = JSON.parse(response)["total"];
-        temps=Object.entries(temp).sort((a,b) => b[1]-a[1]);
+        let temps = Object.entries(temp).sort((a,b) => b[1]-a[1]);
         sportlabel=[
                 temps[0][0],temps[1][0],temps[2][0],temps[3][0],temps[4][0],temps[5][0]
         ];
