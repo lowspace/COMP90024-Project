@@ -8,12 +8,69 @@
     group: ubuntu
     mode: '0664'
 
+- name: Create directories required by haproxy
+  become: yes
+  ansible.builtin.file:
+    path: /var/run/haproxy/
+    state: directory
+    mode: '0664'
+    owner: ubuntu
+    group: ubuntu
+
+- name: Create directories required by haproxy
+  become: yes
+  ansible.builtin.file:
+    path: /etc/default/
+    state: directory
+    mode: '0664'
+    owner: ubuntu
+    group: ubuntu
+
+- name: Copy haproxy
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/haproxy
+    dest: /etc/default/
+    owner: ubuntu
+    group: ubuntu
+    mode: '0664'
+
+- name: Create directories required by haproxy.cfg
+  become: yes
+  ansible.builtin.file:
+    path: /etc/haproxy/
+    state: directory
+    mode: '0664'
+    owner: ubuntu
+    group: ubuntu
+
+- name: Copy haproxy.cfg
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/haproxy.cfg
+    dest: /etc/haproxy/
+    owner: ubuntu
+    group: ubuntu
+    mode: '0664'
+
+- name: Add server IP to haproxy.cfg
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/haproxy/haproxy.cfg
+    line: '  server {{ hostvars[item]["openstack"]["name"] }} {{ hostvars[item]["ansible_host"]}}:81 cookie {{ hostvars[item]["openstack"]["name"] }}'
+  with_items: '{{ hostvars }}'
+
 - name: Install packages
   become: yes
   apt:
-    name: ['python3', 'python3-pip', 'docker.io']
+    name: ['python3', 'python3-pip', 'docker.io', 'haproxy']
     state: latest
     update_cache: yes
+
+- name: Start service haproxy, if not started
+  ansible.builtin.service:
+    name: haproxy
+    state: started
 
 - name: Upgrade pip
   pip:
