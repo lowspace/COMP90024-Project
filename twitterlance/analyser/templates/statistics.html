@@ -45,13 +45,13 @@
             <a style="color: #094183" href={% url 'statistics' %}>&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
           </li>
           <li>
-            <a href={% url 'manage' %}>&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
+              <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
           </li>
           <li>
-            <a href={% url 'Haproxy' %}>&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
+              <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
           </li>
           <li>
-            <a href={% url 'Spark' %}>&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
+              <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
           </li>
         </ul>
       </div>
@@ -728,7 +728,7 @@
         let barcharttitle7 = 'Most Popular Sports';
         let barchartdata8 = sportpertweet
         let barcharttitle8 = 'Total Sport Tweets/Tweets ratio';
-        let labels7 = sportlabel
+        labels7 = sportlabel
 
         let UsersBar7={
           datasets: [{
@@ -828,11 +828,6 @@
     //       // console.log(xhr.statusText);
     //       // console.log(xhr.getAllResponseHeaders());
     //       // console.log(xhr.response);
-    //       // 将获取的jsonstr转化为json
-    //       // ttweet.innerHTML = xhr.response["twitter"];
-    //       ttweet.innerHTML = $.parseJSON(xhr.response)["twitter"];
-    //       tuser.innerHTML = eval("("+xhr.response+")")["user"];
-    //       tsport.innerHTML = JSON.parse(xhr.response)["sport"];
     //     }
     //   }
     // };
