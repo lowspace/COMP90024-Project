@@ -106,23 +106,3 @@ curl -X PUT http://user:pass@127.0.0.1:5984/_global_changes
 curl -X PUT http://user:pass@127.0.0.1:5984/tweets/1 -d '{"1": 2}'
 ```
 
-yangzy3@instance-3:~$ curl http://user:pass@127.0.0.1:5984/tweets/_all_docs
-{"total_rows":1,"offset":0,"rows":[
-{"id":"1","key":"1","value":{"rev":"1-341d395a07d5adf9a714afe3a6a9f508"}}
-]}
-yangzy3@instance-3:~$ curl http://user:pass@127.0.0.1:5984/tweets/_all_docs
-{"total_rows":1,"offset":0,"rows":[
-{"id":"1","key":"1","value":{"rev":"1-341d395a07d5adf9a714afe3a6a9f508"}}
-]}
-yangzy3@instance-3:~$ curl http://user:pass@127.0.0.1:5984/tweets/_all_docs
-{"total_rows":1,"offset":0,"rows":[
-{"id":"1","key":"1","value":{"rev":"1-341d395a07d5adf9a714afe3a6a9f508"}}
-]}
-yangzy3@instance-3:~$ curl http://user:pass@127.0.0.1:5984/tweets/_all_docs
-{"total_rows":1,"offset":0,"rows":[
-{"id":"1","key":"1","value":{"rev":"1-341d395a07d5adf9a714afe3a6a9f508"}}
-]}
-yangzy3@instance-3:~$ curl http://user:pass@127.0.0.1:5984/_membership
-{"all_nodes":["couchdb@twitterlance_couchdb.1.uucupd2w28xrhznlgup2nxhuf","couchdb@twitterlance_couchdb.2.sba63apne554uamt5o8eyfagf"],"cluster_nodes":["couchdb@twitterlance_couchdb.1.uucupd2w28xrhznlgup2nxhuf","couchdb@twitterlance_couchdb.2.sba63apne554uamt5o8eyfagf"]}
-yangzy3@instance-3:~$ curl http://user:pass@127.0.0.1:5984/_membership
-{"all_nodes":["couchdb@twitterlance_couchdb.1.uucupd2w28xrhznlgup2nxhuf","couchdb@twitterlance_couchdb.2.sba63apne554uamt5o8eyfagf"],"cluster_nodes":["couchdb@twitterlance_couchdb.1.uucupd2w28xrhznlgup2nxhuf","couchdb@twitterlance_couchdb.2.sba63apne554uamt5o8eyfagf"]}
