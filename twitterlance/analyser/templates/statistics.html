@@ -105,6 +105,16 @@
               </div>
             </div>
           </div>
+
+          <div class="col-md-12 column most-vibrant" >
+            <div class="col-md-5 column illustration">
+              <p> The most vibrant city have lower medium age of the population, lower unemployment rate, higher education level, higher income level and it's citizen cares sports a lot! </p>
+            </div>
+            <div class="col-md-7 column vibrant-chart">
+              <canvas id="themostvibrantcity"></canvas>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -113,7 +123,7 @@
 
   <script>
     window.onload = function () {
-      let canvas = document.getElementsByTagName('canvas')
+      let canvas = document.getElementsByTagName('canvas');
       let canvas1 = canvas[0];
       let canvas2 = canvas[1];
       let canvas3 = canvas[2];
@@ -122,7 +132,7 @@
       let canvas6 = canvas[5];
       let canvas7 = canvas[6];
       let canvas8 = canvas[7];
-
+      let canvas9 = document.getElementById('themostvibrantcity');
       //default
       canvas1.className = 'show';
       canvas2.className = 'show';
@@ -247,9 +257,19 @@
           (sport4city[2]/tweet4city[2])*100,
           (sport4city[3]/tweet4city[3])*100
         ]
+        let sportscore = [0,0,0,0]
+        for (let i=0; i<sportpertweet.length; i++){
+          for (let j=0; j<sportpertweet.length; j++){
+            if (sportpertweet[i]>=sportpertweet[j]){
+              sportscore[i] ++;
+            }
+          }
+        }
+        console.log(sportscore);
+
         let barchartdata8 = sportpertweet;
         let barcharttitle8 = 'Total Sport Tweets/Tweets Ratio';
-        
+
         //barchart
         let UsersBar8={
           datasets: [{
@@ -281,6 +301,56 @@
         }
         let Bar8 = canvas8.getContext('2d');
         let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+        let middleage = [3,3,2,4];
+        let unemp = [3,2,1,4];
+        let edu = [3,3,2,4];
+        let inc = [3,2,1,4];
+        //barchart
+        let  UsersBar9= {
+          datasets:[{
+            label: 'Middle Age',
+            data: middleage,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)'
+          },{
+            label: 'Employment',
+            data: unemp,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)'
+          },{
+            label: 'Education',
+            data: edu,
+            backgroundColor: 'rgba(255, 206, 86, 0.5)'
+          },{
+            label: 'Income',
+            data: inc,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+          },{
+            label: 'Sport',
+            data: sportscore,
+            backgroundColor: 'rgba(75, 75, 192, 0.5)'
+          }
+          ],
+          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        }
+        let optionBar9= {
+          responsive: true,
+          title: {display: true,text: 'The Most Vibrant City',fontSize: 30,},
+          legend: {
+            position:'top'
+          },
+          scales: {
+            xAxes: [{
+              stacked: true,
+
+            }],
+            yAxes: [{
+              stacked: true,
+              ticks: {beginAtZero:true}
+            }]
+          }
+        }
+        let Bar9 = canvas9.getContext('2d');
+        const Barchart9 = new Chart(Bar9, {type:'bar', data: UsersBar9, options: optionBar9});
+
       }
 
       //get tweets number
@@ -578,7 +648,7 @@
         let barchartdata5 = [717,672,614,997];
         let barcharttitle5 = 'Medium Income ';
         let barchartdata6 = tweetperuser ;
-        let barcharttitle6 = 'Number of Tweets Sent per User';
+        let barcharttitle6 = 'Tweets Sent per User';
 
         let UsersBar5={
           datasets: [{
