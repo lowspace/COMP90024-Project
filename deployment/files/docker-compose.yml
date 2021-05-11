@@ -54,7 +54,7 @@ services:
       mode: replicated
       replicas: 1
 
-  spark_master:
+  spark:
     image: docker.io/bitnami/spark:3.1.1
     environment:
       - SPARK_MODE=master
