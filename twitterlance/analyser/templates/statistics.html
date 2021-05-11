@@ -226,7 +226,10 @@
 
         let optionBar7={
           title: {display: true,text: barcharttitle7,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         let Bar7 = canvas7.getContext('2d');
         let Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
@@ -245,7 +248,7 @@
           (sport4city[3]/tweet4city[3])*100
         ]
         let barchartdata8 = sportpertweet;
-        let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
+        let barcharttitle8 = 'Total Sport Tweets/Tweets Ratio';
         
         //barchart
         let UsersBar8={
@@ -271,7 +274,10 @@
 
         let optionBar8={
           title: {display: true,text: barcharttitle8,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         let Bar8 = canvas8.getContext('2d');
         let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
@@ -290,14 +296,14 @@
       //default chart when the page is refreshed
 
       let barchartdata1 = [0.49,0.49,0.49,0.49];
-      let barcharttitle1 = 'Gender ratio in each city';
+      let barcharttitle1 = 'Gender Ratio';
       let barchartdata2 = [36,36,39,35];
-      let barcharttitle2 = 'Medium age of citizens in each city';
+      let barcharttitle2 = 'Medium Age';
 
       let UsersBar1={
         datasets: [{
           data: barchartdata1,
-          label: 'Male percentage',
+          label: 'Male Percentage',
           backgroundColor: [
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
@@ -316,7 +322,11 @@
       }
       let optionBar1={
         title: {display: true,text: barcharttitle1,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                },
+        gridlines: {borderWidth: 0.5}
       }
 
       var Bar1 = canvas1.getContext('2d');
@@ -345,7 +355,10 @@
       }
       let optionBar2={
         title: {display: true,text: barcharttitle2,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                }
       }
 
       var Bar2 = canvas2.getContext('2d');
@@ -353,9 +366,9 @@
 
       // default right page includes tweets related status
       let barchartdata7 = sportcounts;
-      let barcharttitle7 = 'Most popular sports among all tweets';
+      let barcharttitle7 = 'Most Popular Sports';
       let barchartdata8 = sportpertweet;
-      let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
+      let barcharttitle8 = 'Total Sport Tweets/Tweets Ratio';
       let labels7 = ['sport1','sport2','sport3','sport4','sport5','sport6']
       let UsersBar7={
         datasets: [{
@@ -384,7 +397,10 @@
 
       let optionBar7={
         title: {display: true,text: barcharttitle7,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                }
       }
       let Bar7 = canvas7.getContext('2d');
       let Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
@@ -412,7 +428,10 @@
 
       let optionBar8={
         title: {display: true,text: barcharttitle8,fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+        legend: {
+            display: false
+                }
       }
       let Bar8 = canvas8.getContext('2d');
       let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
@@ -450,8 +469,8 @@
         document.getElementById('scenario3').className = 'col-md-3'
 
         let barchartdata3 = [6.1,6.8,7.8,4.8];
-        let barcharttitle3 = 'Unemployment rate in each city';
-        let barcharttitle4 = 'Different education levels ratio in each city';
+        let barcharttitle3 = 'Unemployment rate';
+        let barcharttitle4 = 'Education Levels Ratio';
         let bachelor = [0.31,0.3,0.26,0.32]
         let postgraduate = [0.15,0.15,0.11,0.22]
         let advance = [0.15,0.15,0.15,0.14]
@@ -481,7 +500,10 @@
 
         let optionBar3={
           title: {display: true,text: barcharttitle3,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         var Bar3 = canvas3.getContext('2d');
         const Barchart3 = new Chart(Bar3, {type:'bar', data: UsersBar3, options: optionBar3});
@@ -509,7 +531,7 @@
       }
       let optionBar4= {
           responsive: true,
-          title: {display: true,text: barcharttitle4,fontSize: 25,},
+          title: {display: true,text: barcharttitle4,fontSize: 30,},
           legend: {
             position:'top'
           },
@@ -554,9 +576,9 @@
         console.log(tweetperuser)
 
         let barchartdata5 = [717,672,614,997];
-        let barcharttitle5 = 'Average income in each city';
+        let barcharttitle5 = 'Medium Income ';
         let barchartdata6 = tweetperuser ;
-        let barcharttitle6 = 'Number of tweets sent per user in each city';
+        let barcharttitle6 = 'Number of Tweets Sent per User';
 
         let UsersBar5={
           datasets: [{
@@ -581,7 +603,10 @@
 
         let optionBar5={
           title: {display: true,text: barcharttitle5,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         var Bar5 = canvas5.getContext('2d');
         const Barchart5 = new Chart(Bar5, {type:'bar', data: UsersBar5, options: optionBar5});
@@ -609,7 +634,10 @@
 
         let optionBar6={
           title: {display: true,text: barcharttitle6,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         let Bar6 = canvas6.getContext('2d');
         let Barchart6 = new Chart(Bar6, {type:'bar', data: UsersBar6, options: optionBar6});
@@ -627,10 +655,10 @@
           (sport4city[3]/tweet4city[3])*100
         ]
         let barchartdata7 = sportcounts;
-        let barcharttitle7 = 'Most popular sports among all tweets';
+        let barcharttitle7 = 'Most Popular Sports';
         let barchartdata8 = sportpertweet
-        let barcharttitle8 = 'Total sport tweets/tweets ratio in each city';
-        labels7 = sportlabel
+        let barcharttitle8 = 'Total Sport Tweets/Tweets ratio';
+        let labels7 = sportlabel
 
         let UsersBar7={
           datasets: [{
@@ -659,7 +687,10 @@
 
         let optionBar7={
           title: {display: true,text: barcharttitle7,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         let Bar9 = canvas7.getContext('2d');
         let Barchart9 = new Chart(Bar9, {type:'bar', data: UsersBar7, options: optionBar7});
@@ -687,7 +718,10 @@
 
         let optionBar8={
           title: {display: true,text: barcharttitle8,fontSize: 30,},
-          scales: {yAxes: [{ticks: {beginAtZero:true}}] }
+          scales: {yAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+                }
         }
         let Bar10 = canvas8.getContext('2d');
         let Barchart10 = new Chart(Bar10, {type:'bar', data: UsersBar8, options: optionBar8});
