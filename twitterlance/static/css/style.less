@@ -40,7 +40,23 @@ html,body,div{
     li{
       list-style: none;
     }
-    li:last-child{
+    li:nth-child(5){
+      position: fixed;
+      bottom:120px;
+      a{
+        font-weight: bolder;
+        color: @unimleblue;
+      }
+    }
+    li:nth-child(6){
+      position: fixed;
+      bottom:60px;
+      a{
+        font-weight: bolder;
+        color: @unimleblue;
+      }
+    }
+    li:nth-child(7){
       position: fixed;
       bottom:0;
       a{
@@ -108,9 +124,10 @@ html,body,div{
   color: @fontgray;
   overflow-y: auto;
   .frame {
+    color: @unimleblue;
     font-family: Tahoma, Geneva, sans-serif;
     font-weight: bolder;
-    margin: 0 0 20px 0;
+    margin: 0 0 20px 5px;
     height: auto;
     font-size: 2em;
     width: 100%;
