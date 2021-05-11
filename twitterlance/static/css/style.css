@@ -41,7 +41,6 @@ div {
   bottom: 120px;
 }
 .sidenav ul li:nth-child(5) a {
-  font-weight: bolder;
   color: #094183;
 }
 .sidenav ul li:nth-child(6) {
@@ -49,7 +48,6 @@ div {
   bottom: 60px;
 }
 .sidenav ul li:nth-child(6) a {
-  font-weight: bolder;
   color: #094183;
 }
 .sidenav ul li:nth-child(7) {
@@ -57,7 +55,6 @@ div {
   bottom: 0;
 }
 .sidenav ul li:nth-child(7) a {
-  font-weight: bolder;
   color: #094183;
 }
 .sidenav ul a {
@@ -114,7 +111,7 @@ div {
 .about-right .frame {
   color: #094183;
   font-family: Tahoma, Geneva, sans-serif;
-  font-weight: bolder;
+  font-weight: lighter;
   margin: 0 0 20px 5px;
   height: auto;
   font-size: 2em;
@@ -197,8 +194,8 @@ div {
 }
 .statistic-right .frame {
   font-family: Tahoma, Geneva, sans-serif;
-  font-weight: bolder;
-  color: #7A7A7A;
+  font-weight: lighter;
+  color: #094183;
   margin: 0 0 10px 0;
   height: auto;
   font-size: 2em;
@@ -208,8 +205,8 @@ div {
 .statistic-right .col-md-4 {
   margin: 0 0.5%;
   height: 100px;
-  width: 31%;
-  padding: 10px;
+  width: 29%;
+  padding: 10px 0 10px 10px;
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0 0 5px #666666;
@@ -223,7 +220,7 @@ div {
   margin: 0;
   padding: 0;
   line-height: 20px;
-  font-size: 20px;
+  font-size: 18px;
 }
 .statistic-right .col-md-4 span {
   margin: 0;
@@ -231,11 +228,11 @@ div {
   font-family: Tahoma, Geneva, sans-serif;
   line-height: 60px;
   height: 60px;
-  font-size: 45px;
+  font-size: 3.3rem;
   font-weight: bolder;
 }
 .statistic-right .tweet {
-  margin: 0 2% 0 2%;
+  margin: 0 5% 0 5%;
 }
 .statistic-right .statistic-detail {
   width: 100%;
@@ -252,6 +249,9 @@ div {
 .statistic-right .statistic-detail .col-md-6 .charts {
   padding: 30px;
 }
+.statistic-right .statistic-detail .col-md-6 .charts canvas {
+  margin-top: 30px;
+}
 .statistic-right .statistic-detail .col-md-6 .options {
   padding: 0;
   margin: 0;
@@ -263,7 +263,6 @@ div {
   line-height: 20px;
 }
 .statistic-right .statistic-detail .col-md-6 .options a {
-  font-weight: bolder;
   background-color: #094183;
   padding: 5px 0;
   color: #ffffff;
@@ -277,8 +276,9 @@ div {
   background-color: #ffffff;
   color: #094183;
 }
-.statistic-right .statistic-detail .col-md-6 .options a:active {
-  background-color: rgba(0, 0, 0, 0.05);
+.statistic-right .statistic-detail .col-md-6 .options .activate {
+  background-color: #ffffff;
+  color: #094183;
 }
 .statistic-right .hide {
   height: 0 !important;

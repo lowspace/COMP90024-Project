@@ -44,7 +44,6 @@ html,body,div{
       position: fixed;
       bottom:120px;
       a{
-        font-weight: bolder;
         color: @unimleblue;
       }
     }
@@ -52,7 +51,6 @@ html,body,div{
       position: fixed;
       bottom:60px;
       a{
-        font-weight: bolder;
         color: @unimleblue;
       }
     }
@@ -60,7 +58,6 @@ html,body,div{
       position: fixed;
       bottom:0;
       a{
-        font-weight: bolder;
         color: @unimleblue;
       }
     }
@@ -124,9 +121,10 @@ html,body,div{
   color: @fontgray;
   overflow-y: auto;
   .frame {
+    //font-family: ;
     color: @unimleblue;
     font-family: Tahoma, Geneva, sans-serif;
-    font-weight: bolder;
+    font-weight: lighter;
     margin: 0 0 20px 5px;
     height: auto;
     font-size: 2em;
@@ -217,8 +215,8 @@ html,body,div{
   }
   .frame {
     font-family: Tahoma, Geneva, sans-serif;
-    font-weight: bolder;
-    color: @fontgray;
+    font-weight: lighter;
+    color: @unimleblue;
     margin: 0 0 10px 0;
     height: auto;
     font-size: 2em;
@@ -228,8 +226,8 @@ html,body,div{
   .col-md-4 {
     margin: 0 0.5%;
     height: 100px;
-    width: 31%;
-    padding: 10px;
+    width: 29%;
+    padding: 10px 0 10px 10px;
     background-color: @bgcolor;
     border-radius: 5px;
     box-shadow:0 0 5px #666666;
@@ -242,7 +240,7 @@ html,body,div{
       margin: 0;
       padding: 0;
       line-height: 20px;
-      font-size: 20px;
+      font-size: 18px;
     }
     span{
       margin: 0;
@@ -250,12 +248,12 @@ html,body,div{
       font-family: Tahoma, Geneva, sans-serif;
       line-height: 60px;
       height: 60px;
-      font-size: 45px;
+      font-size: 3.3rem;
       font-weight: bolder;
     }
   }
   .tweet{
-    margin: 0 2% 0 2%;
+    margin: 0 5% 0 5%;
   }
 
   .statistic-detail{
@@ -270,6 +268,9 @@ html,body,div{
       box-shadow:0 0 5px #909090;
       .charts{
         padding: 30px;
+        canvas{
+          margin-top: 30px;
+        }
       }
       .options{
         padding: 0;
@@ -281,7 +282,6 @@ html,body,div{
         font-size: 20px;
         line-height: 20px;
         a{
-          font-weight: bolder;
           background-color: @unimleblue;
           padding: 5px 0;
           color: @bgcolor;
@@ -296,8 +296,9 @@ html,body,div{
           background-color: @bgcolor;
           color: @unimleblue;
         }
-        a:active{
-          background-color: rgba(0,0,0,0.05);
+        .activate{
+          background-color: @bgcolor;
+          color: @unimleblue;
         }
       }
     }
