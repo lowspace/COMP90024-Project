@@ -34,6 +34,9 @@ def Haproxy(request):
 def Spark(request):
     return redirect('http://127.0.0.1:8080/')
 
+def mappage(request):
+    return render(request, 'mappage.html',)
+
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
