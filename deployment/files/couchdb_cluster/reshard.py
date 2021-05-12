@@ -26,7 +26,9 @@ def reshard():
                     local_nodes.append(node)
 
     print(f'CouchDB node on this host: {local_nodes}')
-    assert len(local_nodes) == 1, f'The host should have and only have 1 CouchDB node' 
+    if len(local_nodes) != 1:
+        print(f'The host has {len(local_nodes)} CouchDB node' )
+        return 
 
     local_node = local_nodes[0]
 
@@ -91,6 +93,11 @@ def reshard():
 
         print(f'New Shards: \n{shards}')
         requests.put(f'http://user:pass@127.0.0.1:5984/_node/_local/_dbs/{db}', json=shards)
+        print(res.text)
+    print('Sync Shards...')
+    res = requests.get('http://user:pass@127.0.0.1:5984/_all_dbs')
+    for db in res.json(): 
+        res = requests.post(f'http://user:pass@127.0.0.1:5984/{db}/_sync_shards')
         print(res.text)
 
 

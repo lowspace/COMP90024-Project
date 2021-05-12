@@ -1,0 +1,25 @@
+---
+- name: Copy couchdb cluster tools
+  become: yes
+  ansible.builtin.copy:
+    src: ../../../files/couchdb_cluster/
+    dest: /home/ubuntu/twitterlance/
+    directory_mode: yes
+    owner: ubuntu
+    group: docker
+    mode: '0774'
+
+- name: Wait for port 5984 of any IP to close active connections, don't start checking for 1 seconds
+  wait_for:
+    host: 127.0.0.1
+    port: 5984
+    delay: 1
+    state: present
+
+- name: Reconsolidate the shard mapping
+  command: python3 /home/ubuntu/twitterlance/reshard.py
+  register: result
+  args:
+    warn: no
+- debug:
+    msg: '{{ result.stdout | default("Message empty.") }}'
