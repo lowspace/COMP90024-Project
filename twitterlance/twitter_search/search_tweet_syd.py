@@ -147,7 +147,16 @@ def tweet_search(uid: str, city: str, api, ID: str):
 
 if __name__ == '__main__':
 
-    cities = config.Geocode.keys()
+    cities = dict(
+    # the string must contain 0 space
+    # Adelaide  = "-34.9998826,138.3309816,40km",
+    Sydney = "-33.8559799094,151.20666584,50km",
+    # Melbourne = "-37.8142385,144.9622775,40km" ,
+    # Perth = "-32.0391738, 115.6813561, 40km",
+    # Canberra ="-35.2812958,149.124822,40km",
+    # Brisbane =  "-27.3812533, 152.713015, 40km",
+    # Hobart ="-42.8823389, 147.3110468, 40km",
+)
     tokens = config.token
     ID = None
 
