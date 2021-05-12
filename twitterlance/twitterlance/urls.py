@@ -14,3 +14,6 @@ urlpatterns = [
     url(r'^Haproxy/', views.Haproxy, name="Haproxy"),
     url(r'^:8080/', views.Spark, name="Spark"),
 ]
+
+from . import background_tasks
+background_tasks.test()
