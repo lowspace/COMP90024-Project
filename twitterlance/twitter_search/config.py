@@ -22,8 +22,21 @@ token = dict(
     consumer_secret = '1vSkkEIB4hdBhuTE7BMtvgjdnuq9h755E38bQzhaf0cdcbS90M',
     access_token_key = '1387659560098275331-hgjcBher08GC4QHuz8XYLq9ApNxKZA',
     access_token_secret = 'UVFS6qpTaUAu8WnfuEYiBpqV7VKZTh3Bjmof8s8Whws1E',
-    )
+    ),
 
+    token_3 = dict(
+    consumer_key = 'ieAZ39RX3gAFwCtQ3snmo8PjP',
+    consumer_secret = 'QzeLA7P6LgRjZbfCAsJt6WOquh1Qva9jhBV1iJi83AWBCEXVnO',
+    access_token_key = '2795545700-0QggHkc4Fa8Z7c4UYSrnmnlK1tYgPYgDu3koDOQ',
+    access_token_secret = 'gehAPtKroC9vpcUIdcVAT46ELVOZOTQMhljRO7LI8Xx5N',
+    ),
+
+    token_4 = dict(
+    consumer_key = 'FGOMcARDIT0I1Fe0HhhAtMGks',
+    consumer_secret = 'tm8AWBRg1XYENeuO1cKxGFDa8maelmoMYb2qQawGWtdtj6B7bB',
+    access_token_key = '1382968455989583874-9YjZfRwDLetQpNWrBswzQVf6lx4pjL',
+    access_token_secret = 'kiH1eG4X8lSdMlJr7foqcT6vYmJt7GGixgr4NKRhrAXOl',   
+    )
 )
 
 
