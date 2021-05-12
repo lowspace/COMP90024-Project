@@ -3,14 +3,14 @@ import tweepy
 from tweepy import OAuthHandler
 import pandas as pd
 import datetime
-from twitter_search import config as config
-# import config 
-from couchdb import couch as couch
-# import couchdb.couch as couch
+# from twitter_search import config as config
+import config 
+# from couchdb import couch as couch
+import couch
 import time
 
 global rate_limit
-rate_limit = 20000 # how many users we wanna count in this city
+rate_limit = 1000 # how many users we wanna count in this city
 
 def toJson(tweets):
     twitter = []
@@ -83,6 +83,7 @@ def user_search(query: str, city: str, api, ID = None):
                     # store[count]['city'] = city
                     user['_id'] = i['user']['id_str']
                     user['city'] = city
+                    user['update_timestamp'] = None
                     # user_json = json.dumps(user)
                     # couch.save('userdb', user) # save each tweet into CouchDB
                     print('user is', user, count)
