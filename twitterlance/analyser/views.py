@@ -11,6 +11,9 @@ import couchdb.couch as couch
 import json, time
 from django.shortcuts import HttpResponse
 from collections import Counter
+from django.conf import settings 
+import os
+
 
 # template page
 def home(request):
@@ -281,9 +284,26 @@ class YearlySportsTweetsViewSet(viewsets.ViewSet):
         count['total'] = total
         return Response(count)
         
-#
-# class ManagerViewSet(viewsets.ViewSet):
-#     # POST analyser/couchdb
-#     @action(detail=False, methods=['post'], name="Initialisation")
-#     def couchdb(self, request):
-#         call_command('initcouchdb')
+class ManagerViewSet(viewsets.ViewSet):
+
+    
+    # # POST analyser/couchdb
+    # @action(detail=False, methods=['post'], name="Initialisation")
+    # def couchdb(self, request):
+    #     call_command('initcouchdb')
+
+    # GET PUT analyser/manage/init_view
+    @action(detail=False, methods=['get','put'], name="Initialisation CouchDB Views")
+    def init_view(self, request):
+        done = {}
+        couch_path = os.path.join(settings.STATICFILES_DIRS[0], 'couch')
+        for file_name in os.listdir(couch_path):
+            if file_name.endswith("_view.json"):
+                database = file_name.split('__')[0]
+                view = file_name.split('__')[1]
+                file_path = os.path.join(couch_path, file_name)
+                with open(file_path, 'r') as f:
+                    f = json.load(f)
+                    couch.put(f'{database}/_design/{view}', body=f)
+                done[database] = view
+        return Response(done)
