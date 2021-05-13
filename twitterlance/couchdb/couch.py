@@ -1,4 +1,4 @@
-import requests, uuid, json
+import requests, uuid, time
 from django.conf import settings
 
 # Module with functions serve a Singleton
@@ -24,20 +24,58 @@ def post(path='', body=''):
 def head(path=''):
     return requests.head(f'{base_url}/{path}')
 
-# Save a single document (dict)
+# Save a single document (dict that has _id as key)
 def save(database, document):
-    database = database.lstrip('/')
     return requests.put(f'{base_url}/{database}/{document.get("_id")}', json=document)
 
 # Save a list of documents (list of dict)
 def bulk_save(database, documents):
-    database = database.lstrip('/')
     return requests.post(f'{base_url}/{database}/_bulk_docs', json={"docs": documents})
 
 # Create a databse
-def create(path='', partition=False, body=''):
-    path = path.lstrip('/')
+def createdb(path='', partition=False, body=''):
     if partition:
         path += '?partitioned=true'
         print(path)
     return requests.put(f'{base_url}/{path}', json=body)
+
+# Save or update with automatic conflict resolution for updates
+def upsert(path='', document={}, retries=0):
+    res = head(path)
+    if res.status_code != 200: 
+        res = put(path, document)
+        if res.status_code != 201: 
+            return res.json()
+    else: 
+        rev = res.headers["ETag"].strip('"')
+        while True: 
+            res = put(f'{path}?rev={rev}', document)
+            if res.status_code == 409 and retries < 5: 
+                time.sleep(2)
+                upsert(path, document, retries + 1)
+            else: 
+                return res.json()
+
+# Initialise the necessary databases and design documents
+def migrate():
+    output = []
+
+    # Add databases
+    output.append(createdb('_users', False).json())
+    output.append(createdb('_replicator', False).json())
+    output.append(createdb('_global_changes', False).json())
+    output.append(createdb('jobs', False).json())
+    output.append(createdb('cities', False).json())
+    output.append(createdb('userdb', False).json())
+    output.append(createdb('tweetdb', True).json())
+
+    # Add necessary data
+    output.append(post('cities', {'_id': 'Melbourne'}).json())
+    output.append(post('cities', {'_id': 'Sydney'}).json())
+    output.append(post('cities', {'_id': 'Brisbane'}).json())
+    output.append(post('cities', {'_id': 'Perth'}).json())
+    output.append(post('cities', {'_id': 'Adelaide'}).json())
+    output.append(post('cities', {'_id': 'Canberra'}).json())
+
+    return output
+
