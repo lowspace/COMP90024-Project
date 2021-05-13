@@ -32,29 +32,36 @@ def save(database, document):
 def bulk_save(database, documents):
     return requests.post(f'{base_url}/{database}/_bulk_docs', json={"docs": documents})
 
-# Create a databse
+# Create a database
 def createdb(path='', partition=False, body=''):
     if partition:
         path += '?partitioned=true'
-        print(path)
     return requests.put(f'{base_url}/{path}', json=body)
 
-# Save or update with automatic conflict resolution for updates
-def upsert(path='', document={}, retries=0):
+# Create or update with automatic conflict resolution for updates 
+def upsertdoc(path='', document={}):
     res = head(path)
     if res.status_code != 200: 
-        res = put(path, document)
-        if res.status_code != 201: 
-            return res.json()
+        return put(path, document)
     else: 
-        rev = res.headers["ETag"].strip('"')
-        while True: 
-            res = put(f'{path}?rev={rev}', document)
-            if res.status_code == 409 and retries < 5: 
-                time.sleep(2)
-                upsert(path, document, retries + 1)
-            else: 
-                return res.json()
+        return updatedoc(path, document)
+        
+
+# update document with with automatic conflict resolution for updates
+# Do not set retries
+def updatedoc(path='', document='', max_retries=5, retries=0):
+    res = head(path)
+    if res.status_code != 200: 
+        return res
+
+    rev = res.headers["ETag"].strip('"')
+    while True: 
+        res = put(f'{path}?rev={rev}', document)
+        if res.status_code == 409 and retries < max_retries: 
+            time.sleep(2)
+            upsertdoc(path, document, max_retries, retries + 1)
+        else: 
+            return res
 
 # Initialise the necessary databases and design documents
 def migrate():
