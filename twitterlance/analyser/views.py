@@ -3,14 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from django.core.management import call_command
 from django.shortcuts import render, redirect
-import couchdb.couch as couch
-# import twitter_search.search_tweet as search
-# import twitter_stream.stream as stream
-import json, time
 from django.shortcuts import HttpResponse
 from collections import Counter
+import json, time
+import couchdb.couch as couch
 
 # template page
 def home(request):
@@ -280,10 +277,70 @@ class YearlySportsTweetsViewSet(viewsets.ViewSet):
             total += count[k]
         count['total'] = total
         return Response(count)
-        
-#
-# class ManagerViewSet(viewsets.ViewSet):
-#     # POST analyser/couchdb
-#     @action(detail=False, methods=['post'], name="Initialisation")
-#     def couchdb(self, request):
-#         call_command('initcouchdb')
+
+# Jobs statuses in Couchdb. Background tasks will periodically check the statuses to  
+# start the jobs. 
+class JobsViewSet(viewsets.ViewSet):
+    # GET /analyser/jobs/
+    def list(self, request):
+        return Response(couch.get(f'jobs/_all_docs').json())
+
+    # GET /analyser/jobs/search/
+    # GET /analyser/jobs/stream/
+    # GET /analyser/jobs/couchdb/
+    def retrieve(self, request, pk=None):
+        if pk is None: 
+            return Response({'error': 'job name is missing'})
+        return Response(couch.get(f'jobs/{pk}').json())
+
+    # PUT /analyser/jobs/search/ -d {"new_users": 1000}
+    # PUT /analyser/jobs/stream/
+    # PUT /analyser/jobs/couchdb/
+    def update(self, request, pk=None):
+   
+            if pk == 'search': 
+                return self.start_search(request)
+            elif pk == 'stream':
+                return self.start_stream()
+            elif pk == 'couchdb':
+                return self.migrate_couchdb()
+            else: 
+                return Response({'error': f'Invalid job name {pk}'}) 
+
+
+    def start_search(self, request): 
+        new_users = request.data.get('new_users') if request.data is not None else None
+        result = 'Job submitted.'
+        if not isinstance(new_users, int): 
+            new_users = 100
+            result += ' Parameter new_users is not provided, so set as 100.'
+        else: 
+            new_users = int(new_users)
+
+        res = couch.get('jobs/search')
+        if res.status_code == 200 and res.json().get('status') != 'done':
+            return Response(res.json(), 403)
+        else: 
+            doc = {'_id': 'search', 'status': 'ready', 'new_users': new_users, 'result': result, 'updated_at':time.ctime()}
+            response = couch.upsertdoc('jobs/search', doc)
+            return Response(response.json(), response.status_code)
+
+
+    def start_stream(self):
+        res = couch.get('jobs/stream')
+        if res.status_code == 200 and res.json().get('status') != 'done':
+            return Response(res.json(), 403)
+        else: 
+            doc = {'_id': 'stream', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            response = couch.upsertdoc('jobs/stream', doc)
+            return Response(response.json(), response.status_code)
+
+    def migrate_couchdb(self):
+        res = couch.get('jobs/couchdb')
+        if res.status_code == 200:
+            return Response(res.json(), 403)
+        else: 
+            result = couch.migrate()
+            doc = {'_id': 'couchdb', 'status': 'done', 'result': result, 'updated_at': time.ctime()}
+            response = couch.upsertdoc('jobs/couchdb', doc)
+            return Response(response.json(), response.status_code)
