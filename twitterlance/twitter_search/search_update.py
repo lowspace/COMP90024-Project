@@ -1,17 +1,6 @@
-import json
 import tweepy
-from tweepy import OAuthHandler
-import os
-import twitter_search.config as config
-# import config
-# import couchdb.couch as couch
-# import couch
 import time
-import twitter_search.search_user as search_user
-# import search_user
 import datetime
-import twitter_search.search_tweet as search_tweet
-# import search_tweet
 
 global total_num_retrieve_tweets, timeline_limit
 
@@ -105,7 +94,7 @@ def tweet_search(uid: str, city: str, api, ID: str):
     return True, None
 
 def run_update():
-    cities = config.Geocode.keys()
+    cities = couch.geocode().keys()
     query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
     res=couch.post(f'tokens/_find', body = query)
     tasks=res.json()['docs']
@@ -177,7 +166,7 @@ def run_update():
 
 # if __name__ == '__main__':
 
-#     cities = config.Geocode.keys()
+#     cities = couch.geocode().keys()
 #     tokens = config.token
 #     ID = None
 #     c_dict = dict(

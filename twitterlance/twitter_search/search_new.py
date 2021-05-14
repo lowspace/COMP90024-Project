@@ -2,13 +2,11 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-import twitter_search.config as config
-# import config
 import couchdb.couch as couch
 # import couch
 import time
-import twitter_search.search_user as search_user
-import twitter_search.search_tweet as search_tweet
+# import twitter_search.search_user as search_user
+# import twitter_search.search_tweet as search_tweet
 # import search_user
 # import search_tweet
 import datetime
@@ -54,7 +52,7 @@ def search(query: str, city: str, api, ID = None):
             ulist.append(i["id"])
     count = 0 
     # store = {} # dict
-    geocode = config.Geocode[city] # get geocode
+    geocode = couch.geocode()[city] # get geocode
     if not ID: # ID = None
         first = toJson(api.search(q = query, geocode = geocode, count=66)) # consider loss tweets
     else: # ID != None
@@ -114,7 +112,7 @@ def search(query: str, city: str, api, ID = None):
 def run_search(i:int):
     global rate_limit
     rate_limit = i # set the rate_limit for this search
-    cities = config.Geocode.keys()
+    cities = couch.geocode().keys()
     query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
     res=couch.post(f'tokens/_find', body = query)
     tasks=res.json()['docs']
@@ -147,7 +145,7 @@ def run_search(i:int):
 #     # each city may use different tokens to complete the search task
 #     # need to exhaust all the cities
 
-#     cities = config.Geocode.keys()
+#     cities = couch.geocode().keys()
 #     tokens = config.token
 #     ID = None
 
