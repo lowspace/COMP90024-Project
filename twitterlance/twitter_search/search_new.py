@@ -5,8 +5,8 @@ import os
 import couchdb.couch as couch
 # import couch
 import time
-import twitter_search.search_user as search_user
-import twitter_search.search_tweet as search_tweet
+# import twitter_search.search_user as search_user
+# import twitter_search.search_tweet as search_tweet
 # import search_user
 # import search_tweet
 import datetime

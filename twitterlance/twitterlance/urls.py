@@ -15,4 +15,4 @@ urlpatterns = [
 from . import background_tasks
 background_tasks.all()
 
-# Register hostnames in jobs
+# TODO: Register hostnames in jobs
