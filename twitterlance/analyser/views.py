@@ -103,11 +103,22 @@ class TweetViewSet(viewsets.ViewSet):
         count = 0
         res1 = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
-            res1[city]=res.json()['rows'][0]["value"]
-            count += res.json()['rows'][0]["value"]
-        res1["total"] = count
+            # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
+            res1[city] = res.json()['rows'][0]["value"]
+            # count += res.json()['rows'][0]["value"]
         return HttpResponse(json.dumps(res1))
+
+    # @action(detail=False, methods=['get'], name="sport tweets total")
+    # def sports(self, request):
+    #     count = 0
+    #     res1 = {}
+    #     for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+    #         res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
+    #         res1[city]=res.json()['rows'][0]["value"]
+    #         count += res.json()['rows'][0]["value"]
+    #     res1["total"] = count
+    #     return HttpResponse(json.dumps(res1))
            
     # GET a month of tweets
     #@action(detail=False, methods=['get'], name="month tweets total")
