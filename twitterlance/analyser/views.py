@@ -79,15 +79,15 @@ class SportViewSet(viewsets.ViewSet):
     # Add include_docs=true
     def list(self, request):
         actions = {
-            'stats_all/': 'get all sport counts in all cities cross all time.',
-            '2019/': 'get all sport counts in all cities cross in 2019.',
-            '2020/': 'get all sport counts in all cities cross in 2020.',
-            '2021/': 'get all sport counts in all cities cross in 2021.'
+            'All sport counts in all cities cross all time.': 'stats_all/',
+            'All sport counts in all cities cross in 2019': '2019/',
+            'All sport counts in all cities cross in 2020': '2020/',
+            'All sport counts in all cities cross in 2021': '2021/'
         }
         return Response(actions)
 
     # GET analyser/sports/stats_all
-    @action(detail=False, methods=['get'], name="Get the static_stats of sports")
+    @action(detail=False, methods=['get'], name="Get the static stats of sports")
     def stats_all(self, request):
         count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
