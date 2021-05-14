@@ -13,7 +13,7 @@ import search_tweet
 import datetime
 
 global rate_limit
-rate_limit = 1 # how many users we wanna add in this city
+rate_limit = 10 # how many users we wanna add in this city
 
 c_dict = dict(
     Melbourne = "mel",
@@ -110,7 +110,9 @@ def search(query: str, city: str, api, ID = None):
             break
     return True, maxid
 
-def run_search():
+def run_search(i:int):
+    global rate_limit
+    rate_limit = i # set the rate_limit for this search
     cities = config.Geocode.keys()
     tokens = config.token
     ID = None
