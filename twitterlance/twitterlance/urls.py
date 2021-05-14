@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^statistics/', views.statistics, name="statistics"),
     url(r'^map/', views.map, name="map"),
     url(r'^about/', views.about, name="about"),
+    url(r'^mappage/', views.mappage, name="mappage"),
     url(r'^:9000/', views.manage, name="manage"),
     url(r'^Haproxy/', views.Haproxy, name="Haproxy"),
     url(r'^:8080/', views.Spark, name="Spark"),

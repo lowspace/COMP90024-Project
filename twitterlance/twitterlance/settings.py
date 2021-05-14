@@ -87,6 +87,9 @@ CORS_ORIGIN_WHITELIST = [
 
 ROOT_URLCONF = 'twitterlance.urls'
 
+X_FRAME_OPTIONS = 'ALLOWALL'
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
