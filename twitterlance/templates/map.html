@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--    Group 39
+          Zihao Yang
+          Wei Li
+          Yuqi Zhang
+          Xin Li
+          Zihao Hu -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Map</title>
+  <!--import bootstrap and jquery -->
+  <!--import bootstrap and jquery -->
+  <link rel="stylesheet" type="text/css" href="{% static "/css/normalize.css"%}">
+  <link rel="stylesheet" href="{% static "/bootcss/bootstrap.min.css" %}">
+  <script src="{% static "/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>
+  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>
+<!--  import style sheet-->
+  <link rel="stylesheet" type="text/css" href="{% static "/css/style.css"%}"/>
+  <link rel="stylesheet" href="{% static "/css/fa/css/all.css"%}">
+
+</head>
+<body >
+  <div class="container">
+    <div class="row clearfix">
+  <!--    side nav-->
+      <div class="col-md-2 column sidenav">
+        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
+        <ul>
+          <li>
+            <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+          </li>
+          <li>
+            <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
+          </li>
+          <li class="this">
+            <a style="color: #094183" href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+          </li>
+          <li>
+            <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+          </li>
+          <li>
+              <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
+          </li>
+          <li>
+              <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
+          </li>
+          <li>
+            <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
+          </li>
+          <li>
+            <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
+          </li>
+        </ul>
+      </div>
+  <!--    content for this page-->
+      <div class="col-md-10 column right-content" >
+        <div class="map-right">
+            <iframe src="/mappage/" title="mappage" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
