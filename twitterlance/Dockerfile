@@ -17,7 +17,7 @@ RUN apt-get update; \
         libc-dev \
         curl \
         openjdk-8-jdk \
-        python3 \ 
+        python3.8 \ 
         python3-pip;
 
 RUN pip3 install -r requirements.txt;
