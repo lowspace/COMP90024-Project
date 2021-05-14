@@ -1,5 +1,4 @@
 from background_task import background
-<<<<<<< HEAD
 from couchdb import couch
 import subprocess, time
 
@@ -30,7 +29,6 @@ def user_rank():
         doc = {'_id': 'user_rank', 'status': 'done', 'result': 'Job submitted.', 'updated_at':time.ctime()}
         couch.upsertdoc('jobs/user_rank', doc)
 
-=======
 import requests
 from twitter_search.search_new import run_search
 from twitter_search.search_update import run_update
@@ -72,4 +70,3 @@ def start_update_job():
         update_timestamp = datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
         res['updated_at'] = update_timestamp
         couch.put('jobs/update', res)
->>>>>>> Wei
