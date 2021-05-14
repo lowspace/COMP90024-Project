@@ -46,7 +46,6 @@ def upsertdoc(path='', document={}):
     else: 
         return updatedoc(path, document)
         
-
 # update document with with automatic conflict resolution for updates
 # Do not set retries
 def updatedoc(path='', document='', max_retries=5, retries=0):
@@ -55,13 +54,12 @@ def updatedoc(path='', document='', max_retries=5, retries=0):
         return res
 
     rev = res.headers["ETag"].strip('"')
-    while True: 
-        res = put(f'{path}?rev={rev}', document)
-        if res.status_code == 409 and retries < max_retries: 
-            time.sleep(2)
-            upsertdoc(path, document, max_retries, retries + 1)
-        else: 
-            return res
+    res = put(f'{path}?rev={rev}', document)
+    if res.status_code == 409 and retries < max_retries: 
+        time.sleep(2)
+        return upsertdoc(path, document, max_retries, retries + 1)
+    else: 
+        return res
 
 # Initialise the necessary databases and design documents
 def migrate():
