@@ -80,6 +80,8 @@ class SportViewSet(viewsets.ViewSet):
     def list(self, request):
         actions = {
             'All sport counts in all cities cross all time.': 'stats_all/',
+            'Top 3 sports in all cities cross all time.': 'rank_top3/',
+            'Sport relevent tweet number in each city in different years.': 'yearly_stats/',
             'All sport counts in all cities cross in 2019': '2019/',
             'All sport counts in all cities cross in 2020': '2020/',
             'All sport counts in all cities cross in 2021': '2021/'
@@ -87,18 +89,48 @@ class SportViewSet(viewsets.ViewSet):
         return Response(actions)
 
     # GET analyser/sports/stats_all
-    @action(detail=False, methods=['get'], name="Get the static stats of sports")
+    @action(detail=False, methods=['get'], name="Get the static_stats of sports")
     def stats_all(self, request):
         count = {}
+        sum_all = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-            res = res.json()['rows'][0]["value"]
-            count[city] = Counter(res)
+            res = Counter(res.json()['rows'][0]["value"])
+            sum_all[city] = sum(res.values())
+            count[city] = res
         total = Counter() # all sports
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        return Response(json.dumps(count))
+        sum_all['total'] = sum(sum_all.values())
+        count['sum'] = sum_all
+        return HttpResponse(json.dumps(count))
+
+    # GET analyser/sports/rank_top3
+    @action(detail=False, methods=['get'], name="Get the top 3 sports in each city across all time")
+    def rank_top3(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
+            res = Counter(res.json()['rows'][0]["value"])
+            top3 = {}
+            for i in res.most_common(3):
+                top3[i[0]] = i[1]
+            count[city] = top3
+        return HttpResponse(json.dumps(count))
+
+    # GET analyser/sports/yearly_stats
+    @action(detail=False, methods=['get'], name="Get the 2019, 2020, 2021 tweets of sports in each city")
+    def yearly_stats(self, request):
+        count = {}
+        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+            time_line = {}
+            for time_stamp in ['2019', '2020', '2021']:
+                res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{time_stamp}')
+                res = Counter(res.json()['rows'][0]["value"])
+                time_line[time_stamp] = sum(res.values())
+            count[city] = time_line
+        return HttpResponse(json.dumps(count))
 
     # GET analyser/sports/:year Get the year tweets of sports
     def retrieve(self, request, pk=None):
@@ -116,10 +148,7 @@ class SportViewSet(viewsets.ViewSet):
                 res = Counter(res.json()['rows'][0]["value"])
             else:
                 res = Counter()
-
             count[city] = res
-
-
         total = Counter() # all sports
         for k in count.keys():
             total += count[k]
