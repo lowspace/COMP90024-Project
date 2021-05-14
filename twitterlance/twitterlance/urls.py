@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^:8080/', views.Spark, name="Spark"),
 ]
 
+# Register background_tasks
 from . import background_tasks
-background_tasks.test()
+background_tasks.all()
