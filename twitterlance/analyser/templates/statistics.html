@@ -85,7 +85,7 @@
               <div class="col-md-12 column">
                 <div class = options>
                   <a class = "col-md-3" href="#" id="scenario1" style="border-radius: 5px 0 0 0;">Sex & Age</a>
-                  <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Emp & Edu</a>
+                  <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Work & Study</a>
                   <a class = "col-md-3" href="#" id="scenario3" style="border-radius: 0 5px 0 0 ;">Income & Freq</a>
                 </div>
               </div>
@@ -131,7 +131,6 @@
       </div>
     </div>
   </div>
-
 
   <script>
     window.onload = function () {
@@ -313,6 +312,7 @@
         }
         let Bar8 = canvas8.getContext('2d');
         let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
+
         let middleage = [3,3,2,4];
         let unemp = [3,2,1,4];
         let edu = [3,3,2,4];
@@ -519,7 +519,7 @@
       let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
 
 
-      //
+    //
     //scenario1
     //
       document.getElementById('scenario1').addEventListener('click', function() {
@@ -551,7 +551,7 @@
         document.getElementById('scenario3').className = 'col-md-3'
 
         let barchartdata3 = [6.1,6.8,7.8,4.8];
-        let barcharttitle3 = 'Unemployment rate';
+        let barcharttitle3 = 'Unemployment Rate';
         let barcharttitle4 = 'Education Levels Ratio';
         let bachelor = [0.31,0.3,0.26,0.32]
         let postgraduate = [0.15,0.15,0.11,0.22]
@@ -631,7 +631,6 @@
         let Bar4 = canvas4.getContext('2d');
         const Barchart4 = new Chart(Bar4, {type:'bar', data: UsersBar4, options: optionBar4});
       })
-
 
       //
       //scenario3
@@ -729,13 +728,7 @@
 
         canvas7.className = 'show';
         canvas8.className = 'show';
-        //tweets
-        sportpertweet = [
-          (sport4city[0]/tweet4city[0])*100,
-          (sport4city[1]/tweet4city[1])*100,
-          (sport4city[2]/tweet4city[2])*100,
-          (sport4city[3]/tweet4city[3])*100
-        ]
+
         let barchartdata7 = sportcounts;
         let barcharttitle7 = 'Most Popular Sports';
         let barchartdata8 = sportpertweet
@@ -746,7 +739,7 @@
           datasets: [{
             data: barchartdata7,
             label:'number of tweets mentioned which sport',
-            backgroundColor: [     
+            backgroundColor: [
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
@@ -772,10 +765,11 @@
           scales: {yAxes: [{ticks: {beginAtZero:true}}] },
           legend: {
             display: false
-                }
+          }
         }
-        let Bar9 = canvas7.getContext('2d');
-        let Barchart9 = new Chart(Bar9, {type:'bar', data: UsersBar7, options: optionBar7});
+        let Bar7 = canvas7.getContext('2d');
+        let Barchart7 = new Chart(Bar7, {type:'bar', data: UsersBar7, options: optionBar7});
+
         //barchart
         let UsersBar8={
           datasets: [{
@@ -803,10 +797,10 @@
           scales: {yAxes: [{ticks: {beginAtZero:true}}] },
           legend: {
             display: false
-                }
+          }
         }
-        let Bar10 = canvas8.getContext('2d');
-        let Barchart10 = new Chart(Bar10, {type:'bar', data: UsersBar8, options: optionBar8});
+        let Bar8 = canvas8.getContext('2d');
+        let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
     })
     }
 
