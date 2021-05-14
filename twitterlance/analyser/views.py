@@ -103,13 +103,13 @@ class TweetViewSet(viewsets.ViewSet):
     # GET sport related tweets: analyser/tweets/sports/
     @action(detail=False, methods=['get'], name="sport tweets total")
     def sports(self, request):
-        count = 0
+        # count = 0
         res1 = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
+            # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
             res1[city]=res.json()['rows'][0]["value"]
-            count += res.json()['rows'][0]["value"]
-        res1["total"] = count
+            # count += res.json()['rows'][0]["value"]
         return HttpResponse(json.dumps(res1))
            
     # GET a month of tweets
@@ -144,11 +144,18 @@ class SportViewSet(viewsets.ViewSet):
     # GET analyser/tweets?options 
     # Add include_docs=true
     def list(self, request):
-        url = f'tweetdb/_all_docs'
-        if len(request.query_params) > 0: 
-            url += f'?{request.query_params.urlencode()}'
-        res = couch.get(url)
-        return Response(res.json())
+        # url = f'tweetdb/_all_docs'
+        # if len(request.query_params) > 0: 
+        #     url += f'?{request.query_params.urlencode()}'
+        # res = couch.get(url)
+        actions = dict(
+            stats_all = 'get all sport counts in all cities cross all time.',
+            stats_2019 = 'get all sport counts in all cities cross in 2019.',
+            stats_2020 = 'get all sport counts in all cities cross in 2020.',
+            stats_2021 = 'get all sport counts in all cities cross in 2021.',
+            stats_30 = 'get all sport counts in all cities cross in last 30 days.',
+        )
+        return Response(actions)
 
     # GET analyser/sports/stats_all
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
