@@ -26,65 +26,73 @@ html,body,div{
 //side navigator
 .sidenav{
   height: 100%;
-  background-color: @bgcolor;
-  padding-top: 20px;
-  border-right: #DDDDDD 4px solid;
-  img{
-    width: 100%;
-  }
-  ul{
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    li{
+  margin: 0;
+  padding: 0;
+  background-color: #EFF1F7;
+  .sidenavin{
+    width: 98%;
+    margin-right: 2%;
+    background-color: @bgcolor;
+    padding-top: 20px;
+    //border-right: #DDDDDD 10px hidden;
+    box-shadow:0 0 5px #999999;
+    img{
+      width: 100%;
+    }
+    ul{
       list-style: none;
-    }
-    li:nth-child(5){
-      position: fixed;
-      bottom:120px;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      li{
+        list-style: none;
+      }
+      li:nth-child(5){
+        position: fixed;
+        bottom:120px;
+        a{
+          padding: 10px 0 10px 0;
+          color: @unimleblue;
+        }
+      }
+      li:nth-child(6){
+        position: fixed;
+        bottom:80px;
+        a{
+          padding: 10px 0 10px 0;
+          color: @unimleblue;
+        }
+      }
+      li:nth-child(7){
+        position: fixed;
+        bottom:40px;
+        a{
+          padding: 10px 0 10px 0;
+          color: @unimleblue;
+        }
+      }
+      li:nth-child(8){
+        position: fixed;
+        bottom:0;
+        a{
+          padding: 10px 0 10px 0;
+          color: @unimleblue;
+        }
+      }
       a{
-        padding: 10px 0 10px 0;
+        padding: 20px 0 20px 0;
+        //border-bottom: 2px #818181 solid;
+        text-decoration: none;
+        font-size: 20px;
+        color: @fontgray;
+        display: block;
+      }
+      a:hover {
         color: @unimleblue;
       }
-    }
-    li:nth-child(6){
-      position: fixed;
-      bottom:80px;
-      a{
-        padding: 10px 0 10px 0;
-        color: @unimleblue;
+      .this{
+        background-color: rgba(0,0,0,0.05);
       }
-    }
-    li:nth-child(7){
-      position: fixed;
-      bottom:40px;
-      a{
-        padding: 10px 0 10px 0;
-        color: @unimleblue;
-      }
-    }
-    li:nth-child(8){
-      position: fixed;
-      bottom:0;
-      a{
-        padding: 10px 0 10px 0;
-        color: @unimleblue;
-      }
-    }
-    a{
-      padding: 20px 0 20px 0;
-      //border-bottom: 2px #818181 solid;
-      text-decoration: none;
-      font-size: 20px;
-      color: @fontgray;
-      display: block;
-    }
-    a:hover {
-      color: @unimleblue;
-    }
-    .this{
-      background-color: rgba(0,0,0,0.05);
     }
   }
 }
@@ -108,7 +116,7 @@ html,body,div{
   color: #666666;
   padding-top: 15%;
   text-align: center;
-  box-shadow: 0 0 5px #666666;
+  box-shadow:0 3px 5px #999999;
   h1{
     //color: @unimleblue;
     font-family: Arial Black, Gadget, sans-serif;
@@ -129,7 +137,7 @@ html,body,div{
   height: auto;
   color:@fontgraydark;
   background-color: @bgcolor;
-  box-shadow: 0 0 5px #666666;
+  box-shadow:0 3px 5px #999999;
   border-radius: 10px;
   padding: 10px;
   .jobstatus{
@@ -171,7 +179,7 @@ html,body,div{
     border-radius: 15px;
     font-size: 1.5em;
     text-align: justify;
-    box-shadow: 0 0 5px #666666;
+    box-shadow:0 3px 5px #999999;
     img{
       margin-right: 1.5em;
       float: left;
@@ -192,7 +200,7 @@ html,body,div{
       height: 100%;
       text-align: center;
       border-radius: 8px;
-      box-shadow: 0 0 5px #666666;
+      box-shadow:0 3px 5px #999999;
       ul{
         list-style: none;
         padding: 0;
@@ -257,7 +265,7 @@ html,body,div{
     padding: 10px 0 10px 10px;
     background-color: @bgcolor;
     border-radius: 5px;
-    box-shadow:0 0 5px #666666;
+    box-shadow:0 3px 5px #999999;
     i{
       margin-right: 10px;
       float: left;
@@ -292,7 +300,7 @@ html,body,div{
       margin: 3% 0.5% 0.5% 0.5%;
       width: 48%;
       background-color: @bgcolor;
-      box-shadow:0 0 5px #909090;
+      box-shadow:0 3px 5px #999999;
       .charts{
         padding: 30px;
         canvas{
