@@ -2,18 +2,19 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-# import twitter_search.config as config
-import config
-# import couchdb.couch as couch
-import couch
+import twitter_search.config as config
+# import config
+import couchdb.couch as couch
+# import couch
 import time
-# import twitter_search.search_user as search_user
-import search_user
-import search_tweet
+import twitter_search.search_user as search_user
+import twitter_search.search_tweet as search_tweet
+# import search_user
+# import search_tweet
 import datetime
 
 global rate_limit
-rate_limit = 1 # how many users we wanna add in this city
+rate_limit = 10 # how many users we wanna add in this city
 
 c_dict = dict(
     Melbourne = "mel",
@@ -110,9 +111,16 @@ def search(query: str, city: str, api, ID = None):
             break
     return True, maxid
 
-def run_search():
+def run_search(i:int):
+    global rate_limit
+    rate_limit = i # set the rate_limit for this search
     cities = config.Geocode.keys()
-    tokens = config.token
+    query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
+    res=couch.post(f'tokens/_find', body = query)
+    tasks=res.json()['docs']
+    tokens={}
+    for i in range(0,len(tasks)):
+        tokens[i]=tasks[i]
     ID = None
 
     for city in cities:

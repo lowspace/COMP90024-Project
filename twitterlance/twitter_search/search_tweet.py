@@ -2,10 +2,10 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-# import twitter_search.config as config
-import config
-# import couchdb.couch as couch
-import couch
+import twitter_search.config as config
+# import config
+import couchdb.couch as couch
+# import couch
 import time
 import datetime
 import sys
@@ -148,7 +148,12 @@ def tweet_search(uid: str, city: str, api, ID: str):
 if __name__ == '__main__':
 
     cities = config.Geocode.keys()
-    tokens = config.token
+    query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
+    res=couch.post(f'tokens/_find', body = query)
+    tasks=res.json()['docs']
+    tokens={}
+    for i in range(0,len(tasks)):
+        tokens[i]=tasks[i]
     ID = None
 
     c_dict = dict(
