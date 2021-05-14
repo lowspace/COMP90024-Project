@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible-playbook -i openstack_inventory.py init-application.yaml
+. ./unimelb-comp90024-2021-grp-39-openrc.sh; ansible-playbook -i openstack_inventory.py init-application.yaml

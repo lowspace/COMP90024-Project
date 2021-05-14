@@ -60,7 +60,8 @@ INSTALLED_APPS = [
     'couchdb',
     'analyser',
     'twitter_search',
-    'twitter_stream'
+    'twitter_stream',
+    'background_task'
 ]
 
 MIDDLEWARE = [
