@@ -53,6 +53,9 @@
           <li>
               <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
           </li>
+          <li>
+            <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
+          </li>
         </ul>
       </div>
   <!--    content for this page-->
@@ -106,12 +109,21 @@
             </div>
           </div>
 
-          <div class="col-md-12 column most-vibrant" >
-            <div class="col-md-5 column illustration">
-              <p> The most vibrant city have lower medium age of the population, lower unemployment rate, higher education level, higher income level and it's citizen cares sports a lot! </p>
-            </div>
-            <div class="col-md-7 column vibrant-chart">
+          <div class="col-md-12 column statistic-detail" >
+<!--          <div class="col-md-12 column most-vibrant" >-->
+            <div class="col-md-6 column vibrant-chart" style="margin-right: 2%">
+              <div class = options>
+                <a class = "col-md-3" href="#" id="vibrantcity" style="border-radius: 5px 5px 0 0;width: 100%">The Most Vibrant City</a>
+              </div>
               <canvas id="themostvibrantcity"></canvas>
+<!--              <p> The most vibrant city have lower medium age of the population, lower unemployment rate, higher education level, higher income level and it's citizen cares sports a lot! </p>-->
+            </div>
+            <div class="col-md-6 column sportuser-chart">
+              <div class = options>
+                <a class = "col-md-3" href="#" id="sportuser" style="border-radius: 5px 5px 0 0;width: 100%">Top 10 Sports Fans</a>
+              </div>
+              <canvas id="topsportuser"></canvas>
+<!--              <p> The most vibrant city have lower medium age of the population, lower unemployment rate, higher education level, higher income level and it's citizen cares sports a lot! </p>-->
             </div>
           </div>
 
