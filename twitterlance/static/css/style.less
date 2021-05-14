@@ -42,7 +42,7 @@ html,body,div{
     }
     li:nth-child(5){
       position: fixed;
-      bottom:80px;
+      bottom:120px;
       a{
         padding: 10px 0 10px 0;
         color: @unimleblue;
@@ -50,13 +50,21 @@ html,body,div{
     }
     li:nth-child(6){
       position: fixed;
-      bottom:40px;
+      bottom:80px;
       a{
         padding: 10px 0 10px 0;
         color: @unimleblue;
       }
     }
     li:nth-child(7){
+      position: fixed;
+      bottom:40px;
+      a{
+        padding: 10px 0 10px 0;
+        color: @unimleblue;
+      }
+    }
+    li:nth-child(8){
       position: fixed;
       bottom:0;
       a{
@@ -85,7 +93,7 @@ html,body,div{
   background-color: #EFF1F7;
   padding: 1%;
 }
-
+.right-content::-webkit-scrollbar { width: 0 !important }
 /*
     homepage
  */
@@ -113,6 +121,27 @@ html,body,div{
     //font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 50pt;
     margin: 0 auto;
+  }
+}
+.job-control{
+  width: 99%;
+  margin: 3% .5% .5% .5%;
+  height: auto;
+  color:@fontgraydark;
+  background-color: @bgcolor;
+  box-shadow: 0 0 5px #666666;
+  border-radius: 10px;
+  padding: 10px;
+  .jobstatus{
+    color: @unimleblue;
+    padding: 6px;
+    font-size: 14px;
+  }
+  .col-md-2{
+    width: 12.5%;
+  }
+  .col-md-4{
+    width: 50%;
   }
 }
 
@@ -301,30 +330,30 @@ html,body,div{
       }
     }
   }
-  .most-vibrant{
-    margin-bottom: 0.5%;
-    width:100%;
-    height:20%;
-    display: table;
-    .col-md-5{
-      display: table-cell;
-      margin: 3% 2.5% 0.5% 0.5%;
-      width: 29%;
-      padding: 10px;
-      background-color: @bgcolor;
-      border-radius: 5px;
-      box-shadow:0 0 5px #666666;
-    }
-    .col-md-7{
-      display: table-cell;
-      border-radius: 5px;
-      padding: 10px;
-      margin: 3% 0.5% 0.5% 0.5%;
-      width: 67%;
-      background-color: @bgcolor;
-      box-shadow:0 0 5px #909090;
-    }
-  }
+  //.most-vibrant{
+  //  margin-bottom: 0.5%;
+  //  width:100%;
+  //  height:20%;
+  //  display: table;
+  //  .vibrant-chart{
+  //    display: table-cell;
+  //    margin: 3% 2.5% 0.5% 0.5%;
+  //    width: 48%;
+  //    padding: 10px;
+  //    background-color: @bgcolor;
+  //    border-radius: 5px;
+  //    box-shadow:0 0 5px #666666;
+  //  }
+  //  .sportuser-chart{
+  //    display: table-cell;
+  //    border-radius: 5px;
+  //    padding: 10px;
+  //    margin: 3% 0.5% 0.5% 0.5%;
+  //    width: 48%;
+  //    background-color: @bgcolor;
+  //    box-shadow:0 0 5px #909090;
+  //  }
+  //}
 
   .hide{
     height: 0 !important;
