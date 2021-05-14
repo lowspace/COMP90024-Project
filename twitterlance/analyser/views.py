@@ -6,8 +6,14 @@ from rest_framework.decorators import action
 from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
 from collections import Counter
+<<<<<<< HEAD
 import json, time
 import couchdb.couch as couch
+=======
+from django.conf import settings 
+import os
+
+>>>>>>> Wei
 
 # template page
 def home(request):
@@ -100,13 +106,13 @@ class TweetViewSet(viewsets.ViewSet):
     # GET sport related tweets: analyser/tweets/sports/
     @action(detail=False, methods=['get'], name="sport tweets total")
     def sports(self, request):
-        count = 0
+        # count = 0
         res1 = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
+            # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
+            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
             res1[city]=res.json()['rows'][0]["value"]
-            count += res.json()['rows'][0]["value"]
-        res1["total"] = count
+            # count += res.json()['rows'][0]["value"]
         return HttpResponse(json.dumps(res1))
            
     # GET a month of tweets
@@ -141,11 +147,18 @@ class SportViewSet(viewsets.ViewSet):
     # GET analyser/tweets?options 
     # Add include_docs=true
     def list(self, request):
-        url = f'tweetdb/_all_docs'
-        if len(request.query_params) > 0: 
-            url += f'?{request.query_params.urlencode()}'
-        res = couch.get(url)
-        return Response(res.json())
+        # url = f'tweetdb/_all_docs'
+        # if len(request.query_params) > 0: 
+        #     url += f'?{request.query_params.urlencode()}'
+        # res = couch.get(url)
+        actions = dict(
+            stats_all = 'get all sport counts in all cities cross all time.',
+            stats_2019 = 'get all sport counts in all cities cross in 2019.',
+            stats_2020 = 'get all sport counts in all cities cross in 2020.',
+            stats_2021 = 'get all sport counts in all cities cross in 2021.',
+            stats_30 = 'get all sport counts in all cities cross in last 30 days.',
+        )
+        return Response(actions)
 
     # GET analyser/sports/stats_all
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
@@ -280,6 +293,7 @@ class YearlySportsTweetsViewSet(viewsets.ViewSet):
             total += count[k]
         count['total'] = total
         return Response(count)
+<<<<<<< HEAD
 
 # Jobs statuses in Couchdb. Background tasks will periodically check the statuses to  
 # start the jobs. 
@@ -382,3 +396,29 @@ class JobsViewSet(viewsets.ViewSet):
             doc = {'_id': 'couchdb', 'status': 'done', 'result': result, 'updated_at': time.ctime()}
             response = couch.upsertdoc('jobs/couchdb', doc)
             return Response(response.json(), response.status_code)
+=======
+        
+class ManagerViewSet(viewsets.ViewSet):
+
+    
+    # # POST analyser/couchdb
+    # @action(detail=False, methods=['post'], name="Initialisation")
+    # def couchdb(self, request):
+    #     call_command('initcouchdb')
+
+    # GET PUT analyser/manage/init_view
+    @action(detail=False, methods=['get','put'], name="Initialisation CouchDB Views")
+    def init_view(self, request):
+        done = {}
+        couch_path = os.path.join(settings.STATICFILES_DIRS[0], 'couch')
+        for file_name in os.listdir(couch_path):
+            if file_name.endswith("_view.json"):
+                database = file_name.split('__')[0]
+                view = file_name.split('__')[1]
+                file_path = os.path.join(couch_path, file_name)
+                with open(file_path, 'r') as f:
+                    f = json.load(f)
+                    couch.put(f'{database}/_design/{view}', body=f)
+                done[database] = view
+        return Response(done)
+>>>>>>> Wei
