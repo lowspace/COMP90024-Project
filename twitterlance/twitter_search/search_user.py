@@ -3,10 +3,10 @@ import tweepy
 from tweepy import OAuthHandler
 import pandas as pd
 import datetime
-# from twitter_search import config as config
-import config 
-# from couchdb import couch as couch
-import couch
+from twitter_search import config as config
+# import config 
+from couchdb import couch as couch
+# import couch
 import time
 
 global rate_limit
