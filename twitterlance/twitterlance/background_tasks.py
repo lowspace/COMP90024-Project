@@ -49,7 +49,7 @@ def start_search_job():
 
 @background(schedule=60)
 def start_update_job():
-    # res['status'] = ['wait', 'ready', 'running', 'done',]
+    # res['status'] = ['ready', 'running', 'done',]
     res = couch.get('jobs/search').json()
     print(res)
     if res['status'] == 'ready':
