@@ -112,7 +112,12 @@ def search(query: str, city: str, api, ID = None):
 
 def run_search():
     cities = config.Geocode.keys()
-    tokens = config.token
+    query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
+    res=couch.post(f'tokens/_find', body = query)
+    tasks=res.json()['docs']
+    tokens={}
+    for i in range(0,len(tasks)):
+        tokens[i]=tasks[i]
     ID = None
 
     for city in cities:

@@ -34,10 +34,13 @@ for i in areas:
 
 # generate authon
 
-consumer_key = 'wku1JIpNi4pXukXp510Hzylj2'
-consumer_secret = 'JZPuJKqMZu929iu8XxgTQAOw0up1LLJj6hKUjFDPE4aSNsp1KP'
-access_token = '1382968455989583874-9DiykvjpUlnYtq2fJAgScghh9TMBs2'
-access_token_secret = 'k6C6Yx8LNkNp5FtyG55d6WZ0lwePYbAYAmnkg5xOd65G6'
+query = dict(selector = {"type": "stream"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
+res = couch.post(f'tokens/_find', body = query)
+token = res.json()['docs'][0]
+consumer_key = token["consumer_key"]
+consumer_secret = token["consumer_secret"]
+access_token = token["access_token"]
+access_token_secret = token["access_token_secret"]
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
