@@ -8,6 +8,8 @@ from django.shortcuts import HttpResponse
 from collections import Counter
 import json, time
 import couchdb.couch as couch
+from django.conf import settings 
+import os
 
 # template page
 def home(request):
@@ -100,7 +102,7 @@ class TweetViewSet(viewsets.ViewSet):
     # GET sport related tweets: analyser/tweets/sports/
     @action(detail=False, methods=['get'], name="sport tweets total")
     def sports(self, request):
-        count = 0
+        # count = 0
         res1 = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
@@ -152,11 +154,18 @@ class SportViewSet(viewsets.ViewSet):
     # GET analyser/tweets?options 
     # Add include_docs=true
     def list(self, request):
-        url = f'tweetdb/_all_docs'
-        if len(request.query_params) > 0: 
-            url += f'?{request.query_params.urlencode()}'
-        res = couch.get(url)
-        return Response(res.json())
+        # url = f'tweetdb/_all_docs'
+        # if len(request.query_params) > 0: 
+        #     url += f'?{request.query_params.urlencode()}'
+        # res = couch.get(url)
+        actions = dict(
+            stats_all = 'get all sport counts in all cities cross all time.',
+            stats_2019 = 'get all sport counts in all cities cross in 2019.',
+            stats_2020 = 'get all sport counts in all cities cross in 2020.',
+            stats_2021 = 'get all sport counts in all cities cross in 2021.',
+            stats_30 = 'get all sport counts in all cities cross in last 30 days.',
+        )
+        return Response(actions)
 
     # GET analyser/sports/stats_all
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
@@ -300,7 +309,9 @@ class JobsViewSet(viewsets.ViewSet):
         return Response(couch.get(f'jobs/_all_docs').json())
 
     # GET /analyser/jobs/search/
+    # GET /analyser/jobs/update/
     # GET /analyser/jobs/stream/
+    # GET /analyser/jobs/user_rank/
     # GET /analyser/jobs/couchdb/
     def retrieve(self, request, pk=None):
         if pk is None: 
@@ -310,9 +321,10 @@ class JobsViewSet(viewsets.ViewSet):
     # PUT /analyser/jobs/search/ -d {"new_users": 1000}
     # PUT /analyser/jobs/update/
     # PUT /analyser/jobs/stream/
+    # PUT /analyser/jobs/user_rank/
     # PUT /analyser/jobs/couchdb/
     def update(self, request, pk=None):
-
+        try: 
             # get new users and timelines
             if pk == 'search': 
                 return self.start_search(request)
@@ -325,13 +337,18 @@ class JobsViewSet(viewsets.ViewSet):
             elif pk == 'stream':
                 return self.start_stream()
             
+            # start calculating users rank
+            elif pk == 'stream':
+                return self.calculate_user_rank()
+            
             # migrate couchdb 
             elif pk == 'couchdb':
                 return self.migrate_couchdb()
 
             else: 
                 return Response({'error': f'Invalid job name {pk}'}) 
-
+        except Exception as e:
+            return Response(str(e)) 
 
     def start_search(self, request): 
         new_users = request.data.get('new_users') if request.data is not None else None
@@ -367,6 +384,15 @@ class JobsViewSet(viewsets.ViewSet):
             response = couch.upsertdoc('jobs/update', doc)
             return Response(response.json(), response.status_code)
 
+    def calculate_user_rank(self):
+        res = couch.get('jobs/user_rank')
+        if res.status_code == 200 and res.json().get('status') != 'done':
+            return Response(res.json(), 403)
+        else: 
+            doc = {'_id': 'user_rank', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            response = couch.upsertdoc('jobs/user_rank', doc)
+            return Response(response.json(), response.status_code)
+
     def migrate_couchdb(self):
         res = couch.get('jobs/couchdb')
         if res.status_code == 200:
@@ -376,3 +402,28 @@ class JobsViewSet(viewsets.ViewSet):
             doc = {'_id': 'couchdb', 'status': 'done', 'result': result, 'updated_at': time.ctime()}
             response = couch.upsertdoc('jobs/couchdb', doc)
             return Response(response.json(), response.status_code)
+
+
+class ManagerViewSet(viewsets.ViewSet):
+
+    
+    # # POST analyser/couchdb
+    # @action(detail=False, methods=['post'], name="Initialisation")
+    # def couchdb(self, request):
+    #     call_command('initcouchdb')
+
+    # GET PUT analyser/manage/init_view
+    @action(detail=False, methods=['get','put'], name="Initialisation CouchDB Views")
+    def init_view(self, request):
+        done = {}
+        couch_path = os.path.join(settings.STATICFILES_DIRS[0], 'couch')
+        for file_name in os.listdir(couch_path):
+            if file_name.endswith("_view.json"):
+                database = file_name.split('__')[0]
+                view = file_name.split('__')[1]
+                file_path = os.path.join(couch_path, file_name)
+                with open(file_path, 'r') as f:
+                    f = json.load(f)
+                    couch.put(f'{database}/_design/{view}', body=f)
+                done[database] = view
+        return Response(done)

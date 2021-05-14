@@ -2,15 +2,16 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-# import twitter_search.config as config
-import config
+import twitter_search.config as config
+# import config
 # import couchdb.couch as couch
-import couch
+# import couch
 import time
-# import twitter_search.search_user as search_user
-import search_user
+import twitter_search.search_user as search_user
+# import search_user
 import datetime
-import search_tweet
+import twitter_search.search_tweet as search_tweet
+# import search_tweet
 
 global total_num_retrieve_tweets, timeline_limit
 
@@ -105,13 +106,18 @@ def tweet_search(uid: str, city: str, api, ID: str):
 
 def run_update():
     cities = config.Geocode.keys()
-    tokens = config.token
+    query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
+    res=couch.post(f'tokens/_find', body = query)
+    tasks=res.json()['docs']
+    tokens={}
+    for i in range(0,len(tasks)):
+        tokens[i]=tasks[i]
     ID = None
     c_dict = dict(
         Melbourne = "mel",
         Adelaide = "adl",
         Sydney = "syd",
-        Canberra = "cbr"
+        Canberra = "cbr",
         Perth = "per", 
         Brisbane = "bne",
     )
@@ -162,7 +168,7 @@ def run_update():
             post_id = users[i]["_id"]
             couch.put(f'userdb/{post_id}', users[i]) # update the information in userdb
             t2 = time.time()
-            print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets)
+            print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
             print('success to save {c}/{t} users into CouchDB'.format(c = i+1, t = len(users)))
             print('Have cost {t:.3f} seconds in {c}; average cost time {s:.3f} seconds for each user'.format(c = city, t = t2-t1, s = (t2-t1)/(i+1)))
             print('Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
