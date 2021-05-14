@@ -294,34 +294,43 @@ class JobsViewSet(viewsets.ViewSet):
         return Response(couch.get(f'jobs/{pk}').json())
 
     # PUT /analyser/jobs/search/ -d {"new_users": 1000}
+    # PUT /analyser/jobs/update/
     # PUT /analyser/jobs/stream/
     # PUT /analyser/jobs/couchdb/
     def update(self, request, pk=None):
-   
+
+            # get new users and timelines
             if pk == 'search': 
                 return self.start_search(request)
+            
+            # update existing user timelines
+            elif pk == 'update':
+                return self.start_update()
+            
+            # start streaming
             elif pk == 'stream':
                 return self.start_stream()
+            
+            # migrate couchdb 
             elif pk == 'couchdb':
                 return self.migrate_couchdb()
+
             else: 
                 return Response({'error': f'Invalid job name {pk}'}) 
 
 
     def start_search(self, request): 
         new_users = request.data.get('new_users') if request.data is not None else None
-        result = 'Job submitted.'
-        if not isinstance(new_users, int): 
-            new_users = 100
-            result += ' Parameter new_users is not provided, so set as 100.'
-        else: 
+        if isinstance(new_users, int): 
             new_users = int(new_users)
+        else: 
+            return Response({'error': 'Parameter new_users is not provided'}, 403)
 
         res = couch.get('jobs/search')
         if res.status_code == 200 and res.json().get('status') != 'done':
             return Response(res.json(), 403)
         else: 
-            doc = {'_id': 'search', 'status': 'ready', 'new_users': new_users, 'result': result, 'updated_at':time.ctime()}
+            doc = {'_id': 'search', 'status': 'ready', 'new_users': new_users, 'result': 'Job submitted.', 'updated_at':time.ctime()}
             response = couch.upsertdoc('jobs/search', doc)
             return Response(response.json(), response.status_code)
 
@@ -333,6 +342,15 @@ class JobsViewSet(viewsets.ViewSet):
         else: 
             doc = {'_id': 'stream', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
             response = couch.upsertdoc('jobs/stream', doc)
+            return Response(response.json(), response.status_code)
+    
+    def start_update(self):
+        res = couch.get('jobs/update')
+        if res.status_code == 200 and res.json().get('status') != 'done':
+            return Response(res.json(), 403)
+        else: 
+            doc = {'_id': 'update', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            response = couch.upsertdoc('jobs/update', doc)
             return Response(response.json(), response.status_code)
 
     def migrate_couchdb(self):
