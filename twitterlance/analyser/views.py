@@ -78,17 +78,12 @@ class SportViewSet(viewsets.ViewSet):
     # GET analyser/sports?options 
     # Add include_docs=true
     def list(self, request):
-        # url = f'tweetdb/_all_docs'
-        # if len(request.query_params) > 0: 
-        #     url += f'?{request.query_params.urlencode()}'
-        # res = couch.get(url)
-        actions = dict(
-            stats_all = 'get all sport counts in all cities cross all time.',
-            stats_2019 = 'get all sport counts in all cities cross in 2019.',
-            stats_2020 = 'get all sport counts in all cities cross in 2020.',
-            stats_2021 = 'get all sport counts in all cities cross in 2021.',
-            stats_30 = 'get all sport counts in all cities cross in last 30 days.',
-        )
+        actions = {
+            'stats_all/': 'get all sport counts in all cities cross all time.',
+            '2019/': 'get all sport counts in all cities cross in 2019.',
+            '2020/': 'get all sport counts in all cities cross in 2020.',
+            '2021/': 'get all sport counts in all cities cross in 2021.'
+        }
         return Response(actions)
 
     # GET analyser/sports/stats_all
@@ -103,11 +98,10 @@ class SportViewSet(viewsets.ViewSet):
         for k in count.keys():
             total += count[k]
         count['total'] = total
-        return HttpResponse(json.dumps(count))
+        return Response(json.dumps(count))
 
-    # GET analyser/sports/year/:number
-    @action(detail=True, methods=['get'], name="Get the year tweets of sports")
-    def year(self, request, pk=None):
+    # GET analyser/sports/:year Get the year tweets of sports
+    def retrieve(self, request, pk=None):
         count = {}
 
         if pk is None or not isinstance(pk, int):
@@ -229,8 +223,6 @@ class JobsViewSet(viewsets.ViewSet):
             doc = {'_id': 'user_rank', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
             response = couch.upsertdoc('jobs/user_rank', doc)
             return Response(response.json(), response.status_code)
-
-
 
 class ManagerViewSet(viewsets.ViewSet):
 
