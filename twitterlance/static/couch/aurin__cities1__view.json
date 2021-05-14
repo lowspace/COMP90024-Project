@@ -1,0 +1,9 @@
+{
+  "_id": "_design/cities1",
+  "views": {
+    "aurinInfo": {
+      "map": "function (doc) {\n  emit(doc._id, doc.features);\n}\n  "
+    }
+  },
+  "language": "javascript"
+}
