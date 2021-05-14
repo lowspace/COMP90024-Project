@@ -8,11 +8,8 @@ router.register(r'users', views.UserViewSet, basename="User")
 router.register(r'sports', views.SportViewSet, basename="Sport")
 router.register(r'aurin', views.AurinViewSet, basename="Aurin")
 router.register(r'yearly', views.YearlySportsTweetsViewSet, basename="Yearly")
-<<<<<<< HEAD
 router.register(r'jobs', views.JobsViewSet, basename="Job")
-=======
 router.register(r'manage', views.ManagerViewSet, basename="Manager")
->>>>>>> Wei
 
 urlpatterns = [
     path('', include(router.urls)),

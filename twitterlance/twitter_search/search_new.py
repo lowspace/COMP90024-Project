@@ -2,10 +2,10 @@ import json
 import tweepy
 from tweepy import OAuthHandler
 import os
-# import twitter_search.config as config
-import config
-# import couchdb.couch as couch
-import couch
+import twitter_search.config as config
+# import config
+import couchdb.couch as couch
+# import couch
 import time
 # import twitter_search.search_user as search_user
 # import twitter_search.search_tweet as search_tweet
