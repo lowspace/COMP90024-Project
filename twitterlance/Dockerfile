@@ -1,7 +1,8 @@
-FROM python:3.7-alpine
+FROM ubuntu:18.04
 
 # Create a group and user to run our app
-RUN adduser -S appuser -G root
+RUN adduser appuser
+RUN usermod -a -G root appuser
 
 # Add project code
 RUN mkdir /code/
@@ -10,19 +11,16 @@ ADD . /code/
 
 ENV DJANGO_SETTINGS_MODULE=twitterlance.settings
 
-RUN apk update
+RUN apt-get update; \
+    apt-get install -y apt-utils \
+        gcc \
+        libc-dev \
+        curl \
+        openjdk-8-jdk \
+        python3 \ 
+        python3-pip;
 
-# Python dependencies
-RUN set -e; \
-	apk add --no-cache --virtual .build-deps \
-		gcc \
-		libc-dev \
-		linux-headers \
-	; \
-	pip install -r requirements.txt; \
-	apk del .build-deps;
-
-RUN apk add --no-cache --virtual mailcap
+RUN pip3 install -r requirements.txt;
 
 # uWSGI listening on this port
 EXPOSE 80
