@@ -289,7 +289,9 @@ class JobsViewSet(viewsets.ViewSet):
         return Response(couch.get(f'jobs/_all_docs').json())
 
     # GET /analyser/jobs/search/
+    # GET /analyser/jobs/update/
     # GET /analyser/jobs/stream/
+    # GET /analyser/jobs/user_rank/
     # GET /analyser/jobs/couchdb/
     def retrieve(self, request, pk=None):
         if pk is None: 
@@ -299,9 +301,10 @@ class JobsViewSet(viewsets.ViewSet):
     # PUT /analyser/jobs/search/ -d {"new_users": 1000}
     # PUT /analyser/jobs/update/
     # PUT /analyser/jobs/stream/
+    # PUT /analyser/jobs/user_rank/
     # PUT /analyser/jobs/couchdb/
     def update(self, request, pk=None):
-
+        try: 
             # get new users and timelines
             if pk == 'search': 
                 return self.start_search(request)
@@ -314,13 +317,18 @@ class JobsViewSet(viewsets.ViewSet):
             elif pk == 'stream':
                 return self.start_stream()
             
+            # start calculating users rank
+            elif pk == 'stream':
+                return self.calculate_user_rank()
+            
             # migrate couchdb 
             elif pk == 'couchdb':
                 return self.migrate_couchdb()
 
             else: 
                 return Response({'error': f'Invalid job name {pk}'}) 
-
+        except Exception e: 
+            return Response(str(e)) 
 
     def start_search(self, request): 
         new_users = request.data.get('new_users') if request.data is not None else None
@@ -354,6 +362,15 @@ class JobsViewSet(viewsets.ViewSet):
         else: 
             doc = {'_id': 'update', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
             response = couch.upsertdoc('jobs/update', doc)
+            return Response(response.json(), response.status_code)
+
+    def calculate_user_rank(self):
+        res = couch.get('jobs/user_rank')
+        if res.status_code == 200 and res.json().get('status') != 'done':
+            return Response(res.json(), 403)
+        else: 
+            doc = {'_id': 'user_rank', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            response = couch.upsertdoc('jobs/user_rank', doc)
             return Response(response.json(), response.status_code)
 
     def migrate_couchdb(self):
