@@ -1,12 +1,5 @@
-import json
 import tweepy
-from tweepy import OAuthHandler
-import pandas as pd
-import datetime
-from twitter_search import config as config
-# import config 
 from couchdb import couch as couch
-# import couch
 import time
 
 global rate_limit
@@ -34,7 +27,7 @@ def user_search(query: str, city: str, api, ID = None):
     ulist = [] # list of uid
     count = 0 
     # store = {} # dict
-    geocode = config.Geocode[city] # get geocode
+    geocode = couch.geocode()[city] # get geocode
     if not ID: # ID = None
         first = toJson(api.search(q = query, geocode = geocode, count=66)) # consider loss tweets
     else: # ID != None
@@ -131,7 +124,7 @@ if __name__ == '__main__':
     # each city may use different tokens to complete the search task
     # need to exhaust all the cities
 
-    cities = config.Geocode.keys()
+    cities = couch.geocode().keys()
     query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
     res=couch.post(f'tokens/_find', body = query)
     tasks=res.json()['docs']

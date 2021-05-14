@@ -74,13 +74,20 @@ def migrate():
     output.append(createdb('userdb', False).json())
     output.append(createdb('tweetdb', True).json())
 
+    cities = dict (
+        Adelaide= "-34.9998826,138.3309816,40km",
+        Sydney = "-33.8559799094,151.20666584,50km",
+        Melbourne = "-37.8142385,144.9622775,40km" ,
+        Perth = "-32.0391738, 115.6813561, 40km",
+        Canberra ="-35.2812958,149.124822,40km",
+        Brisbane =  "-27.3812533, 152.713015, 40km",
+    )
+
     # Add necessary data
-    output.append(post('cities', {'_id': 'Melbourne'}).json())
-    output.append(post('cities', {'_id': 'Sydney'}).json())
-    output.append(post('cities', {'_id': 'Brisbane'}).json())
-    output.append(post('cities', {'_id': 'Perth'}).json())
-    output.append(post('cities', {'_id': 'Adelaide'}).json())
-    output.append(post('cities', {'_id': 'Canberra'}).json())
+    for key, value in cities: 
+        output.append(post('cities', {'_id': key, 'geocode': value}).json())
 
     return output
 
+def geocode():
+    return get('cities/_all_docs?include_docs=true')
