@@ -301,7 +301,7 @@ class JobsViewSet(viewsets.ViewSet):
     # PUT /analyser/jobs/user_rank/
     # PUT /analyser/jobs/couchdb/
     def update(self, request, pk=None):
-
+        try: 
             # get new users and timelines
             if pk == 'search': 
                 return self.start_search(request)
@@ -324,7 +324,8 @@ class JobsViewSet(viewsets.ViewSet):
 
             else: 
                 return Response({'error': f'Invalid job name {pk}'}) 
-
+        except Exception e: 
+            return Response(str(e)) 
 
     def start_search(self, request): 
         new_users = request.data.get('new_users') if request.data is not None else None
