@@ -1,0 +1,8 @@
+---
+- name: Reconsolidate Couchdb cluster
+  command: python3 /home/ubuntu/twitterlance/recluster.py
+  register: result
+  args:
+    warn: no
+- debug:
+    msg: '{{ result.stdout | default("Message empty.") }}'
