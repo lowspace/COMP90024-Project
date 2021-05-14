@@ -11,6 +11,7 @@ import couchdb.couch as couch
 from django.conf import settings 
 import os
 
+
 # template page
 def home(request):
     return render(request, 'home.html',)
@@ -107,20 +108,9 @@ class TweetViewSet(viewsets.ViewSet):
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
             # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-            res1[city] = res.json()['rows'][0]["value"]
+            res1[city]=res.json()['rows'][0]["value"]
             # count += res.json()['rows'][0]["value"]
         return HttpResponse(json.dumps(res1))
-
-    # @action(detail=False, methods=['get'], name="sport tweets total")
-    # def sports(self, request):
-    #     count = 0
-    #     res1 = {}
-    #     for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-    #         res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
-    #         res1[city]=res.json()['rows'][0]["value"]
-    #         count += res.json()['rows'][0]["value"]
-    #     res1["total"] = count
-    #     return HttpResponse(json.dumps(res1))
            
     # GET a month of tweets
     #@action(detail=False, methods=['get'], name="month tweets total")
@@ -145,7 +135,8 @@ class UserViewSet(viewsets.ViewSet):
         count = {}
         for city in ["mel", "syd", "cbr", "adl"]:
             res = couch.get(f'userdb/_design/cities/_view/{city}')
-            count[city] = res.json()["total_rows"]
+            # count[city] = res.json()["doc_count"]
+            count[city] = res.json()['rows'][0]["value"]
         count["total_users"] = sum(count.values())
         return HttpResponse(json.dumps({"user_stats": count}))
 
@@ -347,7 +338,7 @@ class JobsViewSet(viewsets.ViewSet):
 
             else: 
                 return Response({'error': f'Invalid job name {pk}'}) 
-        except Exception as e:
+        except Exception as e: 
             return Response(str(e)) 
 
     def start_search(self, request): 
@@ -402,8 +393,7 @@ class JobsViewSet(viewsets.ViewSet):
             doc = {'_id': 'couchdb', 'status': 'done', 'result': result, 'updated_at': time.ctime()}
             response = couch.upsertdoc('jobs/couchdb', doc)
             return Response(response.json(), response.status_code)
-
-
+        
 class ManagerViewSet(viewsets.ViewSet):
 
     
