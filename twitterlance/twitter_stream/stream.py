@@ -1,13 +1,11 @@
 # author Zihao Hu
 # time 4/29/2021
-import tweepy
-import configparser
-import json
-import time
+import tweepy, json, time, os
+import couchdb.couch as couch
+from django.conf import settings 
 from shapely.geometry import Point, Polygon
 from http.client import IncompleteRead as http_incompleteRead
 from urllib3.exceptions import IncompleteRead as urllib3_incompleteRead
-import couchdb.couch as couch
 
 def test():
     return couch.new_id()
@@ -25,7 +23,10 @@ Ade = [138.422, -35.355, 139.052, -34.493]
 overall = [144.312, -38.506, 151.645, -32.976]
 
 # read melbourne shape json
-areas = json_load("TOP4city.json")["features"]
+
+twitter_api = os.path.join(settings.STATICFILES_DIRS[0], 'twitter_api')
+twitter_api = os.path.join(twitter_api, 'TOP4city.json')
+areas = json_load(twitter_api)["features"]
 
 # read area list
 area_list = []
@@ -45,10 +46,6 @@ access_token_secret = token["access_token_secret"]
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
-
-# connect CouchDB dataset
-server = "http://admin:Aa123456789@localhost:5984"
-couch.base_url = server
 
 # get the userlist
 users = []

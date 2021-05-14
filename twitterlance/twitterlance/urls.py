@@ -1,21 +1,18 @@
-from django.contrib import admin
 from django.urls import include, path
-from django.conf.urls import url
-from analyser import views
+from . import views
 
 urlpatterns = [
+    path('', views.home),
+    path('home/', views.home),
+    path('about/', views.about),
+    path('statistics/', views.statistics),
+    path('map/', views.map),
+    path('mappage/', views.mappage),
     path('analyser/', include('analyser.urls')),
-    path('admin/', admin.site.urls),
-    url(r'^home/', views.home, name="home"),
-    url(r'^statistics/', views.statistics, name="statistics"),
-    url(r'^map/', views.map, name="map"),
-    url(r'^about/', views.about, name="about"),
-    url(r'^mappage/', views.mappage, name="mappage"),
-    url(r'^:9000/', views.manage, name="manage"),
-    url(r'^Haproxy/', views.Haproxy, name="Haproxy"),
-    url(r'^:8080/', views.Spark, name="Spark"),
 ]
 
 # Register background_tasks
 from . import background_tasks
 background_tasks.all()
+
+# Register hostnames in jobs
