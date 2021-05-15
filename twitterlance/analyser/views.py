@@ -73,6 +73,7 @@ class UserViewSet(viewsets.ViewSet):
     def rank(self, request):
         res = couch.get('conclusions/user_rank')
         return Response(res.json())
+        
 class SportViewSet(viewsets.ViewSet):
 
     # GET analyser/sports/
