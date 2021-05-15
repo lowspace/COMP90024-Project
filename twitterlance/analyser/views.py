@@ -29,7 +29,7 @@ class TweetViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="Get the stats of tweets")
     def stats(self, request):
         count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}')
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
@@ -40,7 +40,7 @@ class TweetViewSet(viewsets.ViewSet):
     def sports(self, request):
         # count = 0
         res1 = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys()]:
             # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
             res1[city]=res.json()['rows'][0]["value"]
@@ -61,7 +61,7 @@ class UserViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="Get the stats of users")
     def stats(self, request):
         count = {}
-        for city in ["mel", "syd", "cbr", "adl"]:
+        for city in couch.geocode().keys():
             res = couch.get(f'userdb/_design/cities/_view/{city}')
             # count[city] = res.json()["doc_count"]
             count[city] = res.json()['rows'][0]["value"]
@@ -89,7 +89,7 @@ class SportViewSet(viewsets.ViewSet):
     def stats_all(self, request):
         count = {}
         sum_all = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
             res = Counter(res.json()['rows'][0]["value"])
             sum_all[city] = sum(res.values())
@@ -106,7 +106,7 @@ class SportViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="Get the top 3 sports in each city across all time")
     def rank_top3(self, request):
         count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
             res = Counter(res.json()['rows'][0]["value"])
             top3 = {}
@@ -119,7 +119,7 @@ class SportViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="Get the 2019, 2020, 2021 tweets of sports in each city")
     def yearly_stats(self, request):
         count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             time_line = {}
             for time_stamp in ['2019', '2020', '2021']:
                 res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{time_stamp}')
