@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Load CouchDB endpoint and credentials
 config = configparser.ConfigParser()
 try:
-    config.read("couchdb.conf")
+    config.read(f"{BASE_DIR}/couchdb.conf")
 except:
     print("CouchDB Configuration not found")
 
@@ -65,7 +65,8 @@ INSTALLED_APPS = [
     'analyser',
     'twitter_search',
     'twitter_stream',
-    'background_task'
+    'django_extensions',
+    'django_cron'
 ]
 
 MIDDLEWARE = [
