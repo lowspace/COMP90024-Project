@@ -39,7 +39,9 @@ COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
 
-DJANGO_NODENAME =  os.environ['DJANGO_NODENAME']
+DJANGO_NODENAME =  os.environ['DJANGO_NODENAME'] if os.environ['DJANGO_NODENAME'] is not None else 'localhost'
+
+APPEND_SLASH = True
 
 # Application definition
 REST_FRAMEWORK = {
