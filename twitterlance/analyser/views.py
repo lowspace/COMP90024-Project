@@ -79,10 +79,10 @@ class SportViewSet(viewsets.ViewSet):
     # Add include_docs=true
     def list(self, request):
         actions = {
-            'All sport counts in all cities cross all time.': 'stats_all/',
-            'All sport counts in all cities cross in 2019': '2019/',
-            'All sport counts in all cities cross in 2020': '2020/',
-            'All sport counts in all cities cross in 2021': '2021/'
+            'stats_all/': 'All sport counts in all cities cross all time.',
+            '2019/': 'All sport counts in all cities cross in 2019',
+            '2020/': 'All sport counts in all cities cross in 2020',
+            '2021/': 'All sport counts in all cities cross in 2021'
         }
         return Response(actions)
 
