@@ -29,4 +29,4 @@ EXPOSE 80
 USER appuser
 
 # Initialisation
-ENTRYPOINT ["uwsgi", "uwsgi.yml"]
+ENTRYPOINT ["./entrypoint.sh"]

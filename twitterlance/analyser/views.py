@@ -1,28 +1,24 @@
-from django.http import HttpResponseRedirect
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
-from collections import Counter
-import json, time
-import couchdb.couch as couch
 from django.conf import settings 
-import os
+from collections import Counter
+import json, time, os
+import couchdb.couch as couch
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
 class TweetViewSet(viewsets.ViewSet):
 
-    # GET analyser/tweets?options 
-    # Add include_docs=true
+    # GET analyser/sports/
     def list(self, request):
-        url = f'tweetdb/_all_docs'
-        if len(request.query_params) > 0: 
-            url += f'?{request.query_params.urlencode()}'
-        res = couch.get(url)
-        return Response(res.json())
+        actions = {
+            'tweets/:id': 'Get single tweet',
+            'stats': 'Get the stats of tweets',
+            'sports': 'sport tweets total'
+        }
+        return Response(actions)
 
     # GET analyser/tweets/:id
     def retrieve(self, request, pk=None):
@@ -33,7 +29,7 @@ class TweetViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="Get the stats of tweets")
     def stats(self, request):
         count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}')
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
@@ -44,7 +40,7 @@ class TweetViewSet(viewsets.ViewSet):
     def sports(self, request):
         # count = 0
         res1 = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
             res1[city]=res.json()['rows'][0]["value"]
@@ -53,70 +49,88 @@ class TweetViewSet(viewsets.ViewSet):
     
 class UserViewSet(viewsets.ViewSet):
 
-    # GET analyser/users?options 
-    # Add include_docs=true
+    # GET analyser/users/
     def list(self, request):
-        url = f'userdb/_all_docs'
-        if len(request.query_params) > 0: 
-            url += f'?{request.query_params.urlencode()}'
-        res = couch.get(url)
-        return Response(res.json())
+        actions = {
+            'stats': 'Stats of users.',
+            'rank': 'Get the sporst enthusiasts rank'
+        }
+        return Response(actions)
 
     # GET analyser/users/stats
     @action(detail=False, methods=['get'], name="Get the stats of users")
     def stats(self, request):
+        t1 = time.time()
         count = {}
-        for city in ["mel", "syd", "cbr", "adl"]:
+        for city in couch.geocode().keys():
+            print(city)
             res = couch.get(f'userdb/_design/cities/_view/{city}')
             # count[city] = res.json()["doc_count"]
-            count[city] = res.json()['rows'][0]["value"]
+            if res.json()['rows']:
+                count[city] = res.json()['rows'][0]["value"]   
         count["total_users"] = sum(count.values())
-        return HttpResponse(json.dumps({"user_stats": count}))
+        t2 = time.time()
+        count["time"] = t2 - t1
+        return Response({"user_stats": count})
+
+    # GET analyser/users/rank
+    @action(detail=False, methods=['get'], name="Get the rank of the enthusiasts")
+    def rank(self, request):
+        res = couch.get('conclusions/user_rank')
+        return Response(res.json())
 
 class SportViewSet(viewsets.ViewSet):
 
-    # GET analyser/sports?options 
-    # Add include_docs=true
+    # GET analyser/sports/
     def list(self, request):
         actions = {
-            'All sport counts in all cities cross all time.': 'stats_all/',
-            'Top 3 sports in all cities cross all time.': 'rank_top3/',
-            'Sport relevent tweet number in each city in different years.': 'yearly_stats/',
-            'All sport counts in all cities cross in 2019': '2019/',
-            'All sport counts in all cities cross in 2020': '2020/',
-            'All sport counts in all cities cross in 2021': '2021/'
+            'stats_all': 'All sport counts in all cities cross all time.',
+            ':year': 'All sport counts in all cities cross in the year number',
+            'rank_top3': 'Top 3 sports in all cities cross all time.',
+            'yearly_stats': 'Sport relevant tweets num of each year in all cities.'
         }
         return Response(actions)
 
     # GET analyser/sports/stats_all
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
     def stats_all(self, request):
+        t1 = time.time()
         count = {}
         sum_all = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-            res = Counter(res.json()['rows'][0]["value"])
-            sum_all[city] = sum(res.values())
-            count[city] = res
-        total = Counter()  # all sports
+# <<<<<<< HEAD
+#             res = Counter(res.json()['rows'][0]["value"])
+#             sum_all[city] = sum(res.values())
+#             count[city] = res
+#         total = Counter()  # all sports
+# =======
+            if res.json()['rows']:
+                res = Counter(res.json()['rows'][0]["value"])
+                sum_all[city] = sum(res.values())
+                count[city] = res
+        total = Counter() # all sports
         for k in count.keys():
             total += count[k]
         count['total'] = total
         sum_all['total'] = sum(sum_all.values())
         count['sum'] = sum_all
+        t2 = time.time()
+        count["time"] = t2 - t1
         return HttpResponse(json.dumps(count))
 
     # GET analyser/sports/rank_top3
     @action(detail=False, methods=['get'], name="Get the top 3 sports in each city across all time")
     def rank_top3(self, request):
         count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-            res = Counter(res.json()['rows'][0]["value"])
-            top3 = {}
-            for i in res.most_common(3):
-                top3[i[0]] = i[1]
-            count[city] = top3
+            if res.json()['rows']:
+                res = Counter(res.json()['rows'][0]["value"])
+                top3 = {}
+                for i in res.most_common(3):
+                    top3[i[0]] = i[1]
+                count[city] = top3
         return HttpResponse(json.dumps(count))
 
     # GET analyser/sports/stats_yearly
@@ -149,12 +163,13 @@ class SportViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="Get the 2019, 2020, 2021 tweets of sports in each city")
     def yearly_stats(self, request):
         count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             time_line = {}
             for time_stamp in ['2019', '2020', '2021']:
                 res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{time_stamp}')
-                res = Counter(res.json()['rows'][0]["value"])
-                time_line[time_stamp] = sum(res.values())
+                if res.json()['rows']:
+                    res = Counter(res.json()['rows'][0]["value"])
+                    time_line[time_stamp] = sum(res.values())
             count[city] = time_line
         return HttpResponse(json.dumps(count))
 
@@ -190,15 +205,31 @@ class AurinViewSet(viewsets.ViewSet):
 # Jobs statuses in Couchdb. Background tasks will periodically check the statuses to  
 # start the jobs. 
 class JobsViewSet(viewsets.ViewSet):
-    # GET /analyser/jobs/
+
+    # GET analyser/jobs/
     def list(self, request):
+        actions = {
+            'all': 'Stats of users.',
+            'search': 'Get the sporst enthusiasts rank',
+            'update': 'Get the sporst enthusiasts rank',
+            'stream': 'Get the sporst enthusiasts rank',
+            'user_rank': 'Get the sporst enthusiasts rank'
+        }
+        return Response(actions)
+
+    # GET analyser/jobs/nodename
+    @action(detail=False, methods=['get'], name="Get the current instance node name")
+    def nodename(self, request):
+        return Response(settings.DJANGO_NODENAME)
+
+    # GET /analyser/jobs/all/
+    @action(detail=False, methods=['get'], name="Get statuses of all jobs")
+    def all(self, request):
         return Response(couch.get(f'jobs/_all_docs').json())
 
     # GET /analyser/jobs/search/
     # GET /analyser/jobs/update/
     # GET /analyser/jobs/stream/
-    # GET /analyser/jobs/user_rank/
-    # GET /analyser/jobs/couchdb/
     def retrieve(self, request, pk=None):
         if pk is None: 
             return Response({'error': 'job name is missing'})
@@ -207,8 +238,6 @@ class JobsViewSet(viewsets.ViewSet):
     # PUT /analyser/jobs/search/ -d {"new_users": 1000}
     # PUT /analyser/jobs/update/
     # PUT /analyser/jobs/stream/
-    # PUT /analyser/jobs/user_rank/
-    # PUT /analyser/jobs/couchdb/
     def update(self, request, pk=None):
         try: 
             # get new users and timelines
@@ -222,14 +251,6 @@ class JobsViewSet(viewsets.ViewSet):
             # start streaming
             elif pk == 'stream':
                 return self.start_stream()
-            
-            # start calculating users rank
-            elif pk == 'stream':
-                return self.calculate_user_rank()
-            
-            # migrate couchdb 
-            elif pk == 'couchdb':
-                return self.migrate_couchdb()
 
             else: 
                 return Response({'error': f'Invalid job name {pk}'}) 
@@ -244,68 +265,60 @@ class JobsViewSet(viewsets.ViewSet):
             return Response({'error': 'Parameter new_users is not provided'}, 403)
 
         res = couch.get('jobs/search')
-        if res.status_code == 200 and res.json().get('status') != 'done':
+        if res.status_code == 200 and res.json().get('status') != 'idle':
             return Response(res.json(), 403)
         else: 
-            doc = {'_id': 'search', 'status': 'ready', 'new_users': new_users, 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            doc = res.json()
+            doc['status'] = 'ready'
+            doc['new_users'] = new_users
+            doc['result'] = 'Job Submitted.'
             response = couch.upsertdoc('jobs/search', doc)
             return Response(response.json(), response.status_code)
 
     def start_stream(self):
         res = couch.get('jobs/stream')
-        if res.status_code == 200 and res.json().get('status') != 'done':
+        if res.status_code == 200 and res.json().get('status') != 'idle':
             return Response(res.json(), 403)
         else: 
-            doc = {'_id': 'stream', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            doc = res.json()
+            doc['status'] = 'ready'
+            doc['result'] = 'Job Submitted.'
             response = couch.upsertdoc('jobs/stream', doc)
             return Response(response.json(), response.status_code)
     
     def start_update(self):
         res = couch.get('jobs/update')
-        if res.status_code == 200 and res.json().get('status') != 'done':
+        if res.status_code == 200 and res.json().get('status') != 'idle':
             return Response(res.json(), 403)
         else: 
-            doc = {'_id': 'update', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            doc = res.json()
+            doc['status'] = 'ready'
+            doc['result'] = 'Job Submitted.'
             response = couch.upsertdoc('jobs/update', doc)
             return Response(response.json(), response.status_code)
 
-    def calculate_user_rank(self):
-        res = couch.get('jobs/user_rank')
-        if res.status_code == 200 and res.json().get('status') != 'done':
-            return Response(res.json(), 403)
-        else: 
-            doc = {'_id': 'user_rank', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
-            response = couch.upsertdoc('jobs/user_rank', doc)
-            return Response(response.json(), response.status_code)
+class InitialiserViewSet(viewsets.ViewSet):
+    # GET analyser/initialiser/
+    def list(self, request):
+        actions = {
+            'couchdb': 'Initialise couchdb'
+        }
+        return Response(actions)
 
-class ManagerViewSet(viewsets.ViewSet):
-
-    # PUT analyser/manager/view_init
+    # PUT analyser/initialiser/couchdb
     @action(detail=False, methods=['put'], name="Initialisation CouchDB Views")
-    def migrate_couchdb(self):
+    def couchdb(self, request):
         res = couch.get('jobs/couchdb')
-        if res.status_code == 200:
+        if res.status_code == 200 and res.json().get('status') != 'ready':
             return Response(res.json(), 403)
         else: 
             result = couch.migrate()
-            doc = {'_id': 'couchdb', 'status': 'done', 'result': result, 'updated_at': time.ctime()}
+            res = couch.get('jobs/couchdb')
+            doc = res.json()
+            doc['status'] = 'idle'
+            doc['result'] = result
+            print(doc)
             response = couch.upsertdoc('jobs/couchdb', doc)
             return Response(response.json(), response.status_code)
-
-    # PUT analyser/manager/view_init
-    @action(detail=False, methods=['put'], name="Initialisation CouchDB Views")
-    def view_init(self, request):
-        done = {}
-        couch_path = os.path.join(settings.STATICFILES_DIRS[0], 'couch')
-        for file_name in os.listdir(couch_path):
-            if file_name.endswith("_view.json"):
-                database = file_name.split('__')[0]
-                view = file_name.split('__')[1]
-                file_path = os.path.join(couch_path, file_name)
-                with open(file_path, 'r') as f:
-                    f = json.load(f)
-                    couch.put(f'{database}/_design/{view}', body=f)
-                done[database] = view
-        return Response(done)
 
 
