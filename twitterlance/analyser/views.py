@@ -220,28 +220,35 @@ class JobsViewSet(viewsets.ViewSet):
             return Response({'error': 'Parameter new_users is not provided'}, 403)
 
         res = couch.get('jobs/search')
-        if res.status_code == 200 and res.json().get('status') != 'done':
+        if res.status_code == 200 and res.json().get('status') != 'idle':
             return Response(res.json(), 403)
         else: 
-            doc = {'_id': 'search', 'status': 'ready', 'new_users': new_users, 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            doc = res.json()
+            doc['status'] = 'ready'
+            doc['new_users'] = new_users
+            doc['result'] = 'Job Submitted.'
             response = couch.upsertdoc('jobs/search', doc)
             return Response(response.json(), response.status_code)
 
     def start_stream(self):
         res = couch.get('jobs/stream')
-        if res.status_code == 200 and res.json().get('status') != 'done':
+        if res.status_code == 200 and res.json().get('status') != 'idle':
             return Response(res.json(), 403)
         else: 
-            doc = {'_id': 'stream', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            doc = res.json()
+            doc['status'] = 'ready'
+            doc['result'] = 'Job Submitted.'
             response = couch.upsertdoc('jobs/stream', doc)
             return Response(response.json(), response.status_code)
     
     def start_update(self):
         res = couch.get('jobs/update')
-        if res.status_code == 200 and res.json().get('status') != 'done':
+        if res.status_code == 200 and res.json().get('status') != 'idle':
             return Response(res.json(), 403)
         else: 
-            doc = {'_id': 'update', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
+            doc = res.json()
+            doc['status'] = 'ready'
+            doc['result'] = 'Job Submitted.'
             response = couch.upsertdoc('jobs/update', doc)
             return Response(response.json(), response.status_code)
 
@@ -255,13 +262,17 @@ class InitialiserViewSet(viewsets.ViewSet):
 
     # PUT analyser/initialiser/couchdb
     @action(detail=False, methods=['put'], name="Initialisation CouchDB Views")
-    def couchdb(self):
+    def couchdb(self, request):
         res = couch.get('jobs/couchdb')
-        if res.status_code == 200:
+        if res.status_code == 200 and res.json().get('status') != 'ready':
             return Response(res.json(), 403)
         else: 
             result = couch.migrate()
-            doc = {'_id': 'couchdb', 'status': 'done', 'result': result, 'updated_at': time.ctime()}
+            res = couch.get('jobs/couchdb')
+            doc = res.json()
+            doc['status'] = 'idle'
+            doc['result'] = result
+            print(doc)
             response = couch.upsertdoc('jobs/couchdb', doc)
             return Response(response.json(), response.status_code)
 

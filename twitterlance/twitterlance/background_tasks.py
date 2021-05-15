@@ -31,7 +31,7 @@ def user_rank():
         completed_at = res.json()['updated_at']
     
     if None not in [completed_at, submitted_at] and completed_at > submitted_at:
-        doc = {'_id': 'user_rank', 'status': 'done', 'result': 'Job submitted.', 'updated_at':update_timestamp}
+        doc = {'_id': 'user_rank', 'status': 'idle', 'result': 'Job submitted.', 'updated_at':update_timestamp}
         couch.upsertdoc('jobs/user_rank', doc)
 
 @background(schedule=60)
@@ -50,7 +50,7 @@ def start_search_job():
         res['status'] = 'running'
         couch.put('jobs/search', res)
         run_search(res['new_users'])
-        res['status'] = 'done'
+        res['status'] = 'idle'
         update_timestamp = datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
         res['updated_at'] = update_timestamp
         couch.put('jobs/search', res)
@@ -64,7 +64,7 @@ def start_update_job():
         res['status'] = 'running'
         couch.put('jobs/update', res)
         run_update()
-        res['status'] = 'done'
+        res['status'] = 'idle'
         update_timestamp = datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
         res['updated_at'] = update_timestamp
         couch.put('jobs/update', res)
