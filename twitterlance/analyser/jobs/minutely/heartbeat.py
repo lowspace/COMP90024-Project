@@ -7,7 +7,6 @@ from django.core.cache import caches
 from django_extensions.management.jobs import MinutelyJob
 from couchdb import couch
 
-
 class Job(MinutelyJob):
     help = "Node heartbeats."
 
