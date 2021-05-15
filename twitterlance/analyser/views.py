@@ -99,12 +99,6 @@ class SportViewSet(viewsets.ViewSet):
         sum_all = {}
         for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-# <<<<<<< HEAD
-#             res = Counter(res.json()['rows'][0]["value"])
-#             sum_all[city] = sum(res.values())
-#             count[city] = res
-#         total = Counter()  # all sports
-# =======
             if res.json()['rows']:
                 res = Counter(res.json()['rows'][0]["value"])
                 sum_all[city] = sum(res.values())

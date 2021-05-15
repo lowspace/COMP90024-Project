@@ -21,32 +21,6 @@
   <link rel="stylesheet" type="text/css" href="{% static "/css/style.css"%}"/>
   <link rel="stylesheet" href="{% static "/css/fa/css/all.css"%}">
 
-  <style>
-    .tooltip {
-      position: relative;
-      display: inline-block;
-      border-bottom: 1px dotted black;
-    }
-
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: 120px;
-      background-color: black;
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 5px 0;
-
-      /* 定位 */
-      position: absolute;
-      z-index: 1;
-    }
-
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-    }
-  </style>
-
 </head>
 <body id="home">
   <div class="container">
@@ -123,7 +97,7 @@
               </div>
               <div class="col-md-4">
                 <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Input search quantity">
+                  <input type="number" class="form-control" placeholder="Input search quantity">
                   <span class="input-group-btn">
                   <button class="btn btn-default" type="button" style="margin-right: 5px">Search</button>
                   <button class="btn btn-default" type="button">Stream</button>
@@ -140,20 +114,62 @@
   </div>
 </body>
 <script>
-  $.ajax({
-    url: "/analyser/jobs/update/",
-    type: "get",
-    headers:{'Content-Type':'application/json',
-    dataType: "json",
-    success: function(data,textStatus,jqxhr){
-      // let temp = JSON.parse(data);
-      console.log(data)
-    },
-    error:function(jqxhr,textStatus,error){
-      console.log(error);
-      console.log(textStatus);
-      console.log(jqxhr);
+  window.onload=function(){
+
+    let searchstatus = document.getElementById('searchstatus');
+    let streamstatus = document.getElementById('streamstatus');
+    let updatestatus = document.getElementById('updatestatus');
+    let couchdbstatus = document.getElementById('couchdbstatus');
+    let btn = document.getElementsByTagName("button");
+    let searchbtn = btn[0];
+    let updatebtn = btn[1];
+    let streambtn = btn[2];
+    let couchdbbtn = btn[3];
+    let input = document.getElementsByTagName("input")[0].value;
+
+    function jobstatus(url_,status){
+      $.ajax({
+        url: url_,
+        type: "get",
+        headers:{'Content-Type':'application/json'},
+        dataType: "json",
+        success: function(data,textStatus,jqxhr){
+          // let temp = JSON.parse(data);
+          status.innerHTML = data["status"]
+        },
+        error:function(jqxhr,textStatus,error){
+          console.log(error);
+          console.log(textStatus);
+          console.log(jqxhr);
+        },
+      })
     }
-  })
+    jobstatus("/analyser/jobs/search/",searchstatus);
+    jobstatus("/analyser/jobs/update/",updatestatus);
+    jobstatus("/analyser/jobs/stream/",streamstatus);
+    jobstatus("/analyser/jobs/couchdb/",couchdbstatus);
+
+    function jobcontrol(url_,status){
+      $.ajax({
+        url: url_,
+        type: "put",
+        data: {},
+        headers:{'Content-Type':'application/json'},
+        dataType: "json",
+        success: function(data,textStatus,jqxhr){
+          // status.innerHTML = data["status"]
+        },
+        error:function(jqxhr,textStatus,error){
+          console.log(error);
+          console.log(textStatus);
+          console.log(jqxhr);
+        },
+      })
+    }
+    searchbtn.addEventListener('click',function(){
+      input = document.getElementsByTagName("input")[0].value;
+      console.log(input);
+    })
+  }
 </script>
 </html>
