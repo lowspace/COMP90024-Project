@@ -61,6 +61,7 @@ def updatedoc(path='', document='', max_retries=5, retries=0):
     else: 
         return res
 
+
 # Initialise the necessary databases and design documents
 def migrate():
     output = []
@@ -84,11 +85,18 @@ def migrate():
     )
 
     # Add necessary data
-    for key, value in cities: 
+    for key, value in cities.items(): 
         output.append(post('cities', {'_id': key, 'geocode': value}).json())
+        time.sleep(0.5)
+
+    # Add default jobs
+    output.append(post('jobs/', {'_id': 'search', 'status': 'idle', 'new_users': 0, 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
+    output.append(post('jobs/', {'_id': 'update', 'status': 'idle', 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
+    output.append(post('jobs/', {'_id': 'stream', 'status': 'idle', 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
+    output.append(post('jobs/', {'_id': 'couchdb', 'status': 'ready', 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
+    print(output)
 
     # Upload views
-    done = {}
     couch_path = os.path.join(settings.STATICFILES_DIRS[0], 'couch')
     for file_name in os.listdir(couch_path):
         if file_name.endswith("_view.json"):
@@ -97,10 +105,11 @@ def migrate():
             file_path = os.path.join(couch_path, file_name)
             with open(file_path, 'r') as f:
                 f = json.load(f)
-                put(f'{database}/_design/{view}', body=f)
-            done[database] = view
-    output.append(done)
-
+                print(f'Uploading view {view}')
+                res = put(f'{database}/_design/{view}', body=f)
+                output.append(res.json())
+                print(f'{view} {res.status_code}')
+                time.sleep(0.5)
     return output
 
 def geocode():
