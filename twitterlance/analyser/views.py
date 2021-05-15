@@ -40,7 +40,7 @@ class TweetViewSet(viewsets.ViewSet):
     def sports(self, request):
         # count = 0
         res1 = {}
-        for city in couch.geocode().keys()]:
+        for city in couch.geocode().keys():
             # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
             res1[city]=res.json()['rows'][0]["value"]
@@ -60,12 +60,17 @@ class UserViewSet(viewsets.ViewSet):
     # GET analyser/users/stats
     @action(detail=False, methods=['get'], name="Get the stats of users")
     def stats(self, request):
+        t1 = time.time()
         count = {}
         for city in couch.geocode().keys():
+            print(city)
             res = couch.get(f'userdb/_design/cities/_view/{city}')
             # count[city] = res.json()["doc_count"]
-            count[city] = res.json()['rows'][0]["value"]
+            if res.json()['rows']:
+                count[city] = res.json()['rows'][0]["value"]   
         count["total_users"] = sum(count.values())
+        t2 = time.time()
+        count["time"] = t2 - t1
         return Response({"user_stats": count})
 
     # GET analyser/users/rank
@@ -80,26 +85,32 @@ class SportViewSet(viewsets.ViewSet):
     def list(self, request):
         actions = {
             'stats_all': 'All sport counts in all cities cross all time.',
-            ':year': 'All sport counts in all cities cross in the year number'
+            ':year': 'All sport counts in all cities cross in the year number',
+            'rank_top3': 'Top 3 sports in all cities cross all time.',
+            'yearly_stats': 'Sport relevant tweets num of each year in all cities.'
         }
         return Response(actions)
 
     # GET analyser/sports/stats_all
     @action(detail=False, methods=['get'], name="Get the static_stats of sports")
     def stats_all(self, request):
+        t1 = time.time()
         count = {}
         sum_all = {}
         for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-            res = Counter(res.json()['rows'][0]["value"])
-            sum_all[city] = sum(res.values())
-            count[city] = res
+            if res.json()['rows']:
+                res = Counter(res.json()['rows'][0]["value"])
+                sum_all[city] = sum(res.values())
+                count[city] = res
         total = Counter() # all sports
         for k in count.keys():
             total += count[k]
         count['total'] = total
         sum_all['total'] = sum(sum_all.values())
         count['sum'] = sum_all
+        t2 = time.time()
+        count["time"] = t2 - t1
         return HttpResponse(json.dumps(count))
 
     # GET analyser/sports/rank_top3
@@ -108,11 +119,12 @@ class SportViewSet(viewsets.ViewSet):
         count = {}
         for city in couch.geocode().keys():
             res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-            res = Counter(res.json()['rows'][0]["value"])
-            top3 = {}
-            for i in res.most_common(3):
-                top3[i[0]] = i[1]
-            count[city] = top3
+            if res.json()['rows']:
+                res = Counter(res.json()['rows'][0]["value"])
+                top3 = {}
+                for i in res.most_common(3):
+                    top3[i[0]] = i[1]
+                count[city] = top3
         return HttpResponse(json.dumps(count))
 
     # GET analyser/sports/yearly_stats
@@ -123,8 +135,9 @@ class SportViewSet(viewsets.ViewSet):
             time_line = {}
             for time_stamp in ['2019', '2020', '2021']:
                 res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{time_stamp}')
-                res = Counter(res.json()['rows'][0]["value"])
-                time_line[time_stamp] = sum(res.values())
+                if res.json()['rows']:
+                    res = Counter(res.json()['rows'][0]["value"])
+                    time_line[time_stamp] = sum(res.values())
             count[city] = time_line
         return HttpResponse(json.dumps(count))
 
