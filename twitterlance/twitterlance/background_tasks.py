@@ -1,5 +1,5 @@
-import subprocess, datetime
 from background_task import background
+import subprocess, datetime
 from couchdb import couch
 from twitter_search.search_new import run_search
 from twitter_search.search_update import run_update
@@ -33,6 +33,12 @@ def user_rank():
     if None not in [completed_at, submitted_at] and completed_at > submitted_at:
         doc = {'_id': 'user_rank', 'status': 'done', 'result': 'Job submitted.', 'updated_at':update_timestamp}
         couch.upsertdoc('jobs/user_rank', doc)
+
+@background(schedule=60)
+def start_stream():
+    # TODO: Use registered hostname status and only run on one instance
+    pass
+    
 
 
 @background(schedule=60)
