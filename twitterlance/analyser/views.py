@@ -1,15 +1,11 @@
-from django.http import HttpResponseRedirect
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
-from collections import Counter
-import json, time
-import couchdb.couch as couch
 from django.conf import settings 
-import os
+from collections import Counter
+import json, time, os
+import couchdb.couch as couch
 
 # https://www.django-rest-framework.org/api-guide/viewsets/
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
@@ -53,14 +49,13 @@ class TweetViewSet(viewsets.ViewSet):
     
 class UserViewSet(viewsets.ViewSet):
 
-    # GET analyser/users?options 
-    # Add include_docs=true
+    # GET analyser/users/
     def list(self, request):
-        url = f'userdb/_all_docs'
-        if len(request.query_params) > 0: 
-            url += f'?{request.query_params.urlencode()}'
-        res = couch.get(url)
-        return Response(res.json())
+        actions = {
+            'stats': 'Stats of users.',
+            'rank': 'Get the sporst enthusiasts rank'
+        }
+        return Response(actions)
 
     # GET analyser/users/stats
     @action(detail=False, methods=['get'], name="Get the stats of users")
@@ -71,18 +66,20 @@ class UserViewSet(viewsets.ViewSet):
             # count[city] = res.json()["doc_count"]
             count[city] = res.json()['rows'][0]["value"]
         count["total_users"] = sum(count.values())
-        return HttpResponse(json.dumps({"user_stats": count}))
+        return Response({"user_stats": count})
 
+    # GET analyser/users/rank
+    @action(detail=False, methods=['get'], name="Get the rank of the enthusiasts")
+    def rank(self, request):
+        res = couch.get('conclusions/user_rank')
+        return Response(res.json())
 class SportViewSet(viewsets.ViewSet):
 
-    # GET analyser/sports?options 
-    # Add include_docs=true
+    # GET analyser/sports/
     def list(self, request):
         actions = {
-            'stats_all/': 'All sport counts in all cities cross all time.',
-            '2019/': 'All sport counts in all cities cross in 2019',
-            '2020/': 'All sport counts in all cities cross in 2020',
-            '2021/': 'All sport counts in all cities cross in 2021'
+            'stats_all': 'All sport counts in all cities cross all time.',
+            ':year': 'All sport counts in all cities cross in the year number'
         }
         return Response(actions)
 
