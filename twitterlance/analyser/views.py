@@ -251,7 +251,6 @@ class JobsViewSet(viewsets.ViewSet):
             response = couch.upsertdoc('jobs/search', doc)
             return Response(response.json(), response.status_code)
 
-
     def start_stream(self):
         res = couch.get('jobs/stream')
         if res.status_code == 200 and res.json().get('status') != 'done':

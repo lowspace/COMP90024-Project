@@ -166,9 +166,7 @@
       // ajax request function
       function ajax(url, method, success, error) {
         let request = new XMLHttpRequest();
-        // for (var key in header) {
-        //   request.setRequestHeader(key, header[key]);
-        // }
+        // request.setRequestHeader('content-type', 'application/json');
         request.open(method, url, true);
         request.send();
         request.onreadystatechange = function () {
@@ -353,7 +351,6 @@
           scales: {
             xAxes: [{
               stacked: true,
-
             }],
             yAxes: [{
               stacked: true,
