@@ -10,9 +10,3 @@ urlpatterns = [
     path('mappage/', views.mappage),
     path('analyser/', include('analyser.urls')),
 ]
-
-# Register background_tasks
-from . import background_tasks
-background_tasks.all()
-
-# TODO: Register hostnames in jobs

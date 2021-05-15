@@ -1,4 +1,4 @@
-import requests, uuid, time, os, json
+import requests, uuid, time, os, json, datetime
 from django.conf import settings
 
 # Module with functions serve a Singleton
@@ -71,6 +71,7 @@ def migrate():
     output.append(createdb('_replicator', False).json())
     output.append(createdb('_global_changes', False).json())
     output.append(createdb('jobs', False).json())
+    output.append(createdb('nodes', False).json())
     output.append(createdb('cities', False).json())
     output.append(createdb('userdb', False).json())
     output.append(createdb('tweetdb', True).json())
@@ -90,10 +91,10 @@ def migrate():
         time.sleep(0.5)
 
     # Add default jobs
-    output.append(post('jobs/', {'_id': 'search', 'status': 'idle', 'new_users': 0, 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
-    output.append(post('jobs/', {'_id': 'update', 'status': 'idle', 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
-    output.append(post('jobs/', {'_id': 'stream', 'status': 'idle', 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
-    output.append(post('jobs/', {'_id': 'couchdb', 'status': 'ready', 'instances': [], 'result': 'Initialised.', 'updated_at':time.ctime()}).json())
+    output.append(post('jobs/', {'_id': 'search', 'status': 'idle', 'new_users': 0, 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
+    output.append(post('jobs/', {'_id': 'update', 'status': 'idle', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
+    output.append(post('jobs/', {'_id': 'stream', 'status': 'idle', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
+    output.append(post('jobs/', {'_id': 'couchdb', 'status': 'ready', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
     print(output)
 
     # Upload views
@@ -114,3 +115,6 @@ def migrate():
 
 def geocode():
     return get('cities/_all_docs?include_docs=true')
+
+def now():
+    return datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
