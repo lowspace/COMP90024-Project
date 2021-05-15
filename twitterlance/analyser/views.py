@@ -11,14 +11,14 @@ import couchdb.couch as couch
 # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.QueryDict.urlencode
 class TweetViewSet(viewsets.ViewSet):
 
-    # GET analyser/tweets?options 
-    # Add include_docs=true
+    # GET analyser/sports/
     def list(self, request):
-        url = f'tweetdb/_all_docs'
-        if len(request.query_params) > 0: 
-            url += f'?{request.query_params.urlencode()}'
-        res = couch.get(url)
-        return Response(res.json())
+        actions = {
+            'tweets/:id': 'Get single tweet',
+            'stats': 'Get the stats of tweets',
+            'sports': 'sport tweets total'
+        }
+        return Response(actions)
 
     # GET analyser/tweets/:id
     def retrieve(self, request, pk=None):
@@ -73,7 +73,7 @@ class UserViewSet(viewsets.ViewSet):
     def rank(self, request):
         res = couch.get('conclusions/user_rank')
         return Response(res.json())
-        
+
 class SportViewSet(viewsets.ViewSet):
 
     # GET analyser/sports/
@@ -160,15 +160,26 @@ class AurinViewSet(viewsets.ViewSet):
 # Jobs statuses in Couchdb. Background tasks will periodically check the statuses to  
 # start the jobs. 
 class JobsViewSet(viewsets.ViewSet):
-    # GET /analyser/jobs/
+
+    # GET analyser/jobs/
     def list(self, request):
+        actions = {
+            'all': 'Stats of users.',
+            'search': 'Get the sporst enthusiasts rank',
+            'update': 'Get the sporst enthusiasts rank',
+            'stream': 'Get the sporst enthusiasts rank',
+            'user_rank': 'Get the sporst enthusiasts rank'
+        }
+        return Response(actions)
+
+    # GET /analyser/jobs/all/
+    @action(detail=False, methods=['get'], name="Get statuses of all jobs")
+    def all(self, request):
         return Response(couch.get(f'jobs/_all_docs').json())
 
     # GET /analyser/jobs/search/
     # GET /analyser/jobs/update/
     # GET /analyser/jobs/stream/
-    # GET /analyser/jobs/user_rank/
-    # GET /analyser/jobs/couchdb/
     def retrieve(self, request, pk=None):
         if pk is None: 
             return Response({'error': 'job name is missing'})
@@ -177,8 +188,6 @@ class JobsViewSet(viewsets.ViewSet):
     # PUT /analyser/jobs/search/ -d {"new_users": 1000}
     # PUT /analyser/jobs/update/
     # PUT /analyser/jobs/stream/
-    # PUT /analyser/jobs/user_rank/
-    # PUT /analyser/jobs/couchdb/
     def update(self, request, pk=None):
         try: 
             # get new users and timelines
@@ -192,14 +201,6 @@ class JobsViewSet(viewsets.ViewSet):
             # start streaming
             elif pk == 'stream':
                 return self.start_stream()
-            
-            # start calculating users rank
-            elif pk == 'stream':
-                return self.calculate_user_rank()
-            
-            # migrate couchdb 
-            elif pk == 'couchdb':
-                return self.migrate_couchdb()
 
             else: 
                 return Response({'error': f'Invalid job name {pk}'}) 
@@ -240,20 +241,17 @@ class JobsViewSet(viewsets.ViewSet):
             response = couch.upsertdoc('jobs/update', doc)
             return Response(response.json(), response.status_code)
 
-    def calculate_user_rank(self):
-        res = couch.get('jobs/user_rank')
-        if res.status_code == 200 and res.json().get('status') != 'done':
-            return Response(res.json(), 403)
-        else: 
-            doc = {'_id': 'user_rank', 'status': 'ready', 'result': 'Job submitted.', 'updated_at':time.ctime()}
-            response = couch.upsertdoc('jobs/user_rank', doc)
-            return Response(response.json(), response.status_code)
+class InitialiserViewSet(viewsets.ViewSet):
+    # GET analyser/initialiser/
+    def list(self, request):
+        actions = {
+            'couchdb': 'Initialise couchdb'
+        }
+        return Response(actions)
 
-class ManagerViewSet(viewsets.ViewSet):
-
-    # PUT analyser/manager/view_init
+    # PUT analyser/initialiser/couchdb
     @action(detail=False, methods=['put'], name="Initialisation CouchDB Views")
-    def migrate_couchdb(self):
+    def couchdb(self):
         res = couch.get('jobs/couchdb')
         if res.status_code == 200:
             return Response(res.json(), 403)
@@ -262,21 +260,5 @@ class ManagerViewSet(viewsets.ViewSet):
             doc = {'_id': 'couchdb', 'status': 'done', 'result': result, 'updated_at': time.ctime()}
             response = couch.upsertdoc('jobs/couchdb', doc)
             return Response(response.json(), response.status_code)
-
-    # PUT analyser/manager/view_init
-    @action(detail=False, methods=['put'], name="Initialisation CouchDB Views")
-    def view_init(self, request):
-        done = {}
-        couch_path = os.path.join(settings.STATICFILES_DIRS[0], 'couch')
-        for file_name in os.listdir(couch_path):
-            if file_name.endswith("_view.json"):
-                database = file_name.split('__')[0]
-                view = file_name.split('__')[1]
-                file_path = os.path.join(couch_path, file_name)
-                with open(file_path, 'r') as f:
-                    f = json.load(f)
-                    couch.put(f'{database}/_design/{view}', body=f)
-                done[database] = view
-        return Response(done)
 
 
