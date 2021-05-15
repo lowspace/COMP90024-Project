@@ -172,6 +172,11 @@ class JobsViewSet(viewsets.ViewSet):
         }
         return Response(actions)
 
+    # GET analyser/jobs/nodename
+    @action(detail=False, methods=['get'], name="Get the current instance node name")
+    def nodename(self, request):
+        return Response(settings.DJANGO_NODENAME)
+
     # GET /analyser/jobs/all/
     @action(detail=False, methods=['get'], name="Get statuses of all jobs")
     def all(self, request):
@@ -221,7 +226,6 @@ class JobsViewSet(viewsets.ViewSet):
             doc = {'_id': 'search', 'status': 'ready', 'new_users': new_users, 'result': 'Job submitted.', 'updated_at':time.ctime()}
             response = couch.upsertdoc('jobs/search', doc)
             return Response(response.json(), response.status_code)
-
 
     def start_stream(self):
         res = couch.get('jobs/stream')
