@@ -24,8 +24,8 @@ def post(path='', body=''):
 def head(path=''):
     return requests.head(f'{base_url}/{path}')
 
-def delete(path='', rev):
-    return requests.delete(f'{base_url}/{path}?rev={rev}')
+# def delete(path='', rev):
+#     return requests.delete(f'{base_url}/{path}?rev={rev}')
 
 # Save a single document (dict that has _id as key)
 def save(database, document):
@@ -117,10 +117,11 @@ def migrate():
     return output
 
 def geocode():
-    res = get('cities/_all_docs?include_docs=true').json()
+    res = get('cities/_all_docs?include_docs=true').json()['rows']
     city_dict = {}
-    for row in res['rows']:
-        city_dict[row['id']] = row['geocode']
+    for row in res:
+        doc = row['doc']
+        city_dict[doc['_id']] = doc['geocode']
     return city_dict
 
 def now():
