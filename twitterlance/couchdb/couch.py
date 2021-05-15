@@ -1,4 +1,4 @@
-import requests, uuid, time
+import requests, uuid, time, os, json
 from django.conf import settings
 
 # Module with functions serve a Singleton
@@ -86,6 +86,20 @@ def migrate():
     # Add necessary data
     for key, value in cities: 
         output.append(post('cities', {'_id': key, 'geocode': value}).json())
+
+    # Upload views
+    done = {}
+    couch_path = os.path.join(settings.STATICFILES_DIRS[0], 'couch')
+    for file_name in os.listdir(couch_path):
+        if file_name.endswith("_view.json"):
+            database = file_name.split('__')[0]
+            view = file_name.split('__')[1]
+            file_path = os.path.join(couch_path, file_name)
+            with open(file_path, 'r') as f:
+                f = json.load(f)
+                put(f'{database}/_design/{view}', body=f)
+            done[database] = view
+    output.append(done)
 
     return output
 
