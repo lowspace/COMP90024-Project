@@ -9,7 +9,7 @@ router.register(r'users', views.UserViewSet, basename="User")
 router.register(r'sports', views.SportViewSet, basename="Sport")
 router.register(r'aurin', views.AurinViewSet, basename="Aurin")
 router.register(r'jobs', views.JobsViewSet, basename="Job")
-router.register(r'manager', views.ManagerViewSet, basename="Manager")
+router.register(r'initialiser', views.InitialiserViewSet, basename="Initialiser")
 
 urlpatterns = [
     path('', include(router.urls)),

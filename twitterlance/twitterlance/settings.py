@@ -31,13 +31,20 @@ ALLOWED_HOSTS = ['*']
 # Load CouchDB endpoint and credentials
 config = configparser.ConfigParser()
 try:
-    config.read("couchdb.conf")
+    config.read(f"{BASE_DIR}/couchdb.conf")
 except:
     print("CouchDB Configuration not found")
 
 COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
+
+try: 
+    DJANGO_NODENAME =  os.environ['DJANGO_NODENAME'] 
+except: 
+    DJANGO_NODENAME =  'localhost'
+
+APPEND_SLASH = True
 
 # Application definition
 REST_FRAMEWORK = {
@@ -61,7 +68,8 @@ INSTALLED_APPS = [
     'analyser',
     'twitter_search',
     'twitter_stream',
-    'background_task'
+    'django_extensions',
+    'django_cron'
 ]
 
 MIDDLEWARE = [
