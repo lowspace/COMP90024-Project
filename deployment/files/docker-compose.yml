@@ -46,10 +46,12 @@ services:
         max_replicas_per_node: 1
         constraints: [node.labels.couchdb == true ]
 
-  app:
+  django:
     image: "yangzy3/twitterlance"
     ports:
       - "81:80"
+    environment: 
+      DJANGO_NODENAME: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
     deploy:
       mode: replicated
       replicas: 1

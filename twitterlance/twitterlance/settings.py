@@ -39,6 +39,8 @@ COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
 
+DJANGO_NODENAME =  os.environ['DJANGO_NODENAME']
+
 # Application definition
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
