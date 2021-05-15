@@ -1,0 +1,22 @@
+{
+  "_id": "_design/cities",
+  "views": {
+    "syd": {
+      "map": "function (doc) {\n  if (doc.city == 'Sydney'){\n  emit(doc._id, 1);\n  }\n}",
+      "reduce": "_count"
+    },
+    "cbr": {
+      "map": "function (doc) {\n  if (doc.city == 'Canberra'){\n  emit(doc._id, 1);\n  }\n}",
+      "reduce": "_count"
+    },
+    "adl": {
+      "map": "function (doc) {\n  if (doc.city == 'Adelaide'){\n  emit(doc._id, 1);\n  }\n}",
+      "reduce": "_count"
+    },
+    "mel": {
+      "map": "function (doc) {\n  if (doc.city == 'Melbourne'){\n  emit(doc._id, 1);\n  }\n}",
+      "reduce": "_count"
+    }
+  },
+  "language": "javascript"
+}
