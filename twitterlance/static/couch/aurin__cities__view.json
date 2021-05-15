@@ -1,5 +1,5 @@
 {
-  "_id": "_design/cities1",
+  "_id": "_design/cities",
   "views": {
     "aurinInfo": {
       "map": "function (doc) {\n  emit(doc._id, doc.features);\n}\n  "
