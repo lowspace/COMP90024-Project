@@ -94,6 +94,10 @@ class UserViewSet(viewsets.ViewSet):
                         if score[1] > rank[i]['score']:
                             rank.insert(i, user)
                             break
+
+        rank[0]['name'] = '🥇' + rank[0]['name']
+        rank[1]['name'] = '🥈' + rank[1]['name']
+        rank[2]['name'] = '🥉' + rank[2]['name']
         return Response(rank)
 
 class SportViewSet(viewsets.ViewSet):
