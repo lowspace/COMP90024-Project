@@ -88,9 +88,10 @@
             $.ajax({
                 url: "/analyser/sports/stats_all/",
                 type: "get",
-                dataType: "text",
+                headers:{'Content-Type':'application/json'},
+                dataType: "json",
                 success: function(data,textStatus,jqxhr){
-                    let temp = JSON.parse(data);
+                    let temp = data;
                     tweet = [
                         temp['sum']["Melbourne"],
                         temp['sum']["Adelaide"],
@@ -106,11 +107,12 @@
                 }
             }),
             $.ajax({
-                url: "/analyser/sports/stats_yearly/",
+                url: "/analyser/sports/2019-2021/",
                 type: "get",
-                dataType: "text",
+                headers:{'Content-Type':'application/json'},
+                dataType: "json",
                 success: function(data,textStatus,jqxhr){
-                    let temp = JSON.parse(data);
+                    let temp = data;
                     let temp1 = {};
                     for(let c in temp){
                         let temp2 = [];
@@ -131,10 +133,10 @@
             $.ajax({
                 url: "/analyser/sports/rank_top3/",
                 type: "get",
-                dataType: "text",
+                headers:{'Content-Type':'application/json'},
+                dataType: "json",
                 success: function(data,textStatus,jqxhr){
-                    // console.log(data);
-                    popsport = JSON.parse(data);
+                    popsport = data;
                     console.log(popsport);
                 },
                 error:function(jqxhr,textStatus,error){
@@ -297,7 +299,7 @@
                     option2 = {
                         grid: {
                             left: '3%',
-                            right: '3%',
+                            right: '6%',
                             bottom: '3%',
                             containLabel: true
                         },
