@@ -76,8 +76,8 @@ def migrate():
     output.append(createdb('jobs', False).json())
     output.append(createdb('nodes', False).json())
     output.append(createdb('cities', False).json())
-    output.append(createdb('userdb', False).json())
-    output.append(createdb('tweetdb', True).json())
+    output.append(createdb('users', False).json())
+    output.append(createdb('tweets', True).json())
 
     cities = dict (
         Adelaide= "-34.9998826,138.3309816,40km",
@@ -117,10 +117,10 @@ def migrate():
     return output
 
 def geocode():
-    res = get('cities/_all_docs?include_docs=true').json()
+    res = get('cities/_all_docs?include_docs=true')
     city_dict = {}
-    for row in res['rows']:
-        city_dict[row['id']] = row['geocode']
+    for row in res.json()['rows']:
+        city_dict[row['id']] = row['doc']['geocode']
     return city_dict
 
 def now():
