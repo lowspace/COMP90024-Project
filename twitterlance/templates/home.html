@@ -97,12 +97,12 @@
               </div>
               <div class="col-md-4">
                 <div class="input-group">
-                  <input type="number" class="form-control" placeholder="Input search quantity">
+                  <input type="number" class="form-control" min="1" max="1000" placeholder="Input search quantity">
                   <span class="input-group-btn">
-                  <button class="btn btn-default" type="button" style="margin-right: 5px">Search</button>
-                  <button class="btn btn-default" type="button">Stream</button>
-                  <button class="btn btn-default" type="button">Update</button>
-                  <button class="btn btn-default" type="button">CouchDB</button>
+                  <button disabled="disabled" class="btn btn-default" type="button" style="margin-right: 5px">Search</button>
+                  <button disabled="disabled" class="btn btn-default" type="button">Stream</button>
+                  <button disabled="disabled" class="btn btn-default" type="button">Update</button>
+                  <button disabled="disabled" class="btn btn-default" type="button">CouchDB</button>
                   </span>
                 </div>
               </div>
@@ -127,7 +127,7 @@
     let couchdbbtn = btn[3];
     let input = document.getElementsByTagName("input")[0].value;
 
-    function jobstatus(url_,status){
+    function jobstatus(url_,status,btn){
       $.ajax({
         url: url_,
         type: "get",
@@ -136,6 +136,9 @@
         success: function(data,textStatus,jqxhr){
           // let temp = JSON.parse(data);
           status.innerHTML = data["status"]
+          if(data["status"]==="idle"){
+            btn.disabled=false;
+          }
         },
         error:function(jqxhr,textStatus,error){
           console.log(error);
@@ -144,20 +147,34 @@
         },
       })
     }
-    jobstatus("/analyser/jobs/search/",searchstatus);
-    jobstatus("/analyser/jobs/update/",updatestatus);
-    jobstatus("/analyser/jobs/stream/",streamstatus);
-    jobstatus("/analyser/jobs/couchdb/",couchdbstatus);
+    jobstatus("/analyser/jobs/search/",searchstatus,searchbtn);
+    jobstatus("/analyser/jobs/update/",updatestatus,updatebtn);
+    jobstatus("/analyser/jobs/stream/",streamstatus,streambtn);
+    jobstatus("/analyser/jobs/couchdb/",couchdbstatus,couchdbbtn);
 
-    function jobcontrol(url_,status){
+    function searchjobcontrol(url_,data_){
       $.ajax({
         url: url_,
         type: "put",
-        data: {},
+        data: data_,
         headers:{'Content-Type':'application/json'},
         dataType: "json",
         success: function(data,textStatus,jqxhr){
-          // status.innerHTML = data["status"]
+        },
+        error:function(jqxhr,textStatus,error){
+          console.log(error);
+          console.log(textStatus);
+          console.log(jqxhr);
+        },
+      })
+    }
+    function jobcontrol(url_){
+      $.ajax({
+        url: url_,
+        type: "put",
+        headers:{'Content-Type':'application/json'},
+        dataType: "json",
+        success: function(data,textStatus,jqxhr){
         },
         error:function(jqxhr,textStatus,error){
           console.log(error);
@@ -168,7 +185,27 @@
     }
     searchbtn.addEventListener('click',function(){
       input = document.getElementsByTagName("input")[0].value;
-      console.log(input);
+      if (input>=1000 || input<1 ){
+        alert("out of range");
+      }else{
+        // input = {"new_users": input};
+        // console.log(input);
+        // searchjobcontrol("/analyser/jobs/search/",input);
+        document.getElementsByTagName("input")[0].disabled=true;
+        searchbtn.disabled=true;
+      }
+    })
+    updatebtn.addEventListener('click',function(){
+      // jobcontrol("/analyser/jobs/update/");
+      updatebtn.disabled=true;
+    })
+    streambtn.addEventListener('click',function(){
+      // jobcontrol("/analyser/jobs/stream/");
+      streambtn.disabled=true;
+    })
+    couchdbbtn.addEventListener('click',function(){
+      // jobcontrol("/analyser/jobs/couchdb/");
+      couchdbbtn.disabled=true;
     })
   }
 </script>
