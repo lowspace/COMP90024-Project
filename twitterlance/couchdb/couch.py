@@ -76,8 +76,8 @@ def migrate():
     output.append(createdb('jobs', False).json())
     output.append(createdb('nodes', False).json())
     output.append(createdb('cities', False).json())
-    output.append(createdb('userdb', False).json())
-    output.append(createdb('tweetdb', True).json())
+    output.append(createdb('users', False).json())
+    output.append(createdb('tweets', True).json())
 
     cities = dict (
         Adelaide= "-34.9998826,138.3309816,40km",
