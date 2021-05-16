@@ -20,65 +20,72 @@ div {
 }
 .sidenav {
   height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #EFF1F7;
+}
+.sidenav .sidenavin {
+  width: 98%;
+  margin-right: 2%;
   background-color: #ffffff;
   padding-top: 20px;
-  border-right: #DDDDDD 4px solid;
+  box-shadow: 0 0 5px #999999;
 }
-.sidenav img {
+.sidenav .sidenavin img {
   width: 100%;
 }
-.sidenav ul {
+.sidenav .sidenavin ul {
   list-style: none;
   margin: 0;
   padding: 0;
   position: relative;
 }
-.sidenav ul li {
+.sidenav .sidenavin ul li {
   list-style: none;
 }
-.sidenav ul li:nth-child(5) {
+.sidenav .sidenavin ul li:nth-child(5) {
   position: fixed;
   bottom: 120px;
 }
-.sidenav ul li:nth-child(5) a {
+.sidenav .sidenavin ul li:nth-child(5) a {
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav ul li:nth-child(6) {
+.sidenav .sidenavin ul li:nth-child(6) {
   position: fixed;
   bottom: 80px;
 }
-.sidenav ul li:nth-child(6) a {
+.sidenav .sidenavin ul li:nth-child(6) a {
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav ul li:nth-child(7) {
+.sidenav .sidenavin ul li:nth-child(7) {
   position: fixed;
   bottom: 40px;
 }
-.sidenav ul li:nth-child(7) a {
+.sidenav .sidenavin ul li:nth-child(7) a {
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav ul li:nth-child(8) {
+.sidenav .sidenavin ul li:nth-child(8) {
   position: fixed;
   bottom: 0;
 }
-.sidenav ul li:nth-child(8) a {
+.sidenav .sidenavin ul li:nth-child(8) a {
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav ul a {
+.sidenav .sidenavin ul a {
   padding: 20px 0 20px 0;
   text-decoration: none;
   font-size: 20px;
   color: #7A7A7A;
   display: block;
 }
-.sidenav ul a:hover {
+.sidenav .sidenavin ul a:hover {
   color: #094183;
 }
-.sidenav ul .this {
+.sidenav .sidenavin ul .this {
   background-color: rgba(0, 0, 0, 0.05);
 }
 .right-content {
@@ -103,7 +110,8 @@ div {
   color: #666666;
   padding-top: 15%;
   text-align: center;
-  box-shadow: 0 0 5px #666666;
+  box-shadow: 0 3px 5px #999999;
+  position: relative;
 }
 .home-right h1 {
   font-family: Arial Black, Gadget, sans-serif;
@@ -115,25 +123,55 @@ div {
   font-size: 50pt;
   margin: 0 auto;
 }
+.home-right .help {
+  position: absolute;
+  top: 95%;
+  right: 2%;
+  height: auto;
+  width: auto;
+}
+.home-right .help .helptext {
+  display: none;
+  width: 120px;
+  background-color: #ffffff;
+  color: #7A7A7A;
+  border-radius: 3px;
+  padding: 5px 0;
+}
+.home-right .help:hover .helptext {
+  display: inline;
+}
 .job-control {
   width: 99%;
   margin: 3% 0.5% 0.5% 0.5%;
   height: auto;
   color: #4b4b4b;
   background-color: #ffffff;
-  box-shadow: 0 0 5px #666666;
-  border-radius: 10px;
-  padding: 10px;
+  box-shadow: 0 3px 5px #999999;
+  border-radius: 5px;
+  padding: 5px 0;
 }
-.job-control .jobstatus {
+.job-control .row {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+.job-control .col-md-12 {
+  padding: 5px;
+  margin: 0;
+}
+.job-control .col-md-12 .jobstatus {
   color: #094183;
   padding: 6px;
   font-size: 14px;
 }
-.job-control .col-md-2 {
+.job-control .col-md-12 .col-md-2 {
+  padding: 0;
+  margin: 0;
   width: 12.5%;
 }
-.job-control .col-md-4 {
+.job-control .col-md-12 .col-md-4 {
+  padding: 0;
   width: 50%;
 }
 .about-right::-webkit-scrollbar {
@@ -162,7 +200,7 @@ div {
   border-radius: 15px;
   font-size: 1.5em;
   text-align: justify;
-  box-shadow: 0 0 5px #666666;
+  box-shadow: 0 3px 5px #999999;
 }
 .about-right .frame-detail img {
   margin-right: 1.5em;
@@ -184,7 +222,7 @@ div {
   height: 100%;
   text-align: center;
   border-radius: 8px;
-  box-shadow: 0 0 5px #666666;
+  box-shadow: 0 3px 5px #999999;
 }
 .about-right .member .col-md-2 ul {
   list-style: none;
@@ -244,7 +282,7 @@ div {
   padding: 10px 0 10px 10px;
   background-color: #ffffff;
   border-radius: 5px;
-  box-shadow: 0 0 5px #666666;
+  box-shadow: 0 3px 5px #999999;
 }
 .statistic-right .col-md-4 i {
   margin-right: 10px;
@@ -279,7 +317,7 @@ div {
   margin: 3% 0.5% 0.5% 0.5%;
   width: 48%;
   background-color: #ffffff;
-  box-shadow: 0 0 5px #909090;
+  box-shadow: 0 3px 5px #999999;
 }
 .statistic-right .statistic-detail .col-md-6 .charts {
   padding: 30px;

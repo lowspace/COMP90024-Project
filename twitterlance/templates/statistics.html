@@ -30,39 +30,40 @@
     <div class="row clearfix">
   <!--    side nav-->
       <div class="col-md-2 column sidenav">
-        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
-        <ul>
-          <li>
-            <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
-          </li>
-          <li>
-            <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
-          </li>
-          <li>
-            <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
-          </li>
-          <li  class="this">
-            <a style="color: #094183" href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
-          </li>
-          <li>
+        <div class="col-md-12 column sidenavin">
+          <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
+          <ul>
+            <li>
+              <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+            </li>
+            <li>
+              <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
+            </li>
+            <li>
+              <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+            </li>
+            <li  class="this">
+              <a style="color: #094183" href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+            </li>
+            <li>
               <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
-          </li>
-          <li>
+            </li>
+            <li>
               <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
-          </li>
-          <li>
+            </li>
+            <li>
               <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
-          </li>
-          <li>
-            <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
-          </li>
-        </ul>
+            </li>
+            <li>
+              <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
+            </li>
+          </ul>
+        </div>
       </div>
   <!--    content for this page-->
       <div class="col-md-10 column right-content">
         <div class="statistic-right">
           <div class="col-md-12 column">
-            <div class="frame">Statistics</div>
             <div class="col-md-4 user">
               <i class="fas fa-user"style="color: #A5DFDF"></i>
               <p>Users:</p>
@@ -165,9 +166,7 @@
       // ajax request function
       function ajax(url, method, success, error) {
         let request = new XMLHttpRequest();
-        // for (var key in header) {
-        //   request.setRequestHeader(key, header[key]);
-        // }
+        // request.setRequestHeader('content-type', 'application/json');
         request.open(method, url, true);
         request.send();
         request.onreadystatechange = function () {
@@ -258,9 +257,9 @@
 
       function sportnum(response){
         let temp = JSON.parse(response)
-        tsport.innerHTML = temp["total"].toLocaleString();
+        tsport.innerHTML = temp["sum"]["total"].toLocaleString();
         sport4city=[
-                temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+                temp["sum"]["Sydney"],temp["sum"]["Melbourne"],temp["sum"]["Adelaide"],temp["sum"]["Canberra"]
         ];
         sportpertweet = [
           (sport4city[0]/tweet4city[0])*100,
@@ -352,7 +351,6 @@
           scales: {
             xAxes: [{
               stacked: true,
-
             }],
             yAxes: [{
               stacked: true,
@@ -370,7 +368,7 @@
       //get user number
       ajax('/analyser/users/stats/','GET', userstat, error)
       //get sports number
-      ajax('/analyser/tweets/sports/','GET', sportnum, error)
+      ajax('/analyser/sports/stats_all/','GET', sportnum, error)
       //get sport type
       ajax('/analyser/sports/stats_all/','GET', popularsport, error)
 

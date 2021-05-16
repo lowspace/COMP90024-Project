@@ -27,43 +27,42 @@
     <div class="row clearfix">
   <!--    side nav-->
       <div class="col-md-2 column sidenav">
-        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
-          <ul>
-            <li>
-              <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
-            </li>
-            <li class="this">
-              <a style="color: #094183" href="/about">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
-            </li>
-            <li>
-              <a href='/map/'>&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
-            </li>
-            <li>
-              <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
-            </li>
-            <li>
-                <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
-            </li>
-            <li>
-                <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
-            </li>
-            <li>
-                <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
-            </li>
-            <li>
-                <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
-            </li>
-          </ul>
+          <div class="col-md-12 column sidenavin">
+              <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
+              <ul>
+                <li>
+                  <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+                </li>
+                <li class="this">
+                  <a style="color: #094183" href="/about">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
+                </li>
+                <li>
+                  <a href='/map/'>&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+                </li>
+                <li>
+                  <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+                </li>
+                <li>
+                    <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
+                </li>
+                <li>
+                    <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
+                </li>
+                <li>
+                    <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
+                </li>
+                <li>
+                    <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
+                </li>
+              </ul>
+          </div>
       </div>
   <!--    content for this page-->
       <div class="col-md-10 column right-content">
         <div class="about-right">
           <div class="frame">Frame</div>
           <div class="frame-detail">
-<!--            <p>-->
               <img src="{% static "/img/404.jpg"%}" alt="frame pic">
-<!--            </p>-->
-<!--            <p>-->
               The purpose of this project is to analyse a large amount of data from social media in the
               context of the increasing importance of social media. The main method is to count the number
               of swear words contained in tweets in different cities and analyse the emotions of tweets,
@@ -77,7 +76,6 @@
               this system, we combine the processed data with the statistical data of the Australian
               Urban Research Infrastructure Network (AURIN) platform to explore the story between different
               factors, different emotions and the frequency of swear word.
-<!--            </p>-->
           </div>
           <div class="frame">Members</div>
           <div class="col-md-12 column member">

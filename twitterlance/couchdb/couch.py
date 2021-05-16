@@ -24,6 +24,9 @@ def post(path='', body=''):
 def head(path=''):
     return requests.head(f'{base_url}/{path}')
 
+def delete(path='', rev):
+    return requests.delete(f'{base_url}/{path}?rev={rev}')
+
 # Save a single document (dict that has _id as key)
 def save(database, document):
     return requests.put(f'{base_url}/{database}/{document.get("_id")}', json=document)
@@ -57,7 +60,7 @@ def updatedoc(path='', document='', max_retries=5, retries=0):
     res = put(f'{path}?rev={rev}', document)
     if res.status_code == 409 and retries < max_retries: 
         time.sleep(2)
-        return upsertdoc(path, document, max_retries, retries + 1)
+        return updatedoc(path, document, max_retries, retries + 1)
     else: 
         return res
 
@@ -114,7 +117,11 @@ def migrate():
     return output
 
 def geocode():
-    return get('cities/_all_docs?include_docs=true')
+    res = get('cities/_all_docs?include_docs=true').json()
+    city_dict = {}
+    for row in res['rows']:
+        city_dict[row['id']] = row['geocode']
+    return city_dict
 
 def now():
     return datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')

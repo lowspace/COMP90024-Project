@@ -21,39 +21,67 @@
   <link rel="stylesheet" type="text/css" href="{% static "/css/style.css"%}"/>
   <link rel="stylesheet" href="{% static "/css/fa/css/all.css"%}">
 
+  <style>
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+
+      /* 定位 */
+      position: absolute;
+      z-index: 1;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+  </style>
+
 </head>
 <body id="home">
   <div class="container">
     <div class="row clearfix">
       <!--    side nav-->
       <div class="col-md-2 column sidenav">
-        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
-        <ul>
-          <li class="this">
-            <a style="color: #094183" href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
-          </li>
-          <li>
-            <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
-          </li>
-          <li>
-            <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
-          </li>
-          <li>
-            <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
-          </li>
-          <li>
+        <div class="col-md-12 column sidenavin">
+            <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
+            <ul>
+              <li class="this">
+                <a style="color: #094183" href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+              </li>
+              <li>
+                <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
+              </li>
+              <li>
+                <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+              </li>
+              <li>
+                <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+              </li>
+              <li>
               <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
-          </li>
-          <li>
-              <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
-          </li>
-          <li>
-              <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
-          </li>
-          <li>
-            <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
-          </li>
-        </ul>
+                </li>
+                <li>
+                  <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
+                </li>
+                <li>
+                  <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
+                </li>
+                <li>
+                  <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
+                </li>
+              </ul>
+        </div>
       </div>
 <!--      content for this page-->
       <div class="col-md-10 column right-content" style="overflow-y: auto">
@@ -63,38 +91,46 @@
           <h1>Twitterlance</h1>
           <br>
           <h2>Team 39</h2>
+          <div class="help">
+            <span class="helptext" >
+              &nbspScroll down this page, start the jobs with corresponding buttons&nbsp
+            </span>&nbsp
+            <i class="fa fa-question-circle"></i>
+          </div>
         </div>
         <div class="col-md-12 job-control">
           <div class="row">
-            <div class="col-md-2">
-              <div class="jobstatus">
-                Search:&nbsp<span id="searchstatus">loading</span>
+            <div class="col-md-12" style="width: 100%">
+              <div class="col-md-2">
+                <div class="jobstatus">
+                  Search:&nbsp<span id="searchstatus">loading</span>
+                </div>
               </div>
-            </div>
-            <div class="col-md-2">
-              <div class="jobstatus">
-                Stream:&nbsp<span id="streamstatus">loading</span>
+              <div class="col-md-2">
+                <div class="jobstatus">
+                  Stream:&nbsp<span id="streamstatus">loading</span>
+                </div>
               </div>
-            </div>
-            <div class="col-md-2">
-              <div class="jobstatus">
-                Update:&nbsp<span id="updatestatus">loading</span>
+              <div class="col-md-2">
+                <div class="jobstatus">
+                  Update:&nbsp<span id="updatestatus">loading</span>
+                </div>
               </div>
-            </div>
-            <div class="col-md-2">
-              <div class="jobstatus">
-                CouchDB:&nbsp<span id="couchdbstatus">loading</span>
+              <div class="col-md-2">
+                <div class="jobstatus">
+                  CouchDB:&nbsp<span id="couchdbstatus">loading</span>
+                </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Input user quantity">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Search</button>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Input search quantity">
+                  <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="margin-right: 5px">Search</button>
                   <button class="btn btn-default" type="button">Stream</button>
                   <button class="btn btn-default" type="button">Update</button>
                   <button class="btn btn-default" type="button">CouchDB</button>
-                </span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -103,4 +139,21 @@
     </div>
   </div>
 </body>
+<script>
+  $.ajax({
+    url: "/analyser/jobs/update/",
+    type: "get",
+    headers:{'Content-Type':'application/json',
+    dataType: "json",
+    success: function(data,textStatus,jqxhr){
+      // let temp = JSON.parse(data);
+      console.log(data)
+    },
+    error:function(jqxhr,textStatus,error){
+      console.log(error);
+      console.log(textStatus);
+      console.log(jqxhr);
+    }
+  })
+</script>
 </html>
