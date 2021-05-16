@@ -49,7 +49,7 @@ api = tweepy.API(auth)
 
 # get the userlist
 users = []
-response = couch.get(path = 'userdb/_all_docs', body='') # get users list of dict
+response = couch.get(path = 'users/_all_docs', body='') # get users list of dict
 json_data = response.json()['rows'] # load response as json
 for i in json_data:  # get the user list
     users.append(i['id'])
@@ -87,7 +87,7 @@ def new_user(tweetJson, area):
     else:
         print("got new user in", area)
         users.append(user["_id"])
-        couch.save('userdb', user)
+        couch.save('users', user)
         return True
 
 
@@ -100,7 +100,7 @@ def new_tweet(tweetJson, area):
     tweettemp["value"] = tweetJson
     try: # save directly, no need to retrive all, since too slow?
         print('got new tweet')
-        couch.save('tweetdb', tweettemp)
+        couch.save('tweets', tweettemp)
         return True
     except:
         print("error new tweet")
@@ -122,7 +122,7 @@ def new_timeline(tweetJson, area):
         tweets.append(tweettemp)
     try:
         print("got new timeline")
-        couch.bulk_save('tweetdb', tweets)
+        couch.bulk_save('tweets', tweets)
         return True
     except:
         print("error: new timeline")
