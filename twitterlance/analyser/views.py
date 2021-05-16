@@ -22,7 +22,7 @@ class TweetViewSet(viewsets.ViewSet):
 
     # GET analyser/tweets/:id
     def retrieve(self, request, pk=None):
-        res = couch.get(f'tweetdb/{pk}')
+        res = couch.get(f'tweets/{pk}')
         return Response(couch.get('twitter', pk).json())
 
     # GET analyser/tweets/stats/
@@ -30,10 +30,10 @@ class TweetViewSet(viewsets.ViewSet):
     def stats(self, request):
         count = {}
         for city in couch.geocode().keys():
-            res = couch.get(f'tweetdb/_partition/{city}')
+            res = couch.get(f'tweets/_partition/{city}')
             count[city] = res.json()["doc_count"]
         count["total_tweets"] = sum(count.values())
-        return HttpResponse(json.dumps({"tweet_stats": count}))
+        return Response(json.dumps({"tweet_stats": count}))
     
     # GET analyser/tweets/sports/ sport related tweets
     @action(detail=False, methods=['get'], name="sport tweets total")
@@ -41,11 +41,11 @@ class TweetViewSet(viewsets.ViewSet):
         # count = 0
         res1 = {}
         for city in couch.geocode().keys():
-            # res = couch.get(f'tweetdb/_partition/{city}/_design/filter/_view/new-view')
-            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
+            # res = couch.get(f'tweets/_partition/{city}/_design/filter/_view/new-view')
+            res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/total')
             res1[city]=res.json()['rows'][0]["value"]
             # count += res.json()['rows'][0]["value"]
-        return HttpResponse(json.dumps(res1))
+        return Response(json.dumps(res1))
     
 class UserViewSet(viewsets.ViewSet):
 
@@ -64,7 +64,7 @@ class UserViewSet(viewsets.ViewSet):
         count = {}
         for city in couch.geocode().keys():
             print(city)
-            res = couch.get(f'userdb/_design/cities/_view/{city}')
+            res = couch.get(f'users/_design/cities/_view/{city}')
             # count[city] = res.json()["doc_count"]
             if res.json()['rows']:
                 count[city] = res.json()['rows'][0]["value"]   
@@ -77,7 +77,24 @@ class UserViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], name="Get the rank of the enthusiasts")
     def rank(self, request):
         res = couch.get('conclusions/user_rank')
-        return Response(res.json())
+        rank = []
+        cities = res.json()['result']
+        for city, scores in cities.items():
+            print(city)
+            for score in scores: 
+                user = {
+                    'name': score[0],
+                    'score': score[1],
+                    'city': city
+                }
+                if len(rank) == 0: 
+                    rank.append(user)
+                else: 
+                    for i in range(len(rank)):
+                        if score[1] > rank[i]['score']:
+                            rank.insert(i, user)
+                            break
+        return Response(rank)
 
 class SportViewSet(viewsets.ViewSet):
 
@@ -85,9 +102,8 @@ class SportViewSet(viewsets.ViewSet):
     def list(self, request):
         actions = {
             'stats_all': 'All sport counts in all cities cross all time.',
-            ':year': 'All sport counts in all cities cross in the year number',
-            'rank_top3': 'Top 3 sports in all cities cross all time.',
-            'yearly_stats': 'Sport relevant tweets num of each year in all cities.'
+            '<year>-<year>': 'All sport counts in all cities between the years',
+            'rank_top3': 'Top 3 sports in all cities cross all time.'
         }
         return Response(actions)
 
@@ -98,13 +114,8 @@ class SportViewSet(viewsets.ViewSet):
         count = {}
         sum_all = {}
         for city in couch.geocode().keys():
-            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-# <<<<<<< HEAD
-#             res = Counter(res.json()['rows'][0]["value"])
-#             sum_all[city] = sum(res.values())
-#             count[city] = res
-#         total = Counter()  # all sports
-# =======
+            res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/total')
+            print(res.json())
             if res.json()['rows']:
                 res = Counter(res.json()['rows'][0]["value"])
                 sum_all[city] = sum(res.values())
@@ -117,83 +128,40 @@ class SportViewSet(viewsets.ViewSet):
         count['sum'] = sum_all
         t2 = time.time()
         count["time"] = t2 - t1
-        return HttpResponse(json.dumps(count))
+        return Response(json.dumps(count))
 
     # GET analyser/sports/rank_top3
     @action(detail=False, methods=['get'], name="Get the top 3 sports in each city across all time")
     def rank_top3(self, request):
         count = {}
         for city in couch.geocode().keys():
-            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
+            res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/total')
             if res.json()['rows']:
                 res = Counter(res.json()['rows'][0]["value"])
                 top3 = {}
                 for i in res.most_common(3):
                     top3[i[0]] = i[1]
                 count[city] = top3
-        return HttpResponse(json.dumps(count))
+        return Response(json.dumps(count))
 
-    # GET analyser/sports/stats_yearly
-    @action(detail=False, methods=['get'], name="Get the 2019, 2020, 2021 tweets of sports")
-    def stats_yearly(self, request):
-        count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            time_line = {}
-            for time_stamp in ['2019', '2020', '2021']:
-                res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{time_stamp}')
-                res = Counter(res.json()['rows'][0]["value"])
-                time_line[time_stamp] = sum(res.values())
-            count[city] = time_line
-        return HttpResponse(json.dumps(count))
-
-    # GET analyser/sports/rank_top3
-    @action(detail=False, methods=['get'], name="Get the top 3 sports in each city across all time")
-    def rank_top3(self, request):
-        count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/total')
-            res = Counter(res.json()['rows'][0]["value"])
-            top3 = {}
-            for i in res.most_common(3):
-                top3[i[0]] = i[1]
-            count[city] = top3
-        return HttpResponse(json.dumps(count))
-
-    # GET analyser/sports/yearly_stats
-    @action(detail=False, methods=['get'], name="Get the 2019, 2020, 2021 tweets of sports in each city")
-    def yearly_stats(self, request):
-        count = {}
-        for city in couch.geocode().keys():
-            time_line = {}
-            for time_stamp in ['2019', '2020', '2021']:
-                res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{time_stamp}')
-                if res.json()['rows']:
-                    res = Counter(res.json()['rows'][0]["value"])
-                    time_line[time_stamp] = sum(res.values())
-            count[city] = time_line
-        return HttpResponse(json.dumps(count))
-
-    # GET analyser/sports/:year Get the year tweets of sports
+    # GET analyser/sports/year-year Get the year tweets of sports
     def retrieve(self, request, pk=None):
         count = {}
 
-        if pk is None or not isinstance(pk, int):
-            return Response(0)
-        else: 
-            pk = int(pk)
+        if pk is None or len(pk.split('-')) != 2:
+            return Response({"error": 'pk is not in a form of <year number>-<year number>'})
+        
+        start = int(pk.split('-')[0])
+        end = int(pk.split('-')[1])
 
+        count = {}
         for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
-            res = couch.get(f'tweetdb/_partition/{city}/_design/sports/_view/{pk}')
-
-            if res.json()['rows']:
+            time_line = {}
+            for time_stamp in range(start, end+1):
+                res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/{time_stamp}')
                 res = Counter(res.json()['rows'][0]["value"])
-            else:
-                res = Counter()
-            count[city] = res
-        total = Counter() # all sports
-        for k in count.keys():
-            total += count[k]
-        count['total'] = total
+                time_line[time_stamp] = sum(res.values())
+            count[city] = time_line
         return Response(count)
 
 class AurinViewSet(viewsets.ViewSet):
