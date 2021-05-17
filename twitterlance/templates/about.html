@@ -1,0 +1,128 @@
+<!--{% load static %}-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  &lt;!&ndash;    Group 39-->
+<!--          Zihao Yang-->
+<!--          Wei Li-->
+<!--          Yuqi Zhang-->
+<!--          Xin Li-->
+<!--          Zihao Hu &ndash;&gt;-->
+<!--  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
+<!--  <title>About</title>-->
+<!--  &lt;!&ndash;import bootstrap and jquery &ndash;&gt;-->
+<!--  <link rel="stylesheet" type="text/css" href="{% static "/css/normalize.css"%}">-->
+<!--  <link rel="stylesheet" href="{% static "/bootcss/bootstrap.min.css" %}">-->
+<!--  <script src="{% static "/jquery/jquery.min.js" %}"></script>-->
+<!--  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>-->
+<!--  <script src="{% static "/bootjs/bootstrap.min.js" %}"></script>-->
+
+<!--&lt;!&ndash;  import style sheet&ndash;&gt;-->
+<!--  <link rel="stylesheet" type="text/css" href="{% static "/css/style.css"%}"/>-->
+<!--  <link rel="stylesheet" href="{% static "/css/fa/css/all.css"%}">-->
+
+<!--</head>-->
+<!--<body id="about">-->
+<!--  <div class="container">-->
+<!--    <div class="row clearfix">-->
+<!--  &lt;!&ndash;    side nav&ndash;&gt;-->
+<!--      <div class="col-md-2 column sidenav">-->
+<!--          <div class="col-md-12 column sidenavin">-->
+<!--              <img alt="140x140" src="{% static "/img/unimelb.png"%}" />-->
+<!--              <ul>-->
+<!--                <li>-->
+<!--                  <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>-->
+<!--                </li>-->
+<!--                <li class="this">-->
+<!--                  <a style="color: #094183" href="/about">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <a href='/map/'>&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--  &lt;!&ndash;    content for this page&ndash;&gt;-->
+<!--      <div class="col-md-10 column right-content">-->
+<!--        <div class="about-right">-->
+<!--          <div class="frame">Frame</div>-->
+<!--          <div class="frame-detail">-->
+<!--              <img src="{% static "/img/404.jpg"%}" alt="frame pic">-->
+<!--              The purpose of this project is to analyse a large amount of data from social media in the-->
+<!--              context of the increasing importance of social media. The main method is to count the number-->
+<!--              of swear words contained in tweets in different cities and analyse the emotions of tweets,-->
+<!--              explore the connection between education level, unemployment rate and economic level with-->
+<!--              emotions of people and swear word. A large number of tweets can provide a lot of useful-->
+<!--              information for analysis tasks and help to improve the quality of analysis results.-->
+<!--              However, due to the rapid growth of data and the large storage space required, data-->
+<!--              analysis and processing often require a system with a good framework and design to support-->
+<!--              the processing of big data analysis. This project established a clustered data analysis-->
+<!--              system based on MRC and realized the visualization of the analysis results. In-->
+<!--              this system, we combine the processed data with the statistical data of the Australian-->
+<!--              Urban Research Infrastructure Network (AURIN) platform to explore the story between different-->
+<!--              factors, different emotions and the frequency of swear word.-->
+<!--          </div>-->
+<!--          <div class="frame">Members</div>-->
+<!--          <div class="col-md-12 column member">-->
+<!--            <div class="col-md-2 column">-->
+<!--              <ul>-->
+<!--                <li class="pic"><img src="{% static "/img/zhyhead.png"%}" alt="member"></li>-->
+<!--                <li class="name">Zihao Yang</li>-->
+<!--                <li class="number">1252410</li>-->
+<!--                <li class="task">Backend, Ansible, Docker, CouchDB, Spark</li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="col-md-2 column">-->
+<!--              <ul>-->
+<!--                <li class="pic"><img src="{% static "/img/wlhead.png"%}" alt="member"></li>-->
+<!--                <li class="name">Wei Li</li>-->
+<!--                <li class="number">956833</li>-->
+<!--                <li class="task">Twitter search, Backend, CouchDB view</li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="col-md-2 column">-->
+<!--              <ul>-->
+<!--                <li class="pic"><img src="{% static "/img/yqzhead.png"%}" alt="member"></li>-->
+<!--                <li class="name">Yuqi Zhang</li>-->
+<!--                <li class="number">777603</li>-->
+<!--                <li class="task">UI chart, Twitter search, CouchDB view</li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="col-md-2 column">-->
+<!--              <ul>-->
+<!--                <li class="pic"><img src="{% static "/img/xlhead.png"%}" alt="member"></li>-->
+<!--                <li class="name">Xin Li</li>-->
+<!--                <li class="number">1029029</li>-->
+<!--                <li class="task">UI map, Data analysis, CouchDB view</li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="col-md-2 column">-->
+<!--              <ul>-->
+<!--                <li class="pic"><img src="{% static "/img/zhhhead.png"%}" alt="member"></li>-->
+<!--                <li class="name">Zihao Hu</li>-->
+<!--                <li class="number">977716</li>-->
+<!--                <li class="task">Twitter stream, UI overall, Ansible</li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</body>-->
+<!--</html>-->
