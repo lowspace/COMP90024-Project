@@ -5,9 +5,16 @@ from .search_new import search_tweet, get_api
 def assign_users():
     # get ulist of all users
     users = []
-    for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
-        doc = row['doc']
-        users.append(row['doc'])
+    try:
+        for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
+            users.append(row['doc'])
+    except Exception as e:
+        print(f'UPDATE Unable to get ulist due to {e}.')
+        print('UPDATE the machine will wait for another 10 mins, then try again.')
+        time.sleep(600) # wait for data compaction
+        for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
+            users.append(row['doc'])
+        print('UPDATE Success to get ulist after waiting 10 mins.')
 
     # Get node index
     index = -1
@@ -30,7 +37,7 @@ def assign_users():
     start = assign_list[index] # closed at left, open at the right
     end = assign_list[index + 1] - 1 
 
-    print(f'search start from user {start} ends at user {end}.')
+    print(f'UPDATE search start from user {start} ends at user {end}.')
 
     users = users[start:end]
 
@@ -61,12 +68,12 @@ def run_update():
                 job = search_tweet(user, api, 3000)
             if job == True:
                 t2 = time.time()
-                print('{u} in {c} is done.'.format(u = user["_id"], c = user['city']))
-                print('success to save {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
-                print('Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t1)/count))
-                print('Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
-                print('Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t1)/count/60, i = index))
-                print('\n')
+                print('UPDATE {u} in {c} is done.'.format(u = user["_id"], c = user['city']))
+                print('UPDATE success to update {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
+                print('UPDATE Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t1)/count))
+                print('UPDATE Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
+                print('UPDATE Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t1)/count/60, i = index))
+                print('UPDATE \n')
                 break # next user
             else:
-                print('move to next token and continue to search {u} in {c}.'.format(u = user["_id"], c = user['city']))
+                print('UPDATE move to next token and continue to search {u} in {c}.'.format(u = user["_id"], c = user['city']))
