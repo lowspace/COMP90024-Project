@@ -36,25 +36,25 @@
             <li>
               <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
             </li>
-            <li>
-              <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
-            </li>
+<!--            <li>-->
+<!--              <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>-->
+<!--            </li>-->
             <li>
               <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
             </li>
             <li  class="this">
               <a style="color: #094183" href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
             </li>
-            <li>
+            <li class="Manage">
               <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
             </li>
-            <li>
+            <li class="haproxy">
               <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
             </li>
-            <li>
+            <li class="spark">
               <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
             </li>
-            <li>
+            <li class="couchdb">
               <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
             </li>
           </ul>
@@ -111,20 +111,21 @@
           </div>
 
           <div class="col-md-12 column statistic-detail" >
-<!--          <div class="col-md-12 column most-vibrant" >-->
-            <div class="col-md-6 column vibrant-chart" style="margin-right: 2%">
+            <div class="col-md-6 column vibrant-charts" style="margin-right: 2%">
               <div class = options>
                 <a class = "col-md-3" href="#" id="vibrantcity" style="border-radius: 5px 5px 0 0;width: 100%">The Most Vibrant City</a>
               </div>
-              <canvas id="themostvibrantcity"></canvas>
-<!--              <p> The most vibrant city have lower medium age of the population, lower unemployment rate, higher education level, higher income level and it's citizen cares sports a lot! </p>-->
+              <div class="charts">
+                <canvas id="themostvibrantcity"></canvas>
+              </div>
             </div>
-            <div class="col-md-6 column sportuser-chart">
+            <div class="col-md-6 column sportuser-charts">
               <div class = options>
                 <a class = "col-md-3" href="#" id="sportuser" style="border-radius: 5px 5px 0 0;width: 100%">Top 5 Sports Enthusiast</a>
               </div>
-              <canvas id="topsportuser"></canvas>
-<!--              <p> The most vibrant city have lower medium age of the population, lower unemployment rate, higher education level, higher income level and it's citizen cares sports a lot! </p>-->
+              <div class="charts">
+                  <canvas id="topsportuser"></canvas>
+              </div>
             </div>
           </div>
 
