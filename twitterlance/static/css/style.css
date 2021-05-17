@@ -245,6 +245,7 @@ div {
 }
 .about-right .member .col-md-2 ul .task {
   font-size: 1.5em;
+  font-weight: 150;
 }
 .about-right .member .col-md-2 img {
   margin: 20px auto;
