@@ -24,8 +24,8 @@ def post(path='', body=''):
 def head(path=''):
     return requests.head(f'{base_url}/{path}')
 
-# def delete(path='', rev):
-#     return requests.delete(f'{base_url}/{path}?rev={rev}')
+def delete(path='', rev=''):
+    return requests.delete(f'{base_url}/{path}?rev={rev}')
 
 # Save a single document (dict that has _id as key)
 def save(database, document):
