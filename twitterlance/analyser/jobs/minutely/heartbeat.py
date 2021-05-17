@@ -13,19 +13,17 @@ class Job(MinutelyJob):
 
     def do(self):
 
-        # Add this instance
-        print('heartbeat')
+        # Add this instance to nodes list
         res = couch.get(f'nodes/{settings.DJANGO_NODENAME}')
-        print(res.status_code)
         if res.status_code == 404: 
             couch.post(f'nodes/', {'_id': settings.DJANGO_NODENAME, 'heartbeat': 1, 'updated_at':couch.now()})
         else: 
-            body = res.json()
-            if isinstance(body['heartbeat'], int):
-                body['heartbeat'] += 1
+            doc = res.json()
+            if isinstance(doc['heartbeat'], int):
+                doc['heartbeat'] += 1
             else: 
-                body['heartbeat'] = 1
-            couch.updatedoc(f'nodes/{settings.DJANGO_NODENAME}', body)
+                doc['heartbeat'] = 1
+            couch.updatedoc(f'nodes/{settings.DJANGO_NODENAME}', doc)
         
         # Remove disconnected
         if settings.DJANGO_NODENAME.split('.')[1] != 1:
