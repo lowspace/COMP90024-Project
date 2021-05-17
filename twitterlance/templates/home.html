@@ -24,8 +24,34 @@
 </head>
 <body id="home">
   <div class="container">
+    <!--    side nav-->
     <div class="col-md-1 column sidenav">
-      {% include "nav.html" %}
+      <div class="col-md-12 column sidenavin">
+        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
+        <ul>
+          <li class="this">
+            <a style="color: #094183" href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+          </li>
+          <li>
+            <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+          </li>
+          <li>
+            <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+          </li>
+          <li class="Manage">
+            <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
+          </li>
+          <li class="haproxy">
+            <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
+          </li>
+          <li class="spark">
+            <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
+          </li>
+          <li class="couchdb">
+            <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
+          </li>
+        </ul>
+      </div>
     </div>
     <!--      content for this page-->
     <div class="col-md-11 column right-content">
