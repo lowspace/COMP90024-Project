@@ -25,6 +25,8 @@ RUN pip3 install -r requirements.txt;
 # uWSGI listening on this port
 EXPOSE 80
 
+RUN ["chmod", "775", "/etc/environment"]
+
 # To run the app on the app user
 USER appuser
 
