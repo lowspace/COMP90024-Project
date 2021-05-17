@@ -65,8 +65,7 @@ INSTALLED_APPS = [
     'analyser',
     'twitter_search',
     'twitter_stream',
-    'django_extensions',
-    'django_cron'
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
