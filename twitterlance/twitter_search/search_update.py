@@ -86,11 +86,7 @@ def tweet_search(uid: str, city: str, api, ID: str):
     # de duplication
     tweets = de_dup(tweets)
     # save_as_json(tweets, uid, city)
-<<<<<<< HEAD
-    couch.bulk_save('tweetdb', tweets)
-=======
     couch.bulk_save('tweets', tweets)
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
     global total_num_retrieve_tweets
     total_num_retrieve_tweets += len(tweets)
     print('the length of the timeline is {l}'.format(l = len(tweets)))
@@ -120,17 +116,10 @@ def run_update():
         # get users in that city
         users = []
         c_id = c_dict[city]
-<<<<<<< HEAD
-        limit = couch.get(f'userdb/_design/cities/_view/{c_id}') # get the total user num of this city
-        limit = limit.json()["total_rows"] + 1
-        query = dict(selector = {"city": city}, fields = ["_id", "city", 'update_timestamp', '_rev'], limit = limit) 
-        response = couch.post(path = 'userdb/_find', body = query) # get users list of dict
-=======
         limit = couch.get(f'users/_design/cities/_view/{c_id}') # get the total user num of this city
         limit = limit.json()["total_rows"] + 1
         query = dict(selector = {"city": city}, fields = ["_id", "city", 'update_timestamp', '_rev'], limit = limit) 
         response = couch.post(path = 'users/_find', body = query) # get users list of dict
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
         json_data = response.json()['docs'] # load response as json
         for i in json_data: # get the user list
             if i['update_timestamp']:
@@ -166,11 +155,7 @@ def run_update():
             now_update_timestamp = datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
             users[i]["update_timestamp"] = now_update_timestamp # assign the update timeline timestamp
             post_id = users[i]["_id"]
-<<<<<<< HEAD
-            couch.put(f'userdb/{post_id}', users[i]) # update the information in userdb
-=======
             couch.put(f'users/{post_id}', users[i]) # update the information in users
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
             t2 = time.time()
             print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
             print('success to save {c}/{t} users into CouchDB'.format(c = i+1, t = len(users)))
@@ -198,17 +183,10 @@ def run_update():
 #         # get users in that city
 #         users = []
 #         c_id = c_dict[city]
-<<<<<<< HEAD
-#         limit = couch.get(f'userdb/_design/cities/_view/{c_id}') # get the total user num of this city
-#         limit = limit.json()["total_rows"] + 1
-#         query = dict(selector = {"city": city}, fields = ["_id", "city", 'update_timestamp', '_rev'], limit = limit) 
-#         response = couch.post(path = 'userdb/_find', body = query) # get users list of dict
-=======
 #         limit = couch.get(f'users/_design/cities/_view/{c_id}') # get the total user num of this city
 #         limit = limit.json()["total_rows"] + 1
 #         query = dict(selector = {"city": city}, fields = ["_id", "city", 'update_timestamp', '_rev'], limit = limit) 
 #         response = couch.post(path = 'users/_find', body = query) # get users list of dict
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 #         json_data = response.json()['docs'] # load response as json
 #         for i in json_data: # get the user list
 #             if i['update_timestamp']:
@@ -244,11 +222,7 @@ def run_update():
 #             now_update_timestamp = datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
 #             users[i]["update_timestamp"] = now_update_timestamp # assign the update timeline timestamp
 #             post_id = users[i]["_id"]
-<<<<<<< HEAD
-#             couch.put(f'userdb/{post_id}', users[i]) # update the information in userdb
-=======
 #             couch.put(f'users/{post_id}', users[i]) # update the information in users
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 #             t2 = time.time()
 #             print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets)
 #             print('success to save {c}/{t} users into CouchDB'.format(c = i+1, t = len(users)))

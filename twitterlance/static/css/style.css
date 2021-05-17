@@ -20,16 +20,6 @@ div {
 }
 .sidenav {
   height: 100%;
-<<<<<<< HEAD
-  background-color: #ffffff;
-  padding-top: 20px;
-  border-right: #DDDDDD 4px solid;
-}
-.sidenav img {
-  width: 100%;
-}
-.sidenav ul {
-=======
   margin: 0;
   padding: 0;
   background-color: #EFF1F7;
@@ -45,50 +35,11 @@ div {
   width: 100%;
 }
 .sidenav .sidenavin ul {
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
   list-style: none;
   margin: 0;
   padding: 0;
   position: relative;
 }
-<<<<<<< HEAD
-.sidenav ul li {
-  list-style: none;
-}
-.sidenav ul li:nth-child(5) {
-  position: fixed;
-  bottom: 120px;
-}
-.sidenav ul li:nth-child(5) a {
-  padding: 10px 0 10px 0;
-  color: #094183;
-}
-.sidenav ul li:nth-child(6) {
-  position: fixed;
-  bottom: 80px;
-}
-.sidenav ul li:nth-child(6) a {
-  padding: 10px 0 10px 0;
-  color: #094183;
-}
-.sidenav ul li:nth-child(7) {
-  position: fixed;
-  bottom: 40px;
-}
-.sidenav ul li:nth-child(7) a {
-  padding: 10px 0 10px 0;
-  color: #094183;
-}
-.sidenav ul li:nth-child(8) {
-  position: fixed;
-  bottom: 0;
-}
-.sidenav ul li:nth-child(8) a {
-  padding: 10px 0 10px 0;
-  color: #094183;
-}
-.sidenav ul a {
-=======
 .sidenav .sidenavin ul li {
   list-style: none;
 }
@@ -125,24 +76,16 @@ div {
   color: #094183;
 }
 .sidenav .sidenavin ul a {
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
   padding: 20px 0 20px 0;
   text-decoration: none;
   font-size: 20px;
   color: #7A7A7A;
   display: block;
 }
-<<<<<<< HEAD
-.sidenav ul a:hover {
-  color: #094183;
-}
-.sidenav ul .this {
-=======
 .sidenav .sidenavin ul a:hover {
   color: #094183;
 }
 .sidenav .sidenavin ul .this {
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
   background-color: rgba(0, 0, 0, 0.05);
 }
 .right-content {
@@ -167,12 +110,8 @@ div {
   color: #666666;
   padding-top: 15%;
   text-align: center;
-<<<<<<< HEAD
-  box-shadow: 0 0 5px #666666;
-=======
   box-shadow: 0 3px 5px #999999;
   position: relative;
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 }
 .home-right h1 {
   font-family: Arial Black, Gadget, sans-serif;
@@ -184,8 +123,6 @@ div {
   font-size: 50pt;
   margin: 0 auto;
 }
-<<<<<<< HEAD
-=======
 .home-right .help {
   position: absolute;
   top: 95%;
@@ -204,20 +141,12 @@ div {
 .home-right .help:hover .helptext {
   display: inline;
 }
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 .job-control {
   width: 99%;
   margin: 3% 0.5% 0.5% 0.5%;
   height: auto;
   color: #4b4b4b;
   background-color: #ffffff;
-<<<<<<< HEAD
-  box-shadow: 0 0 5px #666666;
-  border-radius: 10px;
-  padding: 10px;
-}
-.job-control .jobstatus {
-=======
   box-shadow: 0 3px 5px #999999;
   border-radius: 5px;
   padding: 5px 0;
@@ -232,17 +161,10 @@ div {
   margin: 0;
 }
 .job-control .col-md-12 .jobstatus {
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
   color: #094183;
   padding: 6px;
   font-size: 14px;
 }
-<<<<<<< HEAD
-.job-control .col-md-2 {
-  width: 12.5%;
-}
-.job-control .col-md-4 {
-=======
 .job-control .col-md-12 .col-md-2 {
   padding: 0;
   margin: 0;
@@ -250,7 +172,6 @@ div {
 }
 .job-control .col-md-12 .col-md-4 {
   padding: 0;
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
   width: 50%;
 }
 .about-right::-webkit-scrollbar {
@@ -279,11 +200,7 @@ div {
   border-radius: 15px;
   font-size: 1.5em;
   text-align: justify;
-<<<<<<< HEAD
-  box-shadow: 0 0 5px #666666;
-=======
   box-shadow: 0 3px 5px #999999;
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 }
 .about-right .frame-detail img {
   margin-right: 1.5em;
@@ -305,11 +222,7 @@ div {
   height: 100%;
   text-align: center;
   border-radius: 8px;
-<<<<<<< HEAD
-  box-shadow: 0 0 5px #666666;
-=======
   box-shadow: 0 3px 5px #999999;
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 }
 .about-right .member .col-md-2 ul {
   list-style: none;
@@ -369,11 +282,7 @@ div {
   padding: 10px 0 10px 10px;
   background-color: #ffffff;
   border-radius: 5px;
-<<<<<<< HEAD
-  box-shadow: 0 0 5px #666666;
-=======
   box-shadow: 0 3px 5px #999999;
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 }
 .statistic-right .col-md-4 i {
   margin-right: 10px;
@@ -408,11 +317,7 @@ div {
   margin: 3% 0.5% 0.5% 0.5%;
   width: 48%;
   background-color: #ffffff;
-<<<<<<< HEAD
-  box-shadow: 0 0 5px #909090;
-=======
   box-shadow: 0 3px 5px #999999;
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 }
 .statistic-right .statistic-detail .col-md-6 .charts {
   padding: 30px;
