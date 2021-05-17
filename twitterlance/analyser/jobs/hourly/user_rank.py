@@ -1,36 +1,28 @@
 """
 Jobs to run every minute. 
 """
-
+import subprocess, time, random
 from django.conf import settings
 from django.core.cache import caches
-from django_extensions.management.jobs import MinutelyJob
+from django_extensions.management.jobs import HourlyJob
 from couchdb import couch
 
 
-class Job(MinutelyJob):
+class Job(HourlyJob):
     help = "Node heartbeats."
 
+    # This job only runs on 1 instance
     def execute(self):
-        # TODO: Use registered hostname status and only run on one instance
+        time.sleep(random.randint(1, 30)) # avoid the possibility of couchdb conflicts
+
         res = couch.get('jobs/user_rank')
-        if res.status_code == 200 and res.json().get('status') != 'ready':
+        doc = res.json()
+        if doc.get('status', None) != 'ready' and len(doc.get('instances', [])) != 0:
             return 
+        doc.get('instances').append(settings.DJANGO_HOSTNAME)
+        doc.get('status') = 'idle'
+        doc.get('result') = 'Job submitted. check 8080.'
+        doc.get('updated_at') = couch.now()
+        couch.updatedoc('jobs/user_rank', doc)
 
         subprocess.Popen('spark-submit --master spark://spark:7077 --class endpoint /code/static/spark/sport.py', shell=True)
-        doc = {'_id': 'user_rank', 'status': 'running', 'result': 'Job submitted.', 'updated_at': couch.now()}
-        couch.upsertdoc('jobs/user_rank', doc)
-
-        res = couch.get('jobs/user_rank')
-        submitted_at = None
-        if res.status_code == '200':
-            submitted_at = res.json()['updated_at']
-
-        res = couch.get('conclusions/user_rank')
-        completed_at = None
-        if res.status_code == '200':
-            completed_at = res.json()['updated_at']
-        
-        if None not in [completed_at, submitted_at] and completed_at > submitted_at:
-            doc = {'_id': 'user_rank', 'status': 'idle', 'result': 'Job submitted.', 'updated_at': couch.now()}
-            couch.upsertdoc('jobs/user_rank', doc)
