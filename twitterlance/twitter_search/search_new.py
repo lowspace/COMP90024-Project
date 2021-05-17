@@ -1,10 +1,6 @@
-import json
 import tweepy
-from tweepy import OAuthHandler
-import os
 import couchdb.couch as couch
 import time
-import datetime
 
 
 global total_num_retrieve_tweets
@@ -50,7 +46,7 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
         return True, None
     elif len(first) == 0 and count == 0:
         print('query contains nothing.')
-        user_search('covid', city, api, latest_id) # can it work well??
+        search_user('covid', city, api, latest_id) # can it work well??
         return False, None
     maxid = str(first[0]['id']-1)
     t1 = time.time()
@@ -74,7 +70,7 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
                     user['city'] = city
                     print('update is done for {id}'.format(id = uid))
                     # transform datetime into Twitter format
-                    user['update_timestamp>π'] = couch.now() # assign the update timeline timestamp
+                    user['update_timestamp'] = couch.now() # assign the update timeline timestamp
                     couch.put(f'users/{uid}', user) # save the user 2 CouchDB 
                     print('user is', user, count)
                     t2 = time.time()
@@ -176,32 +172,7 @@ def get_api(tokens, i):
     auth.set_access_token(access_token_key, access_token_secret)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-def run_search(i:int):
-    rate_limit = i # set the rate_limit for this search
-    cities = couch.geocode().keys()
-    query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
-    res = couch.post(f'tokens/_find', body = query)
-    tokens = res.json()['docs']
-    tokens = tokens * 10
-
-    latest_id = None  # where last round of search stopped 
-
-    # for user 
-    for city in cities:
-        for i in range(len(tokens)):
-            api = get_api(tokens, i): 
-            # find the users
-            job, latest_id = search_user(' ', city, api, rate_limit, latest_id)
-            if job == True:
-                latest_id = None # reset the latest_id
-                print('{c} is done.\n\n'.format(c = city))
-                break # next city
-            else:
-                print(f'token {i} has been used, max_id is {latest_id}.')
-    print("\n\nUSER SEARCH COMPLETED.\n\n")
-
-    time.sleep(600) # wait for data compaction
-
+def assign_users():
     # get ulist of all users
     users = []
     for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
@@ -226,20 +197,61 @@ def run_search(i:int):
     assign_list.append(len(users))
 
     start = assign_list[index] # closed at left, open at the right
-    end = assign_list[index + 1] -1 
+    end = assign_list[index + 1] - 1 
 
     print(f'search start from user {start} ends at user {end}.')
 
     users = users[start:end]
 
-    # for timelines of users
-    for user in users:
+    return users, index
+
+def run_search(i:int):
+    rate_limit = i # set the rate_limit for this search
+    cities = couch.geocode().keys()
+    query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
+    res = couch.post(f'tokens/_find', body = query)
+    tokens = res.json()['docs']
+    tokens = tokens * 10
+
+    latest_id = None  # where last round of search stopped 
+
+    # for user 
+    for city in cities:
         for i in range(len(tokens)):
-            api = get_api(tokens, i): 
+            api = get_api(tokens, i)
+            # find the users
+            job, latest_id = search_user(' ', city, api, rate_limit, latest_id)
+            if job == True:
+                latest_id = None # reset the latest_id
+                print('{c} is done.\n\n'.format(c = city))
+                break # next city
+            else:
+                print(f'token {i} has been used, max_id is {latest_id}.')
+    print("\n\nUSER SEARCH COMPLETED.\n\n")
+
+    time.sleep(600) # wait for data compaction
+
+    users, index = assign_users()
+
+    # for timelines of users
+    t0 = time.time()
+    count = 0 
+    for user in users:
+        t1 = time.time()
+        count += 1
+        for i in range(len(tokens)):
+            api = get_api(tokens, i)
             # find the users
             job = search_tweet(user, api, 3000)
             if job == True:
+                t2 = time.time()
+                print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
                 print('{u} in {c} is done.'.format(u = user["_id"], c = user['city']))
+                print('success to save {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
+                print('Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t1)/count))
+                print('Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
+                print('Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t1)/count/60, i = index))
+                print('\n')
                 break # next user
             else:
                 print('move to next token and continue to search {u} in {c}.'.format(u = user["_id"], c = user['city']))
