@@ -62,7 +62,7 @@ def user_search(query: str, city: str, api, ID = None):
                 # path = './twitterlance/analyser/twitter_search/' + name 
                 # with open(path, 'w') as output: # save as json
                 #     json.dump(users, output)
-                couch.bulk_save('userdb', users)
+                couch.bulk_save('users', users)
                 return False, maxid # to be continued
         if len(twitter) != 0 and count != rate_limit: # search query return tweets
             maxid = str(twitter[-1]['id']-1)
@@ -78,7 +78,7 @@ def user_search(query: str, city: str, api, ID = None):
                     user['city'] = city
                     user['update_timestamp'] = None
                     # user_json = json.dumps(user)
-                    # couch.save('userdb', user) # save each tweet into CouchDB
+                    # couch.save('users', user) # save each tweet into CouchDB
                     print('user is', user, count)
                     # users[user['_id']] = user # does the format is right?
                     users.append(user)
@@ -113,7 +113,7 @@ def user_search(query: str, city: str, api, ID = None):
     # path = './twitterlance/analyser/twitter_search/' + name 
     # with open(path, 'w') as output: # save as json
     #     json.dump(users, output)
-    couch.bulk_save('userdb', users) # save 2 CouchDB at once
+    couch.bulk_save('users', users) # save 2 CouchDB at once
     print('success to save {c}/{t} users into CouchDB'.format(c = count, t = rate_limit))
     t2 = time.time()
     print('{c} has cost {t:.3f} seconds; average {s:.3f} seconds for each user'.format(c = city, t = t2 - t1, s = (t2-t1)/count))

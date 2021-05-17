@@ -49,11 +49,7 @@ api = tweepy.API(auth)
 
 # get the userlist
 users = []
-<<<<<<< HEAD:twitterlance/twitter_stream/stream.py
-response = couch.get(path = 'userdb/_all_docs', body='') # get users list of dict
-=======
 response = couch.get(path = 'users/_all_docs', body='') # get users list of dict
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9:twitterlance/twitter_stream/streamzihao.py
 json_data = response.json()['rows'] # load response as json
 for i in json_data:  # get the user list
     users.append(i['id'])
@@ -91,11 +87,7 @@ def new_user(tweetJson, area):
     else:
         print("got new user in", area)
         users.append(user["_id"])
-<<<<<<< HEAD:twitterlance/twitter_stream/stream.py
-        couch.save('userdb', user)
-=======
         couch.save('users', user)
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9:twitterlance/twitter_stream/streamzihao.py
         return True
 
 
@@ -108,11 +100,7 @@ def new_tweet(tweetJson, area):
     tweettemp["value"] = tweetJson
     try: # save directly, no need to retrive all, since too slow?
         print('got new tweet')
-<<<<<<< HEAD:twitterlance/twitter_stream/stream.py
-        couch.save('tweetdb', tweettemp)
-=======
         couch.save('tweets', tweettemp)
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9:twitterlance/twitter_stream/streamzihao.py
         return True
     except:
         print("error new tweet")
@@ -134,11 +122,7 @@ def new_timeline(tweetJson, area):
         tweets.append(tweettemp)
     try:
         print("got new timeline")
-<<<<<<< HEAD:twitterlance/twitter_stream/stream.py
-        couch.bulk_save('tweetdb', tweets)
-=======
         couch.bulk_save('tweets', tweets)
->>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9:twitterlance/twitter_stream/streamzihao.py
         return True
     except:
         print("error: new timeline")
