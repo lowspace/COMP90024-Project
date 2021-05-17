@@ -181,9 +181,9 @@ class JobsViewSet(viewsets.ViewSet):
     def list(self, request):
         actions = {
             'all': 'All job statsuses',
-            'search': 'Get the sporst enthusiasts rank',
-            'update': 'Get the sporst enthusiasts rank',
-            'stream': 'Get the sporst enthusiasts rank',
+            'search': 'Start twitter harvester',
+            'update': 'Start updating users timeline',
+            'stream': 'Start streaming tweets',
             'user_rank': 'Get the sporst enthusiasts rank'
         }
         return Response(actions)
