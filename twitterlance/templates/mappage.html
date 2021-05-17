@@ -26,7 +26,11 @@
             z-index: 1;
         }
         #main {
+<<<<<<< HEAD
             width: 200px;
+=======
+            width: 240px;
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
             height: 200px;
             background-color: rgb(227, 232, 236);
             z-index: 100;
@@ -34,23 +38,37 @@
         }
 
         #main2 {
+<<<<<<< HEAD
             width: 200px;
             height: 200px;
             background-color: rgb(227, 232, 236);
             z-index: 100;
 
+=======
+            width: 240px;
+            height: 200px;
+            background-color: rgb(227, 232, 236);
+            z-index: 100;
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
         }
         #text {
             position: absolute;
             top: 0;
             left: 0;
+<<<<<<< HEAD
             width: 220px;
+=======
+            width: 260px;
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
             min-height: 200px;
             background-color: rgb(227, 232, 236);
             z-index: 100;
             display: none;
             padding: 20px;
+<<<<<<< HEAD
             padding-left: 40px;
+=======
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
             border-radius: 3px;
         }
     </style>
@@ -65,6 +83,7 @@
 
 </body>
 <script>
+<<<<<<< HEAD
     mapboxgl.accessToken = 'pk.eyJ1IjoieGlubGk5OTYiLCJhIjoiY2tmN28xbzFwMDQ1dzJ5cGxmYnl4MmNmbiJ9.WwZMR2F-V57vhOVf69H9dQ';
     var map = new mapboxgl.Map({
         container: 'map',
@@ -212,6 +231,211 @@
             console.log(e);
             var marker = e.features[0];
             $("#text").html(`
+=======
+    window.onload = function (){
+        let tweet = [1500000,2000000,3000000,1000000]
+        let sportyearly = {
+            "Melbourne":[12, 24, 34],
+            "Sydney":[10, 20, 30],
+            "Adelaide":[20, 30, 30],
+            "Canberra":[20, 20, 20]
+            }
+        let popsport = {
+            "Melbourne":{"volleyball": 90,"squash": 70,"tennies": 80},
+            "Sydney":{"tennis": 90,"boxing": 50,"gym": 80},
+            "Adelaide":{"basketball": 90,"squash": 70,"racing": 80},
+            "Canberra":{"basketball": 90,"squash": 70,"racing": 80},
+        }
+        mapboxgl.accessToken = 'pk.eyJ1IjoieGlubGk5OTYiLCJhIjoiY2tmN28xbzFwMDQ1dzJ5cGxmYnl4MmNmbiJ9.WwZMR2F-V57vhOVf69H9dQ';
+        let map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/xinli996/ckof99r0t1ltx17lnwpxfmj5f',
+            center: { lat: -37.8136, lng: 144.9631 },
+            zoom: 3
+        });
+        $.when(
+            $.ajax({
+                url: "/analyser/sports/stats_all/",
+                type: "get",
+                headers:{'Content-Type':'application/json'},
+                dataType: "json",
+                success: function(data,textStatus,jqxhr){
+                    let temp = data;
+                    tweet = [
+                        temp['sum']["Melbourne"],
+                        temp['sum']["Adelaide"],
+                        temp['sum']["Canberra"],
+                        temp['sum']["Sydney"],
+                    ];
+                    console.log(tweet);
+                },
+                error:function(jqxhr,textStatus,error){
+                    console.log(error);
+                    console.log(textStatus);
+                    console.log(jqxhr);
+                }
+            }),
+            $.ajax({
+                url: "/analyser/sports/2019-2021/",
+                type: "get",
+                headers:{'Content-Type':'application/json'},
+                dataType: "json",
+                success: function(data,textStatus,jqxhr){
+                    let temp = data;
+                    let temp1 = {};
+                    for(let c in temp){
+                        let temp2 = [];
+                        for (let y in temp[c]){
+                            temp2.push(temp[c][y])
+                        }
+                        temp1[c]=temp2;
+                    }
+                    sportyearly=temp1;
+                    console.log(sportyearly)
+                },
+                error:function(jqxhr,textStatus,error){
+                    console.log(error);
+                    console.log(textStatus);
+                    console.log(jqxhr);
+                }
+            }),
+            $.ajax({
+                url: "/analyser/sports/rank_top3/",
+                type: "get",
+                headers:{'Content-Type':'application/json'},
+                dataType: "json",
+                success: function(data,textStatus,jqxhr){
+                    popsport = data;
+                    console.log(popsport);
+                },
+                error:function(jqxhr,textStatus,error){
+                    console.log(error);
+                    console.log(textStatus);
+                    console.log(jqxhr);
+                }
+            })
+        ).done(function (){
+            mapboxgl.accessToken = 'pk.eyJ1IjoieGlubGk5OTYiLCJhIjoiY2tmN28xbzFwMDQ1dzJ5cGxmYnl4MmNmbiJ9.WwZMR2F-V57vhOVf69H9dQ';
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/xinli996/ckof99r0t1ltx17lnwpxfmj5f',
+                center: { lat: -37.8136, lng: 144.9631 },
+                zoom: 3
+            });
+            let data__ = [
+                {
+                    'type': 'Feature',
+                    'properties': {
+                        "title": 'Melbourne',
+                        'description':
+                            '<strong>Melbourne Facts</strong><p>Median Age: 36</p ><p>housing price: 5000</p >',
+                        'data': sportyearly["Melbourne"],
+                        "age": 36,
+                        "price": 720000,
+                        "tweets": tweet[0],
+                        data2: popsport["Melbourne"]
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [144.9631, -37.8136]
+                    }
+                },
+                {
+                    'type': 'Feature',
+                    'properties': {
+                        "title": "Adelaide",
+                        'description':
+                            '<strong>Adelaide Facts</strong><p>Median Age: 40</p ><p>housing price: 4000</p >',
+                        'data': sportyearly["Adelaide"],
+                        "age": 39,
+                        "price": 477000,
+                        "tweets": tweet[1],
+                        data2: popsport["Adelaide"]
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [138.6007, -34.9285]
+                    }
+                },
+                {
+                    'type': 'Feature',
+                    'properties': {
+                        "title": "Canberra",
+                        'description':
+                            '<strong>Canberra Facts</strong><p>Median Age: 50</p ><p>housing price: 3000</p >',
+                        'data': sportyearly["Canberra"],
+                        "age": 35,
+                        "price": 679800,
+                        "tweets": tweet[2],
+                        data2: popsport["Canberra"]
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [149.13, -35.2809]
+                    }
+                },
+                {
+                    'type': 'Feature',
+                    'properties': {
+                        "title": "Sydney",
+                        'description':
+                            '<strong>Sydney Facts</strong><p>Median Age: 20</p ><p>housing price: 5000</p >',
+                        'data': sportyearly["Sydney"],
+                        "age": 36,
+                        "price": 910000,
+                        "tweets": tweet[3],
+                        data2: popsport["Sydney"]
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [151.2093, -33.8688]
+                    }
+                },
+            ].map((d) => {
+                d.properties.tn = 10 + d.properties.tweets/5000
+                return d
+            })
+            map.on('load', function () {
+                map.addSource('places', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': data__
+                    }
+                });
+                // Add a layer showing the places.
+                map.addLayer({
+                    'id': 'places',
+                    'type': 'circle',
+                    'source': 'places',
+                    'paint': {
+                        'circle-color': '#4264fb',
+                        'circle-radius': ["get", "tn"],
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
+
+                // Create a popup, but don't add it to the map yet.
+                var popup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+                $("#text").mouseleave(() => {
+                    $("#text").html("")
+                    $("#text").css("display", "none")
+
+                })
+
+                map.on('mouseover', 'places', function (e) {
+                    // Change the cursor style as a UI indicator.
+                    map.getCanvas().style.cursor = 'pointer';
+
+                    //var marker = e.layer,
+                    console.log(e);
+                    var marker = e.features[0];
+                    $("#text").html(`
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
             <h3>${marker.properties.title}</h3>
             <p style="font-size:15px">Median Age: ${marker.properties.age}</p>
             <p style="font-size:15px">Median Housing Price: $${marker.properties.price}</p>
@@ -220,6 +444,7 @@
             <div id="main2"></div>
             <p style="text-align: center;font-size:13px"> Top 3 Most Popular Sports </p>
             `)
+<<<<<<< HEAD
             // $("#text").css("opacity", 1)
             $("#text").css("display", "block")
             // $("#text").css("top", e.point.y);
@@ -325,6 +550,113 @@
         );
     });
 
+=======
+                    // $("#text").css("opacity", 1)
+                    $("#text").css("display", "block")
+                    // $("#text").css("top", e.point.y);
+                    // $("#text").css("left", e.point.x);
+                    $("#text").css("top", '10px');
+                    $("#text").css("left", '10px');
+
+
+                    var chartDom = document.getElementById('main');
+                    var myChart = echarts.init(chartDom);
+                    var option;
+                    var chartDom2 = document.getElementById('main2');
+                    var myChart2 = echarts.init(chartDom2);
+                    var option2;
+                    let a = [], b = [];
+                    console.log(marker.properties.data2)
+                    for (_ in JSON.parse(marker.properties.data2)) {
+                        a.push(_)
+                        console.log(_)
+                        b.push(JSON.parse(marker.properties.data2)[_])
+                    }
+                    //bar
+                    option2 = {
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis: {
+                            max: 'dataMax',
+                            //min: 30,
+                            splitNumber:3,
+
+                        },
+                        yAxis: {
+                            type: 'category',
+                            data: a,
+                            inverse: true
+                        },
+                        series: [{
+                            realtimeSort: true,
+                            name: 'Total',
+                            type: 'bar',
+                            data: b,
+                        }],
+                    };
+                    //line
+                    option = {
+
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                // saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: ["2019", "2020", "2021"]
+                        },
+                        yAxis: {
+                            type: 'value',
+                            min: "dataMin"
+                        },
+                        series: [
+                            {
+                                name: 'Total',
+                                type: 'line',
+                                data: JSON.parse(marker.properties.data)
+                            },
+                        ]
+                    };
+                    //line graph
+                    myChart.setOption(option, true);
+                    //bar chart
+                    myChart2.setOption(option2, true);
+                    // console.log(marker.properties.data);
+
+                });
+                map.on('mouseleave', 'places', function () {
+                    map.getCanvas().style.cursor = '';
+                });
+                // Add the control to the map.
+                map.addControl(
+                    new MapboxGeocoder({
+                        accessToken: mapboxgl.accessToken,
+                        mapboxgl: mapboxgl
+                    })
+                );
+            });
+        }).fail();
+    }
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
 
 </script>
 

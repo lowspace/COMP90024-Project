@@ -30,7 +30,11 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
         2. save the uid locally (for now)
     """
     ulist = [] # list of uid
+<<<<<<< HEAD
     res = couch.get(f'userdb/_design/cities/_view/{city}') # get the id list of this city
+=======
+    res = couch.get(f'users/_design/cities/_view/{city}') # get the id list of this city
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
     res = res.json()['rows']
     for row in res:
         if row["id"] in ulist:
@@ -75,7 +79,11 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
                     print('update is done for {id}'.format(id = uid))
                     # transform datetime into Twitter format
                     user['update_timestamp>π'] = couch.now() # assign the update timeline timestamp
+<<<<<<< HEAD
                     couch.put(f'userdb/{uid}', user) # save the user 2 CouchDB 
+=======
+                    couch.put(f'users/{uid}', user) # save the user 2 CouchDB 
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
                     print('user is', user, count)
                     t2 = time.time()
                     print('Progress {c}/{t}.'.format(c = count, t = rate_limit))
@@ -146,10 +154,17 @@ def search_tweet(user: dict, api, timeline_limit= 3000):
     retries = 0
     while retries < 5:
         try:
+<<<<<<< HEAD
             tweetres = couch.bulk_save('tweetdb', tweets)
             if tweetres.status_code == 201: # ensure save into couchdb
                 user['update_timestamp'] = couch.now() # update timestamp
                 userres = couch.updatedoc(f'userdb/{uid}', user)
+=======
+            tweetres = couch.bulk_save('tweets', tweets)
+            if tweetres.status_code == 201: # ensure save into couchdb
+                user['update_timestamp'] = couch.now() # update timestamp
+                userres = couch.updatedoc(f'users/{uid}', user)
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
                 if userres.status_code in [200, 201, 202]: 
                     global total_num_retrieve_tweets
                     total_num_retrieve_tweets += len(tweets)
@@ -204,7 +219,11 @@ def run_search(i:int):
 
     # get ulist of all users
     users = []
+<<<<<<< HEAD
     for row in couch.get('userdb/_all_docs?include_docs=true').json()['rows']:
+=======
+    for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
+>>>>>>> 68b8b1d89fc714e3317cebe549d02e5f92a0bff9
         users.append(row['doc'])
 
     # Get node index
