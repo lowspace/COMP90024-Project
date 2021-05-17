@@ -39,10 +39,7 @@ COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
 
-try: 
-    DJANGO_NODENAME =  os.environ['DJANGO_NODENAME'] 
-except: 
-    DJANGO_NODENAME =  'localhost'
+DJANGO_NODENAME =  os.environ.get('DJANGO_NODENAME', '127.0.0.1')
 
 APPEND_SLASH = True
 
