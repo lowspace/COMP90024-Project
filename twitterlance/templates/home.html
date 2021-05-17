@@ -188,23 +188,23 @@
       if (input>=1000 || input<1 ){
         alert("out of range");
       }else{
-        // input = {"new_users": input};
-        // console.log(input);
-        // searchjobcontrol("/analyser/jobs/search/",input);
+        input = {"new_users": input};
+        console.log(input);
+        searchjobcontrol("/analyser/jobs/search/",input);
         document.getElementsByTagName("input")[0].disabled=true;
         searchbtn.disabled=true;
       }
     })
     updatebtn.addEventListener('click',function(){
-      // jobcontrol("/analyser/jobs/update/");
+      jobcontrol("/analyser/jobs/update/");
       updatebtn.disabled=true;
     })
     streambtn.addEventListener('click',function(){
-      // jobcontrol("/analyser/jobs/stream/");
+      jobcontrol("/analyser/jobs/stream/");
       streambtn.disabled=true;
     })
     couchdbbtn.addEventListener('click',function(){
-      // jobcontrol("/analyser/jobs/couchdb/");
+      jobcontrol("/analyser/jobs/couchdb/");
       couchdbbtn.disabled=true;
     })
   }
