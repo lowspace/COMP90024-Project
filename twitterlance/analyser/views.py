@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from django.shortcuts import HttpResponse
 from django.conf import settings 
 from collections import Counter
 import json, time, os
@@ -181,9 +180,9 @@ class JobsViewSet(viewsets.ViewSet):
     def list(self, request):
         actions = {
             'all': 'All job statsuses',
-            'search': 'Get the sporst enthusiasts rank',
-            'update': 'Get the sporst enthusiasts rank',
-            'stream': 'Get the sporst enthusiasts rank',
+            'search': 'Start twitter harvester',
+            'update': 'Start updating users timeline',
+            'stream': 'Start streaming tweets',
             'user_rank': 'Get the sporst enthusiasts rank'
         }
         return Response(actions)

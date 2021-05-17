@@ -17,6 +17,8 @@ div {
 }
 .container {
   width: 100%;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 .sidenav {
   height: 100%;
@@ -25,14 +27,13 @@ div {
   background-color: #EFF1F7;
 }
 .sidenav .sidenavin {
-  width: 98%;
   margin-right: 2%;
   background-color: #ffffff;
   padding-top: 20px;
-  box-shadow: 0 0 5px #999999;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
 }
 .sidenav .sidenavin img {
-  width: 100%;
+  width: 90%;
 }
 .sidenav .sidenavin ul {
   list-style: none;
@@ -43,42 +44,47 @@ div {
 .sidenav .sidenavin ul li {
   list-style: none;
 }
-.sidenav .sidenavin ul li:nth-child(5) {
+.sidenav .sidenavin ul .Manage {
   position: fixed;
-  bottom: 120px;
+  bottom: 105px;
 }
-.sidenav .sidenavin ul li:nth-child(5) a {
+.sidenav .sidenavin ul .Manage a {
+  font-size: 0.85vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav .sidenavin ul li:nth-child(6) {
+.sidenav .sidenavin ul .haproxy {
   position: fixed;
-  bottom: 80px;
+  bottom: 70px;
 }
-.sidenav .sidenavin ul li:nth-child(6) a {
+.sidenav .sidenavin ul .haproxy a {
+  font-size: 0.85vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav .sidenavin ul li:nth-child(7) {
+.sidenav .sidenavin ul .spark {
   position: fixed;
-  bottom: 40px;
+  bottom: 35px;
 }
-.sidenav .sidenavin ul li:nth-child(7) a {
+.sidenav .sidenavin ul .spark a {
+  font-size: 0.85vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav .sidenavin ul li:nth-child(8) {
+.sidenav .sidenavin ul .couchdb {
   position: fixed;
   bottom: 0;
 }
-.sidenav .sidenavin ul li:nth-child(8) a {
+.sidenav .sidenavin ul .couchdb a {
+  font-size: 0.85vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
 .sidenav .sidenavin ul a {
   padding: 20px 0 20px 0;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 1vw;
+  font-weight: 150;
   color: #7A7A7A;
   display: block;
 }
@@ -92,6 +98,7 @@ div {
   height: 100%;
   background-color: #EFF1F7;
   padding: 1%;
+  overflow-y: auto;
 }
 .right-content::-webkit-scrollbar {
   width: 0 !important;
@@ -101,7 +108,7 @@ div {
  */
 .home-right {
   margin: 0.5%;
-  height: 99%;
+  height: 30%;
   border-radius: 10px;
   background-image: url("../img/twitter-marketing.jpg");
   background-position: center;
@@ -110,16 +117,16 @@ div {
   color: #666666;
   padding-top: 15%;
   text-align: center;
-  box-shadow: 0 3px 5px #999999;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
   position: relative;
 }
 .home-right h1 {
-  font-family: Arial Black, Gadget, sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 77pt;
   margin: 0 auto;
 }
 .home-right h2 {
-  font-family: Arial Black, Gadget, sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 50pt;
   margin: 0 auto;
 }
@@ -147,7 +154,7 @@ div {
   height: auto;
   color: #4b4b4b;
   background-color: #ffffff;
-  box-shadow: 0 3px 5px #999999;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
   border-radius: 5px;
   padding: 5px 0;
 }
@@ -174,22 +181,18 @@ div {
   padding: 0;
   width: 50%;
 }
-.about-right::-webkit-scrollbar {
-  width: 0 !important;
-}
 .about-right {
+  margin: 0;
+  padding: 0;
   color: #7A7A7A;
-  overflow-y: auto;
 }
 .about-right .frame {
   color: #094183;
-  font-family: Tahoma, Geneva, sans-serif;
-  font-weight: lighter;
-  margin: 0 0 20px 5px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 800;
   height: auto;
-  font-size: 2em;
+  font-size: 2vw;
   width: 100%;
-  text-align: left;
 }
 .about-right .frame-detail {
   margin: 0 5px 20px 5px;
@@ -199,8 +202,10 @@ div {
   background-color: #ffffff;
   border-radius: 15px;
   font-size: 1.5em;
+  font-weight: 150;
+  letter-spacing: 1px;
   text-align: justify;
-  box-shadow: 0 3px 5px #999999;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
 }
 .about-right .frame-detail img {
   margin-right: 1.5em;
@@ -209,7 +214,7 @@ div {
 }
 .about-right .member {
   margin: 0 0 0.5% 0;
-  padding: 0;
+  padding: 20px;
   width: 100%;
   height: 50%;
   display: table;
@@ -222,7 +227,7 @@ div {
   height: 100%;
   text-align: center;
   border-radius: 8px;
-  box-shadow: 0 3px 5px #999999;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
 }
 .about-right .member .col-md-2 ul {
   list-style: none;
@@ -240,6 +245,7 @@ div {
 }
 .about-right .member .col-md-2 ul .task {
   font-size: 1.5em;
+  font-weight: 150;
 }
 .about-right .member .col-md-2 img {
   margin: 20px auto;
@@ -266,14 +272,13 @@ div {
   height: auto;
 }
 .statistic-right .frame {
-  font-family: Tahoma, Geneva, sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: lighter;
   color: #094183;
   margin: 0 0 10px 0;
   height: auto;
   font-size: 2em;
   width: 100%;
-  text-align: left;
 }
 .statistic-right .col-md-4 {
   margin: 0 0.5%;
@@ -282,7 +287,7 @@ div {
   padding: 10px 0 10px 10px;
   background-color: #ffffff;
   border-radius: 5px;
-  box-shadow: 0 3px 5px #999999;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
 }
 .statistic-right .col-md-4 i {
   margin-right: 10px;
@@ -298,7 +303,7 @@ div {
 .statistic-right .col-md-4 span {
   margin: 0;
   padding: 0;
-  font-family: Tahoma, Geneva, sans-serif;
+  font-family: "Open Sans", sans-serif;
   line-height: 60px;
   height: 60px;
   font-size: 3.3rem;
@@ -317,7 +322,7 @@ div {
   margin: 3% 0.5% 0.5% 0.5%;
   width: 48%;
   background-color: #ffffff;
-  box-shadow: 0 3px 5px #999999;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
 }
 .statistic-right .statistic-detail .col-md-6 .charts {
   padding: 30px;
@@ -359,4 +364,3 @@ div {
 .statistic-right .show {
   height: 100% !important;
 }
-/*# sourceMappingURL=style.css.map */

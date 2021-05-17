@@ -39,10 +39,7 @@ COUCHDB_USERNAME = config.get('CouchDB', 'username')
 COUCHDB_PASSWORD = config.get('CouchDB', 'password')
 COUCHDB_ENDPOINT = config.get('CouchDB', 'endpoint')
 
-try: 
-    DJANGO_NODENAME =  os.environ['DJANGO_NODENAME'] 
-except: 
-    DJANGO_NODENAME =  'localhost'
+DJANGO_NODENAME =  os.environ.get('DJANGO_NODENAME', '127.0.0.1')
 
 APPEND_SLASH = True
 
@@ -68,8 +65,7 @@ INSTALLED_APPS = [
     'analyser',
     'twitter_search',
     'twitter_stream',
-    'django_extensions',
-    'django_cron'
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -115,7 +111,7 @@ WSGI_APPLICATION = 'twitterlance.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 

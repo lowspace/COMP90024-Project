@@ -24,92 +24,142 @@
 </head>
 <body id="home">
   <div class="container">
-    <div class="row clearfix">
-      <!--    side nav-->
-      <div class="col-md-2 column sidenav">
-        <div class="col-md-12 column sidenavin">
-            <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
-            <ul>
-              <li class="this">
-                <a style="color: #094183" href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
-              </li>
-              <li>
-                <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
-              </li>
-              <li>
-                <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
-              </li>
-              <li>
-                <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
-              </li>
-              <li>
-              <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
-                </li>
-                <li>
-                  <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
-                </li>
-                <li>
-                  <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
-                </li>
-                <li>
-                  <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
-                </li>
-              </ul>
-        </div>
+    <!--    side nav-->
+    <div class="col-md-2 column sidenav">
+      <div class="col-md-12 column sidenavin">
+        <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
+        <ul>
+          <li class="this">
+            <a style="color: #094183" href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
+          </li>
+          <li>
+            <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
+          </li>
+          <li>
+            <a href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
+          </li>
+          <li class="Manage">
+            <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
+          </li>
+          <li class="haproxy">
+            <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
+          </li>
+          <li class="spark">
+            <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
+          </li>
+          <li class="couchdb">
+            <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
+          </li>
+        </ul>
       </div>
-<!--      content for this page-->
-      <div class="col-md-10 column right-content" style="overflow-y: auto">
-        <div class="home-right">
-          <h2>COMP90024 Project</h2>
-          <br>
-          <h1>Twitterlance</h1>
-          <br>
-          <h2>Team 39</h2>
-          <div class="help">
-            <span class="helptext" >
-              &nbspScroll down this page, start the jobs with corresponding buttons&nbsp
-            </span>&nbsp
-            <i class="fa fa-question-circle"></i>
-          </div>
-        </div>
-        <div class="col-md-12 job-control">
-          <div class="row">
-            <div class="col-md-12" style="width: 100%">
-              <div class="col-md-2">
-                <div class="jobstatus">
-                  Search:&nbsp<span id="searchstatus">loading</span>
-                </div>
+    </div>
+    <!--      content for this page-->
+    <div class="col-md-10 column right-content">
+      <div class="home-right">
+      </div>    
+
+      <div class="col-md-12 job-control">
+        <div class="row">
+          <div class="col-md-12" style="width: 100%">
+            <div class="col-md-2">
+              <div class="jobstatus">
+                Search:&nbsp<span id="searchstatus">loading</span>
               </div>
-              <div class="col-md-2">
-                <div class="jobstatus">
-                  Stream:&nbsp<span id="streamstatus">loading</span>
-                </div>
+            </div>
+            <div class="col-md-2">
+              <div class="jobstatus">
+                Stream:&nbsp<span id="streamstatus">loading</span>
               </div>
-              <div class="col-md-2">
-                <div class="jobstatus">
-                  Update:&nbsp<span id="updatestatus">loading</span>
-                </div>
+            </div>
+            <div class="col-md-2">
+              <div class="jobstatus">
+                Update:&nbsp<span id="updatestatus">loading</span>
               </div>
-              <div class="col-md-2">
-                <div class="jobstatus">
-                  CouchDB:&nbsp<span id="couchdbstatus">loading</span>
-                </div>
+            </div>
+            <div class="col-md-2">
+              <div class="jobstatus">
+                CouchDB:&nbsp<span id="couchdbstatus">loading</span>
               </div>
-              <div class="col-md-4">
-                <div class="input-group">
-                  <input type="number" class="form-control" min="1" max="1000" placeholder="Input search quantity">
-                  <span class="input-group-btn">
-                  <button disabled="disabled" class="btn btn-default" type="button" style="margin-right: 5px">Search</button>
-                  <button disabled="disabled" class="btn btn-default" type="button">Stream</button>
-                  <button disabled="disabled" class="btn btn-default" type="button">Update</button>
-                  <button disabled="disabled" class="btn btn-default" type="button">CouchDB</button>
-                  </span>
-                </div>
+            </div>
+            <div class="col-md-4">
+              <div class="input-group">
+                <input type="number" class="form-control" min="1" max="1000" placeholder="Input search quantity">
+                <span class="input-group-btn">
+                <button disabled="disabled" class="btn btn-default" type="button" style="margin-right: 5px">Search</button>
+                <button disabled="disabled" class="btn btn-default" type="button">Stream</button>
+                <button disabled="disabled" class="btn btn-default" type="button">Update</button>
+                <button disabled="disabled" class="btn btn-default" type="button">CouchDB</button>
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="col-md-12 about-right">
+        <div class="frame text-center" style="padding: 50px;">About the Project</div>
+        <div class="frame-detail">
+          <p>
+            The purpose of this project is to analyse a large amount of data from social media in the
+            context of the increasing importance of social media. The main method is to count the number
+            of swear words contained in tweets in different cities and analyse the emotions of tweets,
+            explore the connection between education level, unemployment rate and economic level with
+            emotions of people and swear word. A large number of tweets can provide a lot of useful
+            information for analysis tasks and help to improve the quality of analysis results.
+            However, due to the rapid growth of data and the large storage space required, data
+            analysis and processing often require a system with a good framework and design to support
+            the processing of big data analysis. This project established a clustered data analysis
+            system based on MRC and realized the visualization of the analysis results. In
+            this system, we combine the processed data with the statistical data of the Australian
+            Urban Research Infrastructure Network (AURIN) platform to explore the story between different
+            factors, different emotions and the frequency of swear word.
+          </p>
+        </div>
+        <div class="frame text-center" style="padding: 50px;">About Us</div>
+        <div class="col-md-12 column member">
+          <div class="col-md-2 column">
+            <ul>
+              <li class="pic"><img src="{% static "/img/zhyhead.png"%}" alt="member"></li>
+              <li class="name">Zihao Yang</li>
+              <li class="number">1252410</li>
+              <li class="task">Backend, Ansible, Docker, CouchDB, Spark</li>
+            </ul>
+          </div>
+          <div class="col-md-2 column">
+            <ul>
+              <li class="pic"><img src="{% static "/img/wlhead.png"%}" alt="member"></li>
+              <li class="name">Wei Li</li>
+              <li class="number">956833</li>
+              <li class="task">Twitter Search, Backend, CouchDB View</li>
+            </ul>
+          </div>
+          <div class="col-md-2 column">
+            <ul>
+              <li class="pic"><img src="{% static "/img/yqzhead.png"%}" alt="member"></li>
+              <li class="name">Yuqi Zhang</li>
+              <li class="number">777603</li>
+              <li class="task">Frontend Charts, Twitter Search, CouchDB View</li>
+            </ul>
+          </div>
+          <div class="col-md-2 column">
+            <ul>
+              <li class="pic"><img src="{% static "/img/xlhead.png"%}" alt="member"></li>
+              <li class="name">Xin Li</li>
+              <li class="number">1029029</li>
+              <li class="task">Frontend Maps, Data Analysis, CouchDB View</li>
+            </ul>
+          </div>
+          <div class="col-md-2 column">
+            <ul>
+              <li class="pic"><img src="{% static "/img/zhhhead.png"%}" alt="member"></li>
+              <li class="name">Zihao Hu</li>
+              <li class="number">977716</li>
+              <li class="task">Twitter Stream, Overall Frontend, Ansible</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
     </div>
   </div>
 </body>
@@ -188,23 +238,23 @@
       if (input>=1000 || input<1 ){
         alert("out of range");
       }else{
-        // input = {"new_users": input};
-        // console.log(input);
-        // searchjobcontrol("/analyser/jobs/search/",input);
+        input = {"new_users": input};
+        console.log(input);
+        searchjobcontrol("/analyser/jobs/search/",input);
         document.getElementsByTagName("input")[0].disabled=true;
         searchbtn.disabled=true;
       }
     })
     updatebtn.addEventListener('click',function(){
-      // jobcontrol("/analyser/jobs/update/");
+      jobcontrol("/analyser/jobs/update/");
       updatebtn.disabled=true;
     })
     streambtn.addEventListener('click',function(){
-      // jobcontrol("/analyser/jobs/stream/");
+      jobcontrol("/analyser/jobs/stream/");
       streambtn.disabled=true;
     })
     couchdbbtn.addEventListener('click',function(){
-      // jobcontrol("/analyser/jobs/couchdb/");
+      jobcontrol("/analyser/jobs/couchdb/");
       couchdbbtn.disabled=true;
     })
   }
