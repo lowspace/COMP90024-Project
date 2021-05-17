@@ -43,35 +43,39 @@ div {
 .sidenav .sidenavin ul li {
   list-style: none;
 }
-.sidenav .sidenavin ul li:nth-child(5) {
+.sidenav .sidenavin ul .Manage {
   position: fixed;
-  bottom: 120px;
+  bottom: 105px;
 }
-.sidenav .sidenavin ul li:nth-child(5) a {
+.sidenav .sidenavin ul .Manage a {
+  font-size: 15px;
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav .sidenavin ul li:nth-child(6) {
+.sidenav .sidenavin ul .haproxy {
   position: fixed;
-  bottom: 80px;
+  bottom: 70px;
 }
-.sidenav .sidenavin ul li:nth-child(6) a {
+.sidenav .sidenavin ul .haproxy a {
+  font-size: 15px;
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav .sidenavin ul li:nth-child(7) {
+.sidenav .sidenavin ul .spark {
   position: fixed;
-  bottom: 40px;
+  bottom: 35px;
 }
-.sidenav .sidenavin ul li:nth-child(7) a {
+.sidenav .sidenavin ul .spark a {
+  font-size: 15px;
   padding: 10px 0 10px 0;
   color: #094183;
 }
-.sidenav .sidenavin ul li:nth-child(8) {
+.sidenav .sidenavin ul .couchdb {
   position: fixed;
   bottom: 0;
 }
-.sidenav .sidenavin ul li:nth-child(8) a {
+.sidenav .sidenavin ul .couchdb a {
+  font-size: 15px;
   padding: 10px 0 10px 0;
   color: #094183;
 }
@@ -174,12 +178,11 @@ div {
   padding: 0;
   width: 50%;
 }
-.about-right::-webkit-scrollbar {
-  width: 0 !important;
-}
 .about-right {
+  margin: 0;
+  padding: 0;
   color: #7A7A7A;
-  overflow-y: auto;
+  height: auto;
 }
 .about-right .frame {
   color: #094183;
