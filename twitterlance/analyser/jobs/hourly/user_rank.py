@@ -1,7 +1,7 @@
 """
 Jobs to run every minute. 
 """
-
+import subprocess
 from django.conf import settings
 from django.core.cache import caches
 from django_extensions.management.jobs import MinutelyJob
