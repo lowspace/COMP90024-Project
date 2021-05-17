@@ -27,108 +27,76 @@
 </head>
 <body id="statistics">
   <div class="container">
-    <div class="row clearfix">
-  <!--    side nav-->
-      <div class="col-md-2 column sidenav">
-        <div class="col-md-12 column sidenavin">
-          <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
-          <ul>
-            <li>
-              <a href="/home/">&nbsp<i class="fas fa-home"></i>&nbsp&nbspHome</a>
-            </li>
-            <li>
-              <a href="/about/">&nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout</a>
-            </li>
-            <li>
-              <a href="/map/">&nbsp<i class="fas fa-map"></i>&nbsp&nbspMap</a>
-            </li>
-            <li  class="this">
-              <a style="color: #094183" href="/statistics/">&nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics</a>
-            </li>
-            <li>
-              <a href="/" onclick="event.target.port=9000">&nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage</a>
-            </li>
-            <li>
-              <a href="/haproxy-admin/">&nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy</a>
-            </li>
-            <li>
-              <a href="/" onclick="event.target.port=8080">&nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark</a>
-            </li>
-            <li>
-              <a href="/" onclick="event.target.port=5984">&nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB</a>
-            </li>
-          </ul>
+    <div class="col-md-1 column sidenav">
+      {% include "nav.html" %}
+    </div>
+    <!--    content for this page-->
+    <div class="col-md-11 column right-content">
+      <div class="statistic-right">
+        <div class="col-md-12 column">
+          <div class="col-md-4 user">
+            <i class="fas fa-user"style="color: #A5DFDF; "></i>
+            <p>Users</p>
+            <span id="total_user">loading</span>
+          </div>
+          <div class="col-md-4 tweet" >
+            <i class="fab fa-twitter" style="color: #289FF0"></i>
+            <p>Tweets</p>
+            <span id="total_tweet">loading</span>
+          </div>
+          <div class="col-md-4 tweetsport">
+            <i class="fas fa-running"  style="color: #D93241"></i>
+            <p>Sport Related Tweets</p>
+            <span id="sportcount">loading</span>
+          </div>
         </div>
-      </div>
-  <!--    content for this page-->
-      <div class="col-md-10 column right-content">
-        <div class="statistic-right">
-          <div class="col-md-12 column">
-            <div class="col-md-4 user">
-              <i class="fas fa-user"style="color: #A5DFDF"></i>
-              <p>Users:</p>
-              <span id="total_user">loading</span>
+
+        <div class="col-md-12 column statistic-detail" >
+          <div class="col-md-6" style="margin-right: 2%">
+            <div class="col-md-12 column">
+              <div class = options>
+                <a class = "col-md-3" href="#" id="scenario1" style="border-radius: 5px 0 0 0;">Sex & Age</a>
+                <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Work & Study</a>
+                <a class = "col-md-3" href="#" id="scenario3" style="border-radius: 0 5px 0 0 ;">Income & Freq</a>
+              </div>
             </div>
-            <div class="col-md-4 tweet" >
-              <i class="fab fa-twitter" style="color: #289FF0"></i>
-              <p>Tweets:</p>
-              <span id="total_tweet">loading</span>
-            </div>
-            <div class="col-md-4 tweetsport">
-              <i class="fas fa-running"  style="color: #D93241"></i>
-              <p>Sport Related Tweets:</p>
-              <span id="sportcount">loading</span>
+            <div class="charts">
+              <canvas id="Statisticchart1"></canvas>
+              <canvas id="Statisticchart2"></canvas>
+              <canvas id="Statisticchart3"></canvas>
+              <canvas id="Statisticchart4"></canvas>
+              <canvas id="Statisticchart5"></canvas>
+              <canvas id="Statisticchart6"></canvas>
             </div>
           </div>
-
-          <div class="col-md-12 column statistic-detail" >
-            <div class="col-md-6" style="margin-right: 2%">
-              <div class="col-md-12 column">
-                <div class = options>
-                  <a class = "col-md-3" href="#" id="scenario1" style="border-radius: 5px 0 0 0;">Sex & Age</a>
-                  <a class = "col-md-3" href="#" id="scenario2" style="width: 34%">Work & Study</a>
-                  <a class = "col-md-3" href="#" id="scenario3" style="border-radius: 0 5px 0 0 ;">Income & Freq</a>
-                </div>
-              </div>
-              <div class="charts">
-                <canvas id="Statisticchart1"></canvas>
-                <canvas id="Statisticchart2"></canvas>
-                <canvas id="Statisticchart3"></canvas>
-                <canvas id="Statisticchart4"></canvas>
-                <canvas id="Statisticchart5"></canvas>
-                <canvas id="Statisticchart6"></canvas>
-              </div>
+          <div class="col-md-6">
+            <div class = options>
+              <a class = "col-md-3" href="#" id="sporttype" style="border-radius: 5px 5px 0 0;width: 100%">Sports Rank & Sports Tweets Rank</a>
             </div>
-            <div class="col-md-6">
-              <div class = options>
-                <a class = "col-md-3" href="#" id="sporttype" style="border-radius: 5px 5px 0 0;width: 100%">Sports Rank & Sports Tweets Rank</a>
-              </div>
-              <div class="charts">
-                <canvas id="Statisticchart7"></canvas>
-                <canvas id="Statisticchart8"></canvas>
-              </div>
+            <div class="charts">
+              <canvas id="Statisticchart7"></canvas>
+              <canvas id="Statisticchart8"></canvas>
             </div>
           </div>
+        </div>
 
-          <div class="col-md-12 column statistic-detail" >
-            <div class="col-md-6 column vibrant-charts" style="margin-right: 2%">
-              <div class = options>
-                <a class = "col-md-3" href="#" id="vibrantcity" style="border-radius: 5px 5px 0 0;width: 100%">The Most Vibrant City</a>
-              </div>
-              <div class="charts">
-                <canvas id="themostvibrantcity"></canvas>
-              </div>
+        <div class="col-md-12 column statistic-detail" >
+          <div class="col-md-6 column vibrant-charts" style="margin-right: 2%">
+            <div class = options>
+              <a class = "col-md-3" href="#" id="vibrantcity" style="border-radius: 5px 5px 0 0;width: 100%">The Most Vibrant City</a>
             </div>
-            <div class="col-md-6 column sportuser-charts">
-              <div class = options>
-                <a class = "col-md-3" href="#" id="sportuser" style="border-radius: 5px 5px 0 0;width: 100%">Top 5 Sports Enthusiast</a>
-              </div>
-              <div class="charts">
-                  <canvas id="topsportuser"></canvas>
-              </div>
+            <div class="charts">
+              <canvas id="themostvibrantcity"></canvas>
             </div>
           </div>
-
+          <div class="col-md-6 column sportuser-charts">
+            <div class = options>
+              <a class = "col-md-3" href="#" id="sportuser" style="border-radius: 5px 5px 0 0;width: 100%">Top 5 Sports Enthusiast</a>
+            </div>
+            <div class="charts">
+                <canvas id="topsportuser"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>

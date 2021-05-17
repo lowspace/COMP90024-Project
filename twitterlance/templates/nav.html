@@ -1,0 +1,47 @@
+ <!--    side nav-->
+ {% load static %}
+<div class="col-md-12 column sidenavin">
+  <img alt="140x140" src="{% static "/img/unimelb.png"%}" />
+  <ul>
+    <li>
+      <a href="/home/">
+        &nbsp<i class="fas fa-home"></i>&nbsp&nbspHome
+      </a>
+    </li>
+    <li>
+      <a href="/about/">
+        &nbsp<i class="fas fa-project-diagram"></i>&nbsp&nbspAbout
+      </a>
+    </li>
+    <li>
+      <a href="/map/">
+        &nbsp<i class="fas fa-map"></i>&nbsp&nbspMap
+      </a>
+    </li>
+    <li>
+      <a href="/statistics/">
+        &nbsp<i class="fas fa-chart-bar"></i>&nbsp&nbspStatistics
+      </a>
+    </li>
+    <li>
+      <a href="/" onclick="event.target.port=9000">
+        &nbsp<i class="fas fa-cogs"></i>&nbsp&nbspManage
+      </a>
+    </li>
+    <li>
+      <a href="/haproxy-admin/">
+        &nbsp<i class="fas fa-sitemap"></i>&nbsp&nbspHAProxy
+      </a>
+    </li>
+    <li>
+      <a href="/" onclick="event.target.port=8080">
+        &nbsp&nbsp<i class="fas fa-bolt"></i>&nbsp&nbsp&nbspSpark
+      </a>
+    </li>
+    <li>
+      <a href="/" onclick="event.target.port=5984">
+        &nbsp<i class="fas fa-couch"></i>&nbsp&nbspCouchDB
+      </a>
+    </li>
+  </ul>
+</div>
