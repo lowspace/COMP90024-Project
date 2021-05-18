@@ -1,5 +1,4 @@
 SHELL=/bin/bash
 * * * * * printenv | grep DJANGO > /code/cronenv
-* * * * * echo "Running\n" >> /code/minutely.log
-0 * * * * python3 /code/manage.py runjobs minutely 2> /code/minutely.log
+* * * * * python3 /code/manage.py runjobs minutely 2> /code/minutely.log
 0 * * * * python3 /code/manage.py runjobs hourly 2> /code/hourly.log
