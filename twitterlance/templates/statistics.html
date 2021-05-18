@@ -367,43 +367,44 @@
       let username=[];
       let userscore=[];
       for (let i=0;i<5;i++){
-        username[i]=response[i]["name"]+"\n"+response[i]["city"];
-        userscore[i]=response[i]["score"];
-      }
-      console.log(username);
-      console.log(userscore);
-      let UsersBar10={
-        datasets: [{
-          data: userscore,
-          label:'Enthusiasm Score',
-          backgroundColor: [
-            'rgba(255, 206, 0, 0.5)',
-            'rgba(0, 0, 0, 0.1)',
-            'rgba(255, 206, 80, 0.5)',
-            'rgba(75, 192, 192, 0.5)',
-            'rgba(75, 192, 192, 0.5)',
-          ],
-          borderColor: [
-            'rgba(255,99,132,0.6)',
-            'rgba(54, 162, 235, 0.6)',
-            'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(255,99,132,0.6)',
-          ],
-          borderWidth: 0
-        }],
-        labels: username
-      }
-      let optionBar10={
-        title: {display: true,text: "Top 5 Sports Enthusiasts",fontSize: 30,},
-        scales: {yAxes: [{ticks: {beginAtZero:true}}] },
-        legend: {
-          display: false
+          username[i]=response[i]["name"]+"\n"+response[i]["city"];
+          userscore[i]=response[i]["score"];
         }
+        console.log(username);
+        console.log(userscore);
+        let UsersBar10={
+          datasets: [{
+            data: userscore,
+            label:'Enthusiasm Score',
+            backgroundColor: [
+              'rgba(255, 206, 0, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 140, 25, 0.5)',
+            ],
+            borderColor: [
+              'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
+            ],
+            borderWidth: 0
+          }],
+          labels: username
+        }
+        let optionBar10={
+          indexAxis: 'y',
+          title: {display: true,text: "Top 5 Fitness Enthusiasts",fontSize: 30,},
+          scales: {xAxes: [{ticks: {beginAtZero:true}}] },
+          legend: {
+            display: false
+          }
+        }
+        let Bar10 = canvas10.getContext('2d');
+        let Barchart10 = new Chart(Bar10, {type: 'horizontalBar', data: UsersBar10, options: optionBar10});
       }
-      let Bar10 = canvas10.getContext('2d');
-      let Barchart10 = new Chart(Bar10, {type:'bar', data: UsersBar10, options: optionBar10});
-    }
     //get tweets number
     statajax('/analyser/tweets/stats/',tweetstat)
     //get user number
