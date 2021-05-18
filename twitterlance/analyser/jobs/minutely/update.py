@@ -11,7 +11,7 @@ import requests, time, random
 
 
 class Job(MinutelyJob):
-    help = "Node heartbeats."
+    help = "Update Twitter."
 
     def do(self):
         time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
