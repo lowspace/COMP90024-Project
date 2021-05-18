@@ -171,6 +171,7 @@ def get_api(tokens, i):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token_key, access_token_secret)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+    return api
 
 def assign_users():
     # get ulist of all users
