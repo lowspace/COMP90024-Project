@@ -1,25 +1,21 @@
 import tweepy
-import time
-import datetime
+import couchdb.couch as couch
+import time, datetime
 
-global total_num_retrieve_tweets, timeline_limit
-
-total_num_retrieve_tweets = 0
-timeline_limit = 400 # for each user, retrieve 400 tweets maximally for each 7 days
 
 def toJson(tweets):
-    twitter = []
+    tweets = []
     for i in tweets:
-        twitter.append(i._json)
-    return twitter
+        tweets.append(i._json)
+    return tweets
 
-def tweet_search(uid: str, city: str, api, ID: str):
+def search_tweet(user: dict, api, timeline_limit= 400):
     """
     The function crawls timeline of the uid
     Input:
-        uid = uid
-        city = city
-        ID = tid in that uid's timeline
+        user = dict of user
+        timeline_limit = 400 # dafault for 400
+        api = api
     """
 
     def tweet_2_dict(t, city: str):
@@ -35,198 +31,148 @@ def tweet_search(uid: str, city: str, api, ID: str):
         d['val'] = t
         return d
 
-    def de_dup(ts: list) -> list:
-        """
-        remove the duplication tweets in this list
-        Input = a list of structured tweet list
-        Ouput = a list of structured tweet list after de_duplication
-        """
-        tid_set = set()
-        new_ts = []
-        for t in ts: 
-            if t['_id'] not in tid_set: # new tid adds to the set
-                tid_set.add(t['_id'])
-                new_ts.append(t) # append new id tweet
-            else:
-                print("there is a duplication in ID {i}.".format(i = t['_id']))
-        return new_ts
-
+    uid = user['_id']
+    city = user['city']
     tweets = [] # return object
-    global timeline_limit 
     try:
         new_tweets = toJson(api.user_timeline(user_id = uid, count = 200))
     except:
-        print("First trial failed, we can try another token.")
-        ID = None
-        return False, ID
+        print("NEW First trial failed, we can try another token.")
+        return False
 
     while True: # get the tweets
         if len(new_tweets) == 0: # no tweet returns
             break
         if len(new_tweets) == 200:
-            maxid = str(new_tweets[-1]['id']-1)
+            maxid = str(new_tweets[-1]['id'] - 1)
             for tweet in new_tweets:
                 tweet = tweet_2_dict(tweet, city) # convert tweet to be structured
                 tweets.append(tweet)
             if len(tweets) >= timeline_limit: # some users have a large timeline
-                print("for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
+                print("NEW for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
                 break
             try:
-                new_tweets = api.user_timeline(user_id =uid, count=200, max_id=maxid)
+                new_tweets = api.user_timeline(user_id = uid, count = 200, max_id = maxid)
                 new_tweets = toJson(new_tweets)
             except:
-                print("Error occurs in the progress at tid, {t} of uid,{u}".format(t=maxid, u = uid) )
-                return False, maxid
+                print("NEW Error occurs in the progress at tid, {t} of uid,{u}".format(t = maxid, u = uid))
+                return False # move to next token
         else:
             for tweet in new_tweets:
                 tweet = tweet_2_dict(tweet, city) # convert tweet to be structured
                 tweets.append(tweet)
             break
-    # save the file as json
-    # de duplication
-    tweets = de_dup(tweets)
-    # save_as_json(tweets, uid, city)
-    couch.bulk_save('tweets', tweets)
-    global total_num_retrieve_tweets
-    total_num_retrieve_tweets += len(tweets)
-    print('the length of the timeline is {l}'.format(l = len(tweets)))
-    print('done at the last')
-    return True, None
+
+    retries = 0
+    while retries < 5:
+        try:
+            tweetres = couch.bulk_save('tweets', tweets)
+            if tweetres.status_code == 201: # ensure save into couchdb
+                user['update_timestamp'] = couch.now() # update timestamp
+                userres = couch.updatedoc(f'users/{uid}', user)
+                if userres.status_code in [200, 201, 202]: 
+                    global total_num_retrieve_tweets
+                    total_num_retrieve_tweets += len(tweets)
+                    print('NEW the length of the timeline is {l}'.format(l = len(tweets)))
+                    print(f'NEW done at the {retries} retries.')
+                    return True
+                else:
+                    print(f'NEW Retries {retries}, {userres.status_code} at userres.')
+            else:
+                print(f'NEW Retries {retries}, {tweetres.status_code} at tweetres.')
+        except Exception as e: # connection error
+            print(f'NEW Retries {retries}, tweets saving progress: {str(e)}')
+            time.sleep(10)
+        retries += 1
+    print("NEW search tweet failed at connection error at the last.")
+    return False
+
+def get_api(tokens, i): 
+    consumer_key = tokens[i]['consumer_key']
+    consumer_secret = tokens[i]['consumer_secret']
+    access_token_key = tokens[i]['access_token_key']
+    access_token_secret = tokens[i]['access_token_secret']
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token_key, access_token_secret)
+    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+    return api
+
+def assign_users():
+    # get ulist of all users
+    users = []
+    try:
+        for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
+            users.append(row['doc'])
+    except Exception as e:
+        print(f'UPDATE Unable to get ulist due to {e}.')
+        print('UPDATE the machine will wait for another 10 mins, then try again.')
+        time.sleep(600) # wait for data compaction
+        for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
+            users.append(row['doc'])
+        print('UPDATE Success to get ulist after waiting 10 mins.')
+
+    # Get node index
+    index = -1
+    rows = couch.get('nodes/_all_docs').json()['rows']
+    if rows is None:
+        index = 0
+    else: 
+        for row in rows: 
+            if row['id'] == settings.DJANGO_NODENAME:
+                index += 1
+    workers = len(rows) if rows is not None else 1
+
+    # assign node to corresponding block 
+    interval = len(users)//(workers)
+    assign_list = []
+    for i in range(workers):
+        assign_list.append(i * interval)
+    assign_list.append(len(users))
+
+    start = assign_list[index] # closed at left, open at the right
+    end = assign_list[index + 1] - 1 
+
+    print(f'UPDATE update start from user {start} ends at user {end}.')
+
+    users = users[start:end]
+
+    return users, index
 
 def run_update():
-    cities = couch.geocode().keys()
     query = dict(selector = {"type": "search"}, fields = ["consumer_key", "consumer_secret", "access_token_key","access_token_secret"]) 
-    res=couch.post(f'tokens/_find', body = query)
-    tasks=res.json()['docs']
-    tokens={}
-    for i in range(0,len(tasks)):
-        tokens[i]=tasks[i]
-    ID = None
-    c_dict = dict(
-        Melbourne = "mel",
-        Adelaide = "adl",
-        Sydney = "syd",
-        Canberra = "cbr",
-        Perth = "per", 
-        Brisbane = "bne",
-    )
+    res = couch.post(f'tokens/_find', body = query)
+    tokens = res.json()['docs']
+    tokens = tokens * 10
 
+    users, index = assign_users()
+
+    # for timelines of users
     t0 = time.time()
-    for city in cities:
-        # get users in that city
-        users = []
-        c_id = c_dict[city]
-        limit = couch.get(f'users/_design/cities/_view/{c_id}') # get the total user num of this city
-        limit = limit.json()["total_rows"] + 1
-        query = dict(selector = {"city": city}, fields = ["_id", "city", 'update_timestamp', '_rev'], limit = limit) 
-        response = couch.post(path = 'users/_find', body = query) # get users list of dict
-        json_data = response.json()['docs'] # load response as json
-        for i in json_data: # get the user list
-            if i['update_timestamp']:
-                previous_update_timestamp = i['update_timestamp']
-                previous_update_timestamp = datetime.datetime.strptime(previous_update_timestamp, '%a %b %d %H:%M:%S %z %Y')
-                previous_update_timestamp = previous_update_timestamp.astimezone(tz=None).strftime('%Y-%m-%d %H:%M:%S')
-                # >7 days update the timeline
-                diff = datetime.datetime.now() - datetime.datetime.fromisoformat(previous_update_timestamp)
-                skip = datetime.timedelta(days=1)
-                if  skip <= diff:
-                    users.append(i) # update the timeline
+    count = 0
+    for user in users:
         t1 = time.time()
-        for i in range(len(users)): # user = uid
-            for token in tokens.keys():
-                # set api
-                consumer_key = tokens[token]['consumer_key']
-                consumer_secret = tokens[token]['consumer_secret']
-                access_token_key =  tokens[token]['access_token_key']
-                access_token_secret =  tokens[token]['access_token_secret']
-                auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-                auth.set_access_token(access_token_key, access_token_secret)
-                api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-                # crwal the timeline
-                job, ID = tweet_search(users[i]["_id"], city, api, ID)
-                if job == True:
-                    ID = None # initilize the ID
-                    print('{u} in {c} is done.'.format(u = users[i]["_id"], c = city))
-                    break # next user
-                else:
-                    print('move to next token and continue to search {u} in {c}.'.format(u = users[i]["_id"], c = city))
-                    continue # use next token 
-            # transform datetime into Twitter format
-            now_update_timestamp = datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
-            users[i]["update_timestamp"] = now_update_timestamp # assign the update timeline timestamp
-            post_id = users[i]["_id"]
-            couch.put(f'users/{post_id}', users[i]) # update the information in users
-            t2 = time.time()
-            print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
-            print('success to save {c}/{t} users into CouchDB'.format(c = i+1, t = len(users)))
-            print('Have cost {t:.3f} seconds in {c}; average cost time {s:.3f} seconds for each user'.format(c = city, t = t2-t1, s = (t2-t1)/(i+1)))
-            print('Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
-            print('Estimated time to complete {t:.3f} mins.'.format(t = (len(users)-i-1)*(t2-t1)/(i+1)/60))
-            print('\n')
-
-# if __name__ == '__main__':
-
-#     cities = couch.geocode().keys()
-#     tokens = config.token
-#     ID = None
-#     c_dict = dict(
-#         Melbourne = "mel",
-#         Adelaide = "adl",
-#         Sydney = "syd",
-#         Canberra = "cbr"
-#         Perth = "per", 
-#         Brisbane = "bne",
-#     )
-
-#     t0 = time.time()
-#     for city in cities:
-#         # get users in that city
-#         users = []
-#         c_id = c_dict[city]
-#         limit = couch.get(f'users/_design/cities/_view/{c_id}') # get the total user num of this city
-#         limit = limit.json()["total_rows"] + 1
-#         query = dict(selector = {"city": city}, fields = ["_id", "city", 'update_timestamp', '_rev'], limit = limit) 
-#         response = couch.post(path = 'users/_find', body = query) # get users list of dict
-#         json_data = response.json()['docs'] # load response as json
-#         for i in json_data: # get the user list
-#             if i['update_timestamp']:
-#                 previous_update_timestamp = i['update_timestamp']
-#                 previous_update_timestamp = datetime.datetime.strptime(previous_update_timestamp, '%a %b %d %H:%M:%S %z %Y')
-#                 previous_update_timestamp = previous_update_timestamp.astimezone(tz=None).strftime('%Y-%m-%d %H:%M:%S')
-#                 # >7 days update the timeline
-#                 diff = datetime.datetime.now() - datetime.datetime.fromisoformat(previous_update_timestamp)
-#                 skip = datetime.timedelta(days=1)
-#                 if  skip <= diff:
-#                     users.append(i) # update the timeline
-#         t1 = time.time()
-#         for i in range(len(users)): # user = uid
-#             for token in tokens.keys():
-#                 # set api
-#                 consumer_key = tokens[token]['consumer_key']
-#                 consumer_secret = tokens[token]['consumer_secret']
-#                 access_token_key =  tokens[token]['access_token_key']
-#                 access_token_secret =  tokens[token]['access_token_secret']
-#                 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-#                 auth.set_access_token(access_token_key, access_token_secret)
-#                 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-#                 # crwal the timeline
-#                 job, ID = tweet_search(users[i]["_id"], city, api, ID)
-#                 if job == True:
-#                     ID = None # initilize the ID
-#                     print('{u} in {c} is done.'.format(u = users[i]["_id"], c = city))
-#                     break # next user
-#                 else:
-#                     print('move to next token and continue to search {u} in {c}.'.format(u = users[i]["_id"], c = city))
-#                     continue # use next token 
-#             # transform datetime into Twitter format
-#             now_update_timestamp = datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')
-#             users[i]["update_timestamp"] = now_update_timestamp # assign the update timeline timestamp
-#             post_id = users[i]["_id"]
-#             couch.put(f'users/{post_id}', users[i]) # update the information in users
-#             t2 = time.time()
-#             print('Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets)
-#             print('success to save {c}/{t} users into CouchDB'.format(c = i+1, t = len(users)))
-#             print('Have cost {t:.3f} seconds in {c}; average cost time {s:.3f} seconds for each user'.format(c = city, t = t2-t1, s = (t2-t1)/(i+1)))
-#             print('Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
-#             print('Estimated time to complete {t:.3f} mins.'.format(t = (len(users)-i-1)*(t2-t1)/(i+1)/60))
-#             print('\n')
+        count += 1
+        for i in range(len(tokens)):
+            api = get_api(tokens, i) 
+            # find the users
+            previous_timestamp = user['update_timestamp']
+            previous_timestamp = datetime.datetime.strptime(previous_timestamp, '%a %b %d %H:%M:%S %z %Y').replace(tzinfo=datetime.timezone.utc) 
+            now_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+            time_diff = now_timestamp - previous_timestamp
+            if datetime.timedelta(days = 5) < time_diff <= datetime.timedelta(days = 7):
+                job = search_tweet(user, api, 400) # for each user, retrieve 200 tweets maximally for each 7 days
+            elif datetime.timedelta(days = 7) < time_diff <= datetime.timedelta(days = 14):
+                job = search_tweet(user, api, 800) # for each user, retrieve 800 tweets maximally for each 14 days
+            else:
+                job = search_tweet(user, api, 3000)
+            if job == True:
+                t2 = time.time()
+                print('UPDATE {u} in {c} is done.'.format(u = user["_id"], c = user['city']))
+                print('UPDATE success to update {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
+                print('UPDATE Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t1)/count))
+                print('UPDATE Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
+                print('UPDATE Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t1)/count/60, i = index))
+                print('UPDATE \n')
+                break # next user
+            else:
+                print('UPDATE move to next token and continue to search {u} in {c}.'.format(u = user["_id"], c = user['city']))

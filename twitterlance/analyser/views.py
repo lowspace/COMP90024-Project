@@ -68,8 +68,7 @@ class UserViewSet(viewsets.ViewSet):
         res = couch.head('')
         if res.status_code == 500:
             return Response({'error': res.json()})
-
-        t1 = time.time()
+            
         count = {}
         for city in couch.geocode().keys():
             print(city)
@@ -77,8 +76,6 @@ class UserViewSet(viewsets.ViewSet):
             if res.status_code == 200 and res.json().get('rows', []):
                 count[city] = res.json().get('rows', [])[0]["value"]   
         count["total_users"] = sum(count.values())
-        t2 = time.time()
-        count["time"] = t2 - t1
         return Response({"user_stats": count})
 
     # GET analyser/users/rank
@@ -130,7 +127,6 @@ class SportViewSet(viewsets.ViewSet):
         if res.status_code == 500:
             return Response({'error': res.json()})
 
-        t1 = time.time()
         count = {}
         sum_all = {}
         for city in couch.geocode().keys():
@@ -145,8 +141,6 @@ class SportViewSet(viewsets.ViewSet):
         count['total'] = total
         sum_all['total'] = sum(sum_all.values())
         count['sum'] = sum_all
-        t2 = time.time()
-        count["time"] = t2 - t1
         return Response(count)
 
     # GET analyser/sports/rank_top3
@@ -182,12 +176,13 @@ class SportViewSet(viewsets.ViewSet):
         end = int(pk.split('-')[1])
 
         count = {}
-        for city in ["Melbourne", "Sydney", "Canberra", "Adelaide"]:
+        for city in couch.geocode().keys():
             time_line = {}
             for time_stamp in range(start, end+1):
                 res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/{time_stamp}')
-                res = Counter(res.json().get('rows', [])[0]["value"])
-                time_line[time_stamp] = sum(res.values())
+                if len(res.json().get('rows', [])) > 0:
+                    res = Counter(res.json()['rows'][0]["value"])
+                    time_line[time_stamp] = sum(res.values())
             count[city] = time_line
         return Response(count)
 
