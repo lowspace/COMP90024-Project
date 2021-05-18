@@ -8,65 +8,112 @@ base_url = f'http://{settings.COUCHDB_USERNAME}:{settings.COUCHDB_PASSWORD}@{set
 def new_id():
     return uuid.uuid4().hex
 
+class ExceptionResponse: 
+    def __init__(self, body, code=200):
+        self.body = body
+        self.status_code = code
+        self.headers = {}
+    
+    def json(self):
+        if isinstance(self.body, dict):
+            return self.body
+        else: 
+            return {'error': self.body}
+
 # Basic GET request. path is the url after base_url
 def get(path='', body=''):
-    return requests.get(f'{base_url}/{path}', json=body)
+    try:
+        return requests.get(f'{base_url}/{path}', json=body)
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Basic PUT request. path is the url after base_url
 def put(path='', body=''):
-    return requests.put(f'{base_url}/{path}', json=body)
+    try:
+        return requests.put(f'{base_url}/{path}', json=body)
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Basic POST request. path is the url after base_url
 def post(path='', body=''):
-    return requests.post(f'{base_url}/{path}', json=body)
+    try:
+        return requests.post(f'{base_url}/{path}', json=body)
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Basic HEAD request. path is the url after base_url
 def head(path=''):
-    return requests.head(f'{base_url}/{path}')
+    try:
+        return requests.head(f'{base_url}/{path}')
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 def delete(path='', rev=''):
-    return requests.delete(f'{base_url}/{path}?rev={rev}')
+    try:
+        return requests.delete(f'{base_url}/{path}?rev={rev}')
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Save a single document (dict that has _id as key)
 def save(database, document):
-    return requests.put(f'{base_url}/{database}/{document.get("_id")}', json=document)
+    try:
+        return requests.put(f'{base_url}/{database}/{document.get("_id")}', json=document)
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Save a list of documents (list of dict)
 def bulk_save(database, documents):
-    return requests.post(f'{base_url}/{database}/_bulk_docs', json={"docs": documents})
+    try:
+        return requests.post(f'{base_url}/{database}/_bulk_docs', json={"docs": documents})
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Create a database
 def createdb(path='', partition=False, body=''):
     if partition:
         path += '?partitioned=true'
-    return requests.put(f'{base_url}/{path}', json=body)
+    try:
+        return requests.put(f'{base_url}/{path}', json=body)
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Create or update with automatic conflict resolution for updates 
 def upsertdoc(path='', document={}):
-    res = head(path)
-    if res.status_code != 200: 
-        return put(path, document)
-    else: 
-        return updatedoc(path, document)
+    try:
+        res = head(path)
+        if res.status_code != 200: 
+            return put(path, document)
+        else: 
+            return updatedoc(path, document)
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
         
 # update document with with automatic conflict resolution for updates
 # Do not set retries
 def updatedoc(path='', document='', max_retries=5, retries=0):
-    res = head(path)
-    if res.status_code != 200: 
-        return res
+    try:
+        res = head(path)
+        if res.status_code != 200: 
+            return res
 
-    rev = res.headers["ETag"].strip('"')
-    res = put(f'{path}?rev={rev}', document)
-    if res.status_code == 409 and retries < max_retries: 
-        time.sleep(2)
-        return updatedoc(path, document, max_retries, retries + 1)
-    else: 
-        return res
+        rev = res.headers["ETag"].strip('"')
+        res = put(f'{path}?rev={rev}', document)
+        if res.status_code == 409 and retries < max_retries: 
+            time.sleep(2)
+            return updatedoc(path, document, max_retries, retries + 1)
+        else: 
+            return res
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
+def migrate():
+    try:
+        return do_migrate()
+    except Exception as e: 
+        return ExceptionResponse(str(e), 500)
 
 # Initialise the necessary databases and design documents
-def migrate():
+def do_migrate():
     output = []
 
     # Add databases
@@ -117,12 +164,15 @@ def migrate():
     return output
 
 def geocode():
-    res = get('cities/_all_docs?include_docs=true').json()['rows']
-    city_dict = {}
-    for row in res:
-        doc = row['doc']
-        city_dict[doc['_id']] = doc['geocode']
-    return city_dict
-
+    try:
+        res = get('cities/_all_docs?include_docs=true').json()['rows']
+        city_dict = {}
+        for row in res:
+            doc = row['doc']
+            city_dict[doc['_id']] = doc['geocode']
+        return city_dict
+    except Exception as e: 
+        return {}
+        
 def now():
     return datetime.datetime.now().astimezone(tz=datetime.timezone.utc).strftime('%a %b %d %H:%M:%S %z %Y')

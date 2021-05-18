@@ -1,3 +1,0 @@
-SHELL=/bin/zsh
-* * * * * python3 /code/manage.py runjobs minutely &> /code/minutely.log
-0 * * * * python3 /code/manage.py runjobs hourly &> /code/hourly.log
