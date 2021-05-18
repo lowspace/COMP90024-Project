@@ -87,7 +87,7 @@ class UserViewSet(viewsets.ViewSet):
 
         res = couch.get('conclusions/user_rank')
         rank = []
-        cities = res.json()['result']
+        cities = res.json().get('result', [])
         for city, scores in cities.items():
             print(city)
             for score in scores: 

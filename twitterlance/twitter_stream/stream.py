@@ -186,7 +186,7 @@ class MyStreamListener(tweepy.StreamListener):
         return True
 
 
-if __name__ == '__main__':
+def run():
 
     try:
         api.verify_credentials()
