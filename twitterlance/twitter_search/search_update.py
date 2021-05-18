@@ -1,6 +1,101 @@
-import time, datetime
+import tweepy
 import couchdb.couch as couch
-from .search_new import search_tweet, get_api
+import time, datetime
+
+
+def toJson(tweets):
+    tweets = []
+    for i in tweets:
+        tweets.append(i._json)
+    return tweets
+
+def search_tweet(user: dict, api, timeline_limit= 400):
+    """
+    The function crawls timeline of the uid
+    Input:
+        user = dict of user
+        timeline_limit = 400 # dafault for 400
+        api = api
+    """
+
+    def tweet_2_dict(t, city: str):
+        """
+        convert one tweet to a dict = {'_id':, 'uid', 'city', 'val'}
+        Input = tweet_dict
+        Output = structured tweet_dict
+        """
+        d = {}
+        d['_id'] = city + ':' + t['id_str'] # parition _id
+        d['uid'] = t['user']['id_str']
+        d['city'] = city
+        d['val'] = t
+        return d
+
+    uid = user['_id']
+    city = user['city']
+    tweets = [] # return object
+    try:
+        new_tweets = toJson(api.user_timeline(user_id = uid, count = 200))
+    except:
+        print("NEW First trial failed, we can try another token.")
+        return False
+
+    while True: # get the tweets
+        if len(new_tweets) == 0: # no tweet returns
+            break
+        if len(new_tweets) == 200:
+            maxid = str(new_tweets[-1]['id'] - 1)
+            for tweet in new_tweets:
+                tweet = tweet_2_dict(tweet, city) # convert tweet to be structured
+                tweets.append(tweet)
+            if len(tweets) >= timeline_limit: # some users have a large timeline
+                print("NEW for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
+                break
+            try:
+                new_tweets = api.user_timeline(user_id = uid, count = 200, max_id = maxid)
+                new_tweets = toJson(new_tweets)
+            except:
+                print("NEW Error occurs in the progress at tid, {t} of uid,{u}".format(t = maxid, u = uid))
+                return False # move to next token
+        else:
+            for tweet in new_tweets:
+                tweet = tweet_2_dict(tweet, city) # convert tweet to be structured
+                tweets.append(tweet)
+            break
+
+    retries = 0
+    while retries < 5:
+        try:
+            tweetres = couch.bulk_save('tweets', tweets)
+            if tweetres.status_code == 201: # ensure save into couchdb
+                user['update_timestamp'] = couch.now() # update timestamp
+                userres = couch.updatedoc(f'users/{uid}', user)
+                if userres.status_code in [200, 201, 202]: 
+                    global total_num_retrieve_tweets
+                    total_num_retrieve_tweets += len(tweets)
+                    print('NEW the length of the timeline is {l}'.format(l = len(tweets)))
+                    print(f'NEW done at the {retries} retries.')
+                    return True
+                else:
+                    print(f'NEW Retries {retries}, {userres.status_code} at userres.')
+            else:
+                print(f'NEW Retries {retries}, {tweetres.status_code} at tweetres.')
+        except Exception as e: # connection error
+            print(f'NEW Retries {retries}, tweets saving progress: {str(e)}')
+            time.sleep(10)
+        retries += 1
+    print("NEW search tweet failed at connection error at the last.")
+    return False
+
+def get_api(tokens, i): 
+    consumer_key = tokens[i]['consumer_key']
+    consumer_secret = tokens[i]['consumer_secret']
+    access_token_key = tokens[i]['access_token_key']
+    access_token_secret = tokens[i]['access_token_secret']
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token_key, access_token_secret)
+    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+    return api
 
 def assign_users():
     # get ulist of all users
@@ -37,7 +132,7 @@ def assign_users():
     start = assign_list[index] # closed at left, open at the right
     end = assign_list[index + 1] - 1 
 
-    print(f'UPDATE search start from user {start} ends at user {end}.')
+    print(f'UPDATE update start from user {start} ends at user {end}.')
 
     users = users[start:end]
 
@@ -53,13 +148,17 @@ def run_update():
 
     # for timelines of users
     t0 = time.time()
+    count = 0
     for user in users:
         t1 = time.time()
-        count = 0
+        count += 1
         for i in range(len(tokens)):
             api = get_api(tokens, i) 
             # find the users
-            time_diff = couch.now() - user['update_timestamp']
+            previous_timestamp = user['update_timestamp']
+            previous_timestamp = datetime.datetime.strptime(previous_timestamp, '%a %b %d %H:%M:%S %z %Y').replace(tzinfo=datetime.timezone.utc) 
+            now_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+            time_diff = now_timestamp - previous_timestamp
             if datetime.timedelta(days = 5) < time_diff <= datetime.timedelta(days = 7):
                 job = search_tweet(user, api, 400) # for each user, retrieve 200 tweets maximally for each 7 days
             elif datetime.timedelta(days = 7) < time_diff <= datetime.timedelta(days = 14):
