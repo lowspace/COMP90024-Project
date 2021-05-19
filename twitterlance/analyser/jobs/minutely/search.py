@@ -15,7 +15,7 @@ class Job(MinutelyJob):
 
     def do(self):
         print('Search Job')
-        #time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
+        time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/search/')
         if res.status_code == 404: 
             print("Have not found the search file in jobs database.")
@@ -31,7 +31,8 @@ class Job(MinutelyJob):
 
         print('Adding to the nodes list...')
         res = couch.get('nodes/_all_docs')
-        doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
+        if settings.DJANGO_NODENAME not in doc['nodes']:
+            doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
 
         # Check if all nodes are running
         job_nodes = len(res.json().get('nodes', []))

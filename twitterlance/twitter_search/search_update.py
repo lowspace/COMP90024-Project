@@ -1,13 +1,14 @@
 import tweepy
 import couchdb.couch as couch
 import time, datetime
+from django.conf import settings
 
 
 def toJson(tweets):
-    tweets = []
+    tweet = []
     for i in tweets:
-        tweets.append(i._json)
-    return tweets
+        tweet.append(i._json)
+    return tweet
 
 def search_tweet(user: dict, api, timeline_limit= 400):
     """
@@ -67,12 +68,10 @@ def search_tweet(user: dict, api, timeline_limit= 400):
     while retries < 5:
         try:
             tweetres = couch.bulk_save('tweets', tweets)
-            if tweetres.status_code == 201: # ensure save into couchdb
+            if tweetres.status_code in [200, 201, 202]: # ensure save into couchdb
                 user['update_timestamp'] = couch.now() # update timestamp
                 userres = couch.updatedoc(f'users/{uid}', user)
                 if userres.status_code in [200, 201, 202]: 
-                    global total_num_retrieve_tweets
-                    total_num_retrieve_tweets += len(tweets)
                     print('NEW the length of the timeline is {l}'.format(l = len(tweets)))
                     print(f'NEW done at the {retries} retries.')
                     return True
@@ -163,8 +162,10 @@ def run_update():
                 job = search_tweet(user, api, 400) # for each user, retrieve 200 tweets maximally for each 7 days
             elif datetime.timedelta(days = 7) < time_diff <= datetime.timedelta(days = 14):
                 job = search_tweet(user, api, 800) # for each user, retrieve 800 tweets maximally for each 14 days
-            else:
+            elif time_diff > datetime.timedelta(days = 14):
                 job = search_tweet(user, api, 3000)
+            else: 
+                break
             if job == True:
                 t2 = time.time()
                 print('UPDATE {u} in {c} is done.'.format(u = user["_id"], c = user['city']))

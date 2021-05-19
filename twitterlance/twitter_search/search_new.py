@@ -1,26 +1,25 @@
 import tweepy
 import couchdb.couch as couch
 import time
-
+from django.conf import settings
 
 global total_num_retrieve_tweets
 total_num_retrieve_tweets = 0
 
-
-
 def toJson(tweets):
-    tweets = []
+    tweet = []
     for i in tweets:
-        tweets.append(i._json)
-    return tweets
+        tweet.append(i._json)
+    return tweet
 
-def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
+def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None, count = 0):
     """
     This function tends to obtain the uid of the tweets with the query
     Input:
         query = what we wann search
         city = couch.geocode().keys()
         latest_id = str, of the last tid
+        count = how many brand new users have benn added, breakpoint
     Output:
         1. save the uid into CouchDB 
         2. save the uid locally (for now)
@@ -33,7 +32,6 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
             continue
         else:
             ulist.append(row["id"])
-    count = 0 # how many brand new users have benn added
     city_dict = couch.geocode() # get city {city_name: geocode, }
     geocode = city_dict[city] # get geocode
     if not latest_id: # latest_id = None
@@ -41,10 +39,9 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
     else: # latest_id != None
         first = toJson(api.search(q = query, geocode = geocode, max_id = latest_id, count=66))
     # print('NEW first', first)
-    if len(first) == 0 and count == 0:
-        print('NEW query contains nothing.')
-        search_user('covid', city, api, latest_id) # can it work well??
-        return False, None
+    if len(first) == 0 and count < rate_limit:
+        print('NEW query contains nothing, move to next token.')
+        return False, latest_id, count
     maxid = str(first[0]['id']-1)
     t1 = time.time()
     while True:
@@ -54,8 +51,8 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
             # convert search results into Json file
             tweets = toJson(api.search(q = query, geocode = geocode, count = 200, max_id = maxid))
         except:
-                print(f'NEW Have retrieved {count}/{rate_limit}, but unable to continue in this token.')
-                return False, maxid # to be continued
+            print(f'NEW Have retrieved {count}/{rate_limit}, but unable to continue on this token.')
+            return False, maxid, count # to be continued
         if len(tweets) != 0 and count < rate_limit: # search query return tweets
             for tweet in tweets: # add brand new users to save list
                 new_users = []
@@ -67,7 +64,7 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
                     user['city'] = city
                     user['update_timestamp'] = None # assign None to the timestamp
                     new_users.append(user)
-                    print('NEW new user is', user)
+                   #print('NEW new user is', user)
             retries = 0
             success = False
             while retries < 5:
@@ -88,13 +85,13 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
                 t2 = time.time()
                 count += len(new_users)
                 print('NEW Progress {c}/{t}.'.format(c = count, t = rate_limit))
-                print('NEW Have cost {t:.3f} seconds; average cost time {s:.3f} seconds'.format(t = t2 - t1, s = (t2-t1)/count))
-                print('NEW Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60))  
+                print('NEW Have cost {t:.3f} seconds; average cost time {s:.3f} seconds'.format(t = t2 - t1, s = (t2-t1)/count if count != 0 else 0))
+                print('NEW Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60 if count != 0 else 0))  
                 maxid = str(tweets[-1]['id']-1)             
         else: # search query return None
             print(f'NEW Have retrieved {count}/{rate_limit}, but unable to query more.')
             break
-    return True, maxid
+    return True, maxid, count
 
 def search_tweet(user: dict, api, timeline_limit= 3000):
     """
@@ -154,7 +151,7 @@ def search_tweet(user: dict, api, timeline_limit= 3000):
     while retries < 5:
         try:
             tweetres = couch.bulk_save('tweets', tweets)
-            if tweetres.status_code == 201: # ensure save into couchdb
+            if tweetres.status_code in [200, 201, 202]: # ensure save into couchdb
                 user['update_timestamp'] = couch.now() # update timestamp
                 userres = couch.updatedoc(f'users/{uid}', user)
                 if userres.status_code in [200, 201, 202]: 
@@ -233,20 +230,19 @@ def run_search(i:int):
     tokens = res.json()['docs']
     tokens = tokens * 10
 
-    latest_id = None  # where last round of search stopped 
-
     # for user 
     for city in cities:
+        latest_id = None  # where last round of search stopped 
+        count = 0 # how many users have been added in this city
         for i in range(len(tokens)):
             api = get_api(tokens, i)
             # find the users
-            job, latest_id = search_user(' ', city, api, rate_limit, latest_id)
+            job, latest_id, count = search_user(' ', city, api, rate_limit, latest_id, count)
             if job == True:
-                latest_id = None # reset the latest_id
                 print('NEW {c} is done.\n\n'.format(c = city))
                 break # next city
             else:
-                print(f'NEW token {i} has been used, max_id is {latest_id}.')
+                print(f'NEW token {i} has been used, max_id is {latest_id}, have added {count} users.')
     print("NEW \n\nUSER SEARCH COMPLETED.\n\n")
 
     time.sleep(600) # wait for data compaction
