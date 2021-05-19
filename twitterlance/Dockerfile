@@ -30,6 +30,12 @@ RUN crontab /etc/cron.d/cjob
 
 RUN mkdir -p /var/log/supervisor
 
+RUN echo "HTTP_PROXY=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
+RUN echo "HTTPS_PROXY=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
+RUN echo "http_proxy=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
+RUN echo "https_proxy=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
+RUN echo "no_proxy=couchdb,localhost,127.0.0.1,localaddress,172.16.0.0/12,.melbourne.rc.nectar.org.au,.storage.unimelb.edu.au,.cloud.unimelb.edu.au" | tee -a /etc/environment
+
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ENTRYPOINT /bin/sh -c "printenv | grep DJANGO | tee -a /etc/environment && supervisord"
