@@ -9,6 +9,11 @@ WORKDIR /code/
 ADD . /code/
 
 ENV DJANGO_SETTINGS_MODULE=twitterlance.settings
+ENV HTTP_PROXY=http://wwwproxy.unimelb.edu.au:8000/
+ENV HTTPS_PROXY=http://wwwproxy.unimelb.edu.au:8000/
+ENV http_proxy=http://wwwproxy.unimelb.edu.au:8000/
+ENV https_proxy=http://wwwproxy.unimelb.edu.au:8000/
+ENV no_proxy=couchdb,localhost,127.0.0.1,localaddress,172.16.0.0/12,.melbourne.rc.nectar.org.au,.storage.unimelb.edu.au,.cloud.unimelb.edu.au
 
 # Packages
 RUN apk update;
@@ -28,14 +33,8 @@ RUN chmod 0664 /etc/environment
 RUN touch /var/log/cron.log
 RUN crontab /etc/cron.d/cjob
 
+# Service launcher
 RUN mkdir -p /var/log/supervisor
-
-RUN echo "HTTP_PROXY=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
-RUN echo "HTTPS_PROXY=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
-RUN echo "http_proxy=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
-RUN echo "https_proxy=http://wwwproxy.unimelb.edu.au:8000/" | tee -a /etc/environment
-RUN echo "no_proxy=couchdb,localhost,127.0.0.1,localaddress,172.16.0.0/12,.melbourne.rc.nectar.org.au,.storage.unimelb.edu.au,.cloud.unimelb.edu.au" | tee -a /etc/environment
-
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ENTRYPOINT /bin/sh -c "printenv | grep DJANGO | tee -a /etc/environment && supervisord"
