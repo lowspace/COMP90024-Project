@@ -87,28 +87,24 @@ class UserViewSet(viewsets.ViewSet):
 
         res = couch.get('conclusions/user_rank')
         rank = []
-        cities = res.json().get('result', [])
+        cities = res.json().get('result', {})
         for city, scores in cities.items():
-            print(city)
-            for score in scores: 
+            for score in scores:
                 user = {
                     'name': score[0],
                     'score': score[1],
                     'city': city
-                }
-                if len(rank) == 0: 
-                    rank.append(user)
-                else: 
-                    for i in range(len(rank)):
-                        if score[1] > rank[i]['score']:
-                            rank.insert(i, user)
-                            break
+                } 
+                rank.append(user)
 
-        rank[0]['name'] = '🥇 ' + rank[0]['name']
-        rank[1]['name'] = '🥈 ' + rank[1]['name']
-        rank[2]['name'] = '🥉 ' + rank[2]['name']
+        rank.sort(key=lambda x : x['score'], reverse=True)
+ 
+        print(f'rank {rank}')               
+        if len(rank) > 0:
+            rank[0]['name'] = '🥇 ' + rank[0]['name']
+            rank[1]['name'] = '🥈 ' + rank[1]['name']
+            rank[2]['name'] = '🥉 ' + rank[2]['name']
         return Response(rank)
-
 class SportViewSet(viewsets.ViewSet):
 
     # GET analyser/sports/
@@ -327,17 +323,8 @@ class InitialiserViewSet(viewsets.ViewSet):
         if res.status_code == 500:
             return Response({'error': res.json()})
 
-        res = couch.get('jobs/couchdb')
-        if res.status_code == 200 and res.json().get('status') != 'ready':
-            return Response(res.json(), 403)
-        else: 
-            result = couch.migrate()
-            res = couch.get('jobs/couchdb')
-            doc = res.json()
-            doc['status'] = 'idle'
-            doc['result'] = result
-            print(doc)
-            response = couch.updatedoc('jobs/couchdb', doc)
-            return Response(response.json(), response.status_code)
+       
+        result = couch.migrate()
+        return Response({'resault': result})
 
 
