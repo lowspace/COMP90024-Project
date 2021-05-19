@@ -163,7 +163,7 @@ def run_update():
                 job = search_tweet(user, api, 400) # for each user, retrieve 200 tweets maximally for each 7 days
             elif datetime.timedelta(days = 7) < time_diff <= datetime.timedelta(days = 14):
                 job = search_tweet(user, api, 800) # for each user, retrieve 800 tweets maximally for each 14 days
-            else:
+            elif time_diff > datetime.timedelta(days = 14):
                 job = search_tweet(user, api, 3000)
             if job == True:
                 t2 = time.time()
