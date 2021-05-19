@@ -16,4 +16,4 @@ class Job(HourlyJob):
         if settings.DJANGO_NODENAME.split('.')[1] != '1':
             return
 
-        subprocess.Popen('spark-submit --master spark://spark:7077 --class endpoint /code/static/spark/sport.py', shell=True)
+        subprocess.Popen('spark-submit --master spark://spark:7077 --class endpoint /code/static/spark/user_rank.py', shell=True)

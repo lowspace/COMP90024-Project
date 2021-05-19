@@ -14,6 +14,7 @@ class Job(MinutelyJob):
     help = "Update Twitter."
 
     def do(self):
+        print('Update job')
         time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/update/')
         if res.status_code == 404: 
@@ -22,7 +23,8 @@ class Job(MinutelyJob):
         doc = res.json()
         if doc['status'] != 'ready':
             return
-        doc['status'] = 'running'
+        if res.status_code == 200 and len(res.get('rows', [])) == len(doc['nodes']):
+            doc['status'] = 'running'
         doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
         couch.updatedoc(f'jobs/update/', doc)
         # Run the job
@@ -38,6 +40,6 @@ class Job(MinutelyJob):
 
     def execute(self):
         try: 
-            do()
+            self.do()
         except Exception as e: 
-            sys.stderr.write(str(e))
+            print(str(e))

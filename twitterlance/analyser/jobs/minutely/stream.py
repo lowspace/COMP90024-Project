@@ -14,6 +14,7 @@ class Job(MinutelyJob):
     help = "Streaming Twitter."
 
     def do(self):
+        print('Streaming job')
         time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/stream/')
         if res.status_code == 404: 
@@ -44,6 +45,6 @@ class Job(MinutelyJob):
     def execute(self):
         try: 
             if '.' in settings.DJANGO_NODENAME and settings.DJANGO_NODENAME.split('.')[1] == '1':
-                do()
+                self.do()
         except Exception as e: 
-            sys.stderr.write(str(e))
+            print(str(e))

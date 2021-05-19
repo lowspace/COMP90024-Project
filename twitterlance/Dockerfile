@@ -1,4 +1,4 @@
-FROM python:3.9.5-alpine3.13
+FROM python:3.6-alpine3.12
 
 # Create a group and user to run our app
 RUN adduser -S appuser -G root
@@ -12,7 +12,7 @@ ENV DJANGO_SETTINGS_MODULE=twitterlance.settings
 
 # Packages
 RUN apk update;
-RUN apk add linux-headers gcc libc-dev curl openjdk8 geos musl-dev python3-dev;
+RUN apk add linux-headers gcc libc-dev curl openjdk8 geos musl-dev python3-dev bash vim;
 RUN pip install --no-cache --upgrade pip 
 RUN pip install --no-cache-dir -r requirements.txt
 
