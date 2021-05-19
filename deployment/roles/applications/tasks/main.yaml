@@ -83,15 +83,15 @@
 - debug:
     msg: '{{ result.stdout | default("Message empty.") }}' 
 
-- name: Wait for port 5984 of any IP to close active connections, don't start checking for 10 seconds
+- name: Wait for port 80 of any IP to close active connections, don't start checking for 10 seconds
   wait_for:
     host: 127.0.0.1
-    port: 81
+    port: 80
     delay: 10
     state: present
 
 - name: Init couchdb default databases
-  shell: curl -X PUT http://127.0.0.1:81/analyser/initialiser/couchdb/
+  shell: curl -X PUT http://127.0.0.1/analyser/initialiser/couchdb/
   register: result
   args:
     warn: no
