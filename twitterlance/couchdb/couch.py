@@ -152,7 +152,7 @@ def do_migrate():
     output.append(post('jobs/', {'_id': 'search', 'status': 'idle', 'new_users': 0, 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
     output.append(post('jobs/', {'_id': 'update', 'status': 'idle', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
     output.append(post('jobs/', {'_id': 'stream', 'status': 'idle', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
-    output.append(post('jobs/', {'_id': 'couchdb', 'status': 'ready', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
+    output.append(post('jobs/', {'_id': 'couchdb', 'status': 'done', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
     print(output)
 
     # Upload views
