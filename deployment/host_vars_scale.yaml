@@ -10,7 +10,7 @@ instance_flavor: uom.mse.1c4g
 # New volumes
 volumes:
   - vol_name: vol-4
-    vol_size: 90
+    vol_size: 120
 
 instance_names: 
   - instance4

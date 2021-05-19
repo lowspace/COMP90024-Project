@@ -1,6 +1,3 @@
-"""
-Every minute, the current instance will push a heartbeat to couchdb, showing it is alive. The docker service 1 will remove the disconnected nodes. 
-"""
 
 from django.conf import settings
 from django.core.cache import caches
@@ -8,11 +5,12 @@ from django_extensions.management.jobs import MinutelyJob
 from couchdb import couch
 import requests, sys
 
+# Every minute, the current instance will push a heartbeat to couchdb, showing it is alive. The docker service 1 will remove the disconnected nodes. 
 class Job(MinutelyJob):
     help = "Node heartbeats."
 
     def do(self):
-
+        print('Node heartbeat')
         # Add this instance to nodes list
         res = couch.get(f'nodes/{settings.DJANGO_NODENAME}')
         if res.status_code == 404: 
@@ -25,30 +23,35 @@ class Job(MinutelyJob):
                 doc['heartbeat'] = 1
             couch.updatedoc(f'nodes/{settings.DJANGO_NODENAME}', doc)
         
+        task_slot = settings.DJANGO_NODENAME.split('.')[1]
+        print(f'Node {task_slot} updates {doc}')
         # Remove disconnected
-        if settings.DJANGO_NODENAME.split('.')[1] != 1:
+        if task_slot != '1':
             return 
         
         to_remove = []
-        res = couch.get(f'nodes/_all_docs').json()
+        res = couch.get(f'nodes/_all_docs')
         if res.status_code == 200: 
-            rows = res['rows']
+            rows = res.json()['rows']
             for row in rows:
                 nodename = row['id']
                 try: 
-                    res = requests.get(nodename)
-                    if res.status_code != 200: 
-                        to_remove.append(nodename)
+                    res = requests.get(f'http://{nodename}')
                 except: 
+                    print(f'{nodename} cannot be connected.')
                     to_remove.append(nodename)
 
+        print(f'to_remove={to_remove}')
         for node in to_remove: 
             res = couch.head(f'nodes/{node}')
-            res = couch.delete(f'nodes/{node}', res.headers['ETag'])
+            rev = res.headers['ETag'].replace('\"', '')
+            print(f'rev={rev}')
+            res = couch.delete(f'nodes/{node}', rev)
+            print(res.json())
 
 
     def execute(self):
         try: 
-            do()
+            self.do()
         except Exception as e: 
-            sys.stderr.write(str(e))
+            print(str(e))

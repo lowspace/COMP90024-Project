@@ -40,7 +40,7 @@ res = couch.post(f'tokens/_find', body = query)
 token = res.json()['docs'][0]
 consumer_key = token["consumer_key"]
 consumer_secret = token["consumer_secret"]
-access_token = token["access_token"]
+access_token = token["access_token_key"]
 access_token_secret = token["access_token_secret"]
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -186,7 +186,7 @@ class MyStreamListener(tweepy.StreamListener):
         return True
 
 
-if __name__ == '__main__':
+def run():
 
     try:
         api.verify_credentials()

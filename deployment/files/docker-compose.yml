@@ -47,7 +47,7 @@ services:
         constraints: [node.labels.couchdb == true ]
 
   django:
-    image: "yangzy3/twitterlance"
+    image: yangzy3/twitterlance:latest
     ports:
       - "81:80"
     environment: 

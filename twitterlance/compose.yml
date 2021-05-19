@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  django:
+    image: yangzy3/twitterlance:latest
+    ports:
+      - "81:80"
+    environment: 
+      DJANGO_NODENAME: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+configs:
+  couchdb_conf:
+    file: ./couchdb.ini
+  

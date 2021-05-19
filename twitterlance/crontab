@@ -1,0 +1,4 @@
+SHELL=/bin/sh
+* * * * * printenv | grep DJANGO > /code/cronenv
+* * * * * python /code/manage.py runjobs minutely > /code/minutely.log 2>&1
+0 * * * * python /code/manage.py runjobs hourly > /code/hourly.log 2>&1
