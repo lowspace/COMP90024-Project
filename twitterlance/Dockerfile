@@ -37,4 +37,4 @@ RUN crontab /etc/cron.d/cjob
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-ENTRYPOINT /bin/sh -c "printenv | grep DJANGO | tee -a /etc/environment && supervisord"
+ENTRYPOINT /bin/sh -c "printenv | tee -a /etc/environment && supervisord"

@@ -15,7 +15,7 @@ class Job(MinutelyJob):
 
     def do(self):
         print('Update job')
-        time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
+        time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/update/')
         if res.status_code == 404: 
             print("Have not found the search file in jobs database.")

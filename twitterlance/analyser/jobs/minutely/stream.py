@@ -15,7 +15,7 @@ class Job(MinutelyJob):
 
     def do(self):
         print('Streaming job')
-        time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
+        time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/stream/')
         if res.status_code == 404: 
             print("Have not found the stream doc in jobs database.")
