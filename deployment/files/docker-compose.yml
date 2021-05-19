@@ -47,12 +47,11 @@ services:
         constraints: [node.labels.couchdb == true ]
 
   django:
-    image: "yangzy3/twitterlance"
+    image: yangzy3/twitterlance:latest
     ports:
       - "81:80"
     environment: 
       DJANGO_NODENAME: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
-    entrypoint: /bin/bash -c "printenv | grep DJANGO | tee -a /etc/environment && pip3 install supervisor==4.2.0 && supervisord"
     deploy:
       mode: replicated
       replicas: 1
