@@ -52,6 +52,7 @@ services:
       - "81:80"
     environment: 
       DJANGO_NODENAME: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
+    entrypoint: /bin/bash -c "printenv | grep DJANGO | tee -a /etc/environment && pip3 install supervisor==4.2.0 && supervisord"
     deploy:
       mode: replicated
       replicas: 1

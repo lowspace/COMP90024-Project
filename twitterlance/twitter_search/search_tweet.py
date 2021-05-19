@@ -191,7 +191,7 @@ if __name__ == '__main__':
             previous_update_timestamp = i['update_timestamp']
             previous_update_timestamp = datetime.datetime.strptime(previous_update_timestamp, '%a %b %d %H:%M:%S %z %Y')
             previous_update_timestamp = previous_update_timestamp.astimezone(tz=None).strftime('%Y-%m-%d %H:%M:%S')
-            if datetime.datetime.now() - datetime.datetime.fromisoformat(previous_update_timestamp) > datetime.timedelta(days=7):
+            if datetime.datetime.now() - datetime.datetime.strptime(previous_update_timestamp, '%Y-%m-%d %H:%M:%S') > datetime.timedelta(days=7):
                 users.append(i) # update the timeline
                 continue
         t1 = time.time()

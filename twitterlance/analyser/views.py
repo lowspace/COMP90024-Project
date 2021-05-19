@@ -262,15 +262,15 @@ class JobsViewSet(viewsets.ViewSet):
 
     def start_search(self, request): 
         res = couch.head('')
+        print(res.status_code)
         if res.status_code == 500:
             return Response({'error': res.json()})
-
-        new_users = request.data.get('new_users') if request.data is not None else None
-        if isinstance(new_users, int): 
+        print(request.data)
+        new_users = request.data.get('new_users', '1') if request.data is not None else None
+        try:
             new_users = int(new_users)
-        else: 
-            return Response({'error': 'Parameter new_users is not provided'}, 403)
-
+        except: 
+            return Response({'error': 'Parameter new_users is invalid'}, 403)
         res = couch.get('jobs/search')
         if res.status_code == 200 and res.json().get('status') != 'idle':
             return Response(res.json(), 403)
@@ -279,7 +279,7 @@ class JobsViewSet(viewsets.ViewSet):
             doc['status'] = 'ready'
             doc['new_users'] = new_users
             doc['result'] = 'Job Submitted.'
-            response = couch.upsertdoc('jobs/search', doc)
+            response = couch.updatedoc('jobs/search', doc)
             return Response(response.json(), response.status_code)
 
     def start_stream(self):
@@ -294,7 +294,7 @@ class JobsViewSet(viewsets.ViewSet):
             doc = res.json()
             doc['status'] = 'ready'
             doc['result'] = 'Job Submitted.'
-            response = couch.upsertdoc('jobs/stream', doc)
+            response = couch.updatedoc('jobs/stream', doc)
             return Response(response.json(), response.status_code)
     
     def start_update(self):
@@ -309,7 +309,7 @@ class JobsViewSet(viewsets.ViewSet):
             doc = res.json()
             doc['status'] = 'ready'
             doc['result'] = 'Job Submitted.'
-            response = couch.upsertdoc('jobs/update', doc)
+            response = couch.updatedoc('jobs/update', doc)
             return Response(response.json(), response.status_code)
 
 class InitialiserViewSet(viewsets.ViewSet):
@@ -337,7 +337,7 @@ class InitialiserViewSet(viewsets.ViewSet):
             doc['status'] = 'idle'
             doc['result'] = result
             print(doc)
-            response = couch.upsertdoc('jobs/couchdb', doc)
+            response = couch.updatedoc('jobs/couchdb', doc)
             return Response(response.json(), response.status_code)
 
 

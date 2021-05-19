@@ -7,7 +7,7 @@ from django.core.cache import caches
 from django_extensions.management.jobs import MinutelyJob
 from couchdb import couch
 from twitter_search import search_new
-import requests, time, random
+import time, random
 
 
 class Job(MinutelyJob):
@@ -22,7 +22,11 @@ class Job(MinutelyJob):
         doc = res.json()
         if doc['status'] != 'ready':
             return
-        doc['status'] = 'running'
+
+        res = couch.get('nodes/_all_docs').json()
+        if res.status_code == 200 and len(res.get('rows', [])) == len(doc['nodes']):
+            doc['status'] = 'running'
+            
         doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
         couch.updatedoc(f'jobs/search/', doc)
         # Run the job
