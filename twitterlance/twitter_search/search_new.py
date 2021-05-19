@@ -26,14 +26,14 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
         2. save the uid locally (for now)
     """
     ulist = [] # list of uid
-    res = couch.get(f'users/_design/cities/_view/{city}') # get the id list of this city
+    res = couch.get(f'users/_all_docs') # get the id list of all
     res = res.json()['rows']
     for row in res:
         if row["id"] in ulist:
             continue
         else:
             ulist.append(row["id"])
-    count = 0 
+    count = 0 # how many brand new users have benn added
     city_dict = couch.geocode() # get city {city_name: geocode, }
     geocode = city_dict[city] # get geocode
     if not latest_id: # latest_id = None
@@ -41,10 +41,7 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
     else: # latest_id != None
         first = toJson(api.search(q = query, geocode = geocode, max_id = latest_id, count=66))
     # print('NEW first', first)
-    if len(first) == 0 and count != 0: # no tweet 
-        print('NEW something wrong')
-        return True, None
-    elif len(first) == 0 and count == 0:
+    if len(first) == 0 and count == 0:
         print('NEW query contains nothing.')
         search_user('covid', city, api, latest_id) # can it work well??
         return False, None
@@ -60,26 +57,40 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None):
                 print(f'NEW Have retrieved {count}/{rate_limit}, but unable to continue in this token.')
                 return False, maxid # to be continued
         if len(tweets) != 0 and count < rate_limit: # search query return tweets
-            for tweet in tweets:
+            for tweet in tweets: # add brand new users to save list
+                new_users = []
                 if tweet['user']['id_str'] not in ulist:
                     ulist.append(tweet['user']['id_str'])
-                    count += 1 
                     user = dict()
                     uid = tweet['user']['id_str']
                     user['_id'] = uid
                     user['city'] = city
-                    print('NEW update is done for {id}'.format(id = uid))
-                    # transform datetime into Twitter format
-                    user['update_timestamp'] = couch.now() # assign the update timeline timestamp
-                    couch.put(f'users/{uid}', user) # save the user 2 CouchDB 
-                    print('NEW user is', user, count)
-                    t2 = time.time()
-                    print('NEW Progress {c}/{t}.'.format(c = count, t = rate_limit))
-                    print('NEW Have cost {t:.3f} seconds; average cost time {s:.3f} seconds'.format(t = t2 - t1, s = (t2-t1)/count))
-                    print('NEW Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60))  
-                    if count >= rate_limit: # each city get rate_limit unique uid
+                    user['update_timestamp'] = None # assign None to the timestamp
+                    new_users.append(user)
+                    print('NEW new user is', user)
+            retries = 0
+            success = False
+            while retries < 5:
+                try:
+                    res = couch.bulk_save('users', new_users)
+                    if res.status_code == 201: # ensure save into couchdb
+                        success = True
                         break
-            maxid = str(tweets[-1]['id']-1)             
+                    else:
+                        print(f'NEW Retries {retries}, {res.status_code} at user_search.')
+                except Exception as e: # connection error
+                    print(f'NEW Retries {retries}, user saving progress: {str(e)}')
+                    time.sleep(10)
+                retries += 1
+            if success == False:
+                print("NEW user search failed at connection error at {maxid}.")
+            else:
+                t2 = time.time()
+                count += len(new_users)
+                print('NEW Progress {c}/{t}.'.format(c = count, t = rate_limit))
+                print('NEW Have cost {t:.3f} seconds; average cost time {s:.3f} seconds'.format(t = t2 - t1, s = (t2-t1)/count))
+                print('NEW Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60))  
+                maxid = str(tweets[-1]['id']-1)             
         else: # search query return None
             print(f'NEW Have retrieved {count}/{rate_limit}, but unable to query more.')
             break
