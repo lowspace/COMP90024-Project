@@ -37,8 +37,8 @@ def search_tweet(user: dict, api, timeline_limit= 400):
     tweets = [] # return object
     try:
         new_tweets = toJson(api.user_timeline(user_id = uid, count = 200))
-    except:
-        print("NEW First trial failed, we can try another token.")
+    except Exception as e:
+        print(f"NEW First trial failed, we can try another token: {str(e)}")
         return False
 
     while True: # get the tweets
@@ -113,12 +113,15 @@ def assign_users():
     # Get node index
     index = -1
     rows = couch.get('nodes/_all_docs').json()['rows']
+    print(f'Nodes: {rows}')
     if rows is None:
         index = 0
     else: 
-        for row in rows: 
+        for i in range(len(rows)): 
+            row = rows[i]
+            print(f'{row["id"]} == {settings.DJANGO_NODENAME}')
             if row['id'] == settings.DJANGO_NODENAME:
-                index += 1
+                index = i
     workers = len(rows) if rows is not None else 1
 
     # assign node to corresponding block 
@@ -145,6 +148,8 @@ def run_update():
 
     users, index = assign_users()
 
+    print(f'{len(users)}:{index}')
+
     # for timelines of users
     t0 = time.time()
     count = 0
@@ -155,17 +160,20 @@ def run_update():
             api = get_api(tokens, i) 
             # find the users
             previous_timestamp = user['update_timestamp']
-            previous_timestamp = datetime.datetime.strptime(previous_timestamp, '%a %b %d %H:%M:%S %z %Y').replace(tzinfo=datetime.timezone.utc) 
-            now_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
-            time_diff = now_timestamp - previous_timestamp
-            if datetime.timedelta(days = 5) < time_diff <= datetime.timedelta(days = 7):
-                job = search_tweet(user, api, 400) # for each user, retrieve 200 tweets maximally for each 7 days
-            elif datetime.timedelta(days = 7) < time_diff <= datetime.timedelta(days = 14):
-                job = search_tweet(user, api, 800) # for each user, retrieve 800 tweets maximally for each 14 days
-            elif time_diff > datetime.timedelta(days = 14):
+            if previous_timestamp == None:
                 job = search_tweet(user, api, 3000)
-            else: 
-                break
+            else:
+                previous_timestamp = datetime.datetime.strptime(previous_timestamp, '%a %b %d %H:%M:%S %z %Y').replace(tzinfo=datetime.timezone.utc) 
+                now_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+                time_diff = now_timestamp - previous_timestamp
+                if datetime.timedelta(days = 5) < time_diff <= datetime.timedelta(days = 7):
+                    job = search_tweet(user, api, 400) # for each user, retrieve 200 tweets maximally for each 7 days
+                elif datetime.timedelta(days = 7) < time_diff <= datetime.timedelta(days = 14):
+                    job = search_tweet(user, api, 800) # for each user, retrieve 800 tweets maximally for each 14 days
+                elif time_diff > datetime.timedelta(days = 14):
+                    job = search_tweet(user, api, 3000)
+                else: 
+                    break
             if job == True:
                 t2 = time.time()
                 print('UPDATE {u} in {c} is done.'.format(u = user["_id"], c = user['city']))

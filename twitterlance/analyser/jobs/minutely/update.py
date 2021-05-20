@@ -23,12 +23,18 @@ class Job(MinutelyJob):
         doc = res.json()
         if doc['status'] != 'ready':
             return
-        if res.status_code == 200 and len(res.json().get('rows', [])) == len(doc['nodes']):
-            doc['status'] = 'running'
+
+        all_nodes = couch.get('nodes/_all_docs').json().get('rows', [])
+
         if settings.DJANGO_NODENAME not in doc['nodes']:
             doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
+        
+        if len(all_nodes) == len(doc['nodes']):
+            doc['status'] = 'running'
+
         couch.updatedoc(f'jobs/update/', doc)
-        # Run the job
+
+        print('Running Update...')
         search_update.run_update()
         # Job done on this node
         doc = couch.get(f'jobs/update/').json()

@@ -1,4 +1,4 @@
-SHELL=/bin/sh
+SHELL=/bin/bash
 * * * * * printenv > /code/cronenv
 * * * * * python /code/manage.py runjob heartbeat >> /code/heartbeat.log 2>> /code/error.log
 * * * * * python /code/manage.py runjob search >> /code/search.log 2>> /code/error.log

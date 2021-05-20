@@ -11,7 +11,7 @@ import time, random
 
 
 class Job(MinutelyJob):
-    help = "Search Twitter."
+    help = "Search Twitter Users (use 'update' for tweets)."
 
     def do(self):
         print('Search Job')
@@ -21,7 +21,6 @@ class Job(MinutelyJob):
             print("Have not found the search file in jobs database.")
             return 
         
-        print(f'Search Job {res.status_code}')
         doc = res.json()
         status = doc.get('status', 'empty')
         print(f'Status {status}')
@@ -32,12 +31,8 @@ class Job(MinutelyJob):
         if settings.DJANGO_NODENAME not in doc['nodes']:
             doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
 
-        # Check if all nodes are running
-        job_nodes = doc['nodes']
-        all_nodes = couch.get('nodes/_all_docs').json().get('rows', [])
-        print(f'all nodes: {all_nodes} job nodes: {job_nodes}')
-        if len(job_nodes) == len(all_nodes):
-            doc['status'] = 'running'
+        # only allow 1 node to run
+        doc['status'] = 'running'
         
         print(f'Update job status: {doc}')
         couch.updatedoc(f'jobs/search/', doc)

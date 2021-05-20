@@ -10,7 +10,7 @@ class Job(MinutelyJob):
     help = "Node heartbeats."
 
     def do(self):
-        print('Node heartbeat')
+
         # Add this instance to nodes list
         res = couch.get(f'nodes/{settings.DJANGO_NODENAME}')
         if res.status_code == 404: 
@@ -21,10 +21,11 @@ class Job(MinutelyJob):
                 doc['heartbeat'] += 1
             else: 
                 doc['heartbeat'] = 1
+            doc['updated_at'] = couch.now()
             couch.updatedoc(f'nodes/{settings.DJANGO_NODENAME}', doc)
         
         task_slot = settings.DJANGO_NODENAME.split('.')[1]
-        print(f'Node {task_slot} updates {doc}')
+
         # Remove disconnected
         if task_slot != '1':
             return 
@@ -41,13 +42,11 @@ class Job(MinutelyJob):
                     print(f'{nodename} cannot be connected.')
                     to_remove.append(nodename)
 
-        print(f'to_remove={to_remove}')
+
         for node in to_remove: 
             res = couch.head(f'nodes/{node}')
             rev = res.headers['ETag'].replace('\"', '')
-            print(f'rev={rev}')
             res = couch.delete(f'nodes/{node}', rev)
-            print(res.json())
 
 
     def execute(self):
