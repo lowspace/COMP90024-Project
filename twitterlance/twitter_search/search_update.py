@@ -70,7 +70,7 @@ def search_tweet(user: dict, api, timeline_limit= 400):
             tweetres = couch.bulk_save('tweets', tweets)
             if tweetres.status_code in [200, 201, 202]: # ensure save into couchdb
                 user['update_timestamp'] = couch.now() # update timestamp
-                userres = couch.updatedoc(f'users/{uid}', user)
+                userres = couch.put(f'users/{uid}', user)
                 if userres.status_code in [200, 201, 202]: 
                     print('NEW the length of the timeline is {l}'.format(l = len(tweets)))
                     print(f'NEW done at the {retries} retries.')
@@ -105,7 +105,7 @@ def assign_users():
     except Exception as e:
         print(f'UPDATE Unable to get ulist due to {e}.')
         print('UPDATE the machine will wait for another 10 mins, then try again.')
-        time.sleep(600) # wait for data compaction
+        time.sleep(200) # wait for data compaction
         for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
             users.append(row['doc'])
         print('UPDATE Success to get ulist after waiting 10 mins.')
@@ -170,9 +170,9 @@ def run_update():
                 t2 = time.time()
                 print('UPDATE {u} in {c} is done.'.format(u = user["_id"], c = user['city']))
                 print('UPDATE success to update {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
-                print('UPDATE Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t1)/count))
+                print('UPDATE Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t0)/count))
                 print('UPDATE Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
-                print('UPDATE Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t1)/count/60, i = index))
+                print('UPDATE Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t0)/count/60, i = index))
                 print('UPDATE \n')
                 break # next user
             else:

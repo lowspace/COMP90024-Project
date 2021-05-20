@@ -153,7 +153,7 @@ def search_tweet(user: dict, api, timeline_limit= 3000):
             tweetres = couch.bulk_save('tweets', tweets)
             if tweetres.status_code in [200, 201, 202]: # ensure save into couchdb
                 user['update_timestamp'] = couch.now() # update timestamp
-                userres = couch.updatedoc(f'users/{uid}', user)
+                userres = couch.put(f'users/{uid}', user)
                 if userres.status_code in [200, 201, 202]: 
                     global total_num_retrieve_tweets
                     total_num_retrieve_tweets += len(tweets)
@@ -161,7 +161,7 @@ def search_tweet(user: dict, api, timeline_limit= 3000):
                     print(f'NEW done at the {retries} retries.')
                     return True
                 else:
-                    print(f'NEW Retries {retries}, {userres.status_code} at userres.')
+                    print(f'NEW Retries {retries}, {userres.status_code} at userres: {userres.text}')
             else:
                 print(f'NEW Retries {retries}, {tweetres.status_code} at tweetres.')
         except Exception as e: # connection error
@@ -190,7 +190,7 @@ def assign_users():
     except Exception as e:
         print(f'NEW Unable to get ulist due to {e}.')
         print('NEW the machine will wait for another 10 mins, then try again.')
-        time.sleep(600) # wait for data compaction
+        time.sleep(200) # wait for data compaction
         for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
             users.append(row['doc'])
         print("NEW Success to get ulist after waiting 10 mins.")
@@ -245,7 +245,7 @@ def run_search(i:int):
                 print(f'NEW token {i} has been used, max_id is {latest_id}, have added {count} users.')
     print("NEW \n\nUSER SEARCH COMPLETED.\n\n")
 
-    time.sleep(600) # wait for data compaction
+    time.sleep(200) # wait for data compaction
 
     users, index = assign_users()
 
@@ -264,9 +264,9 @@ def run_search(i:int):
                 print('NEW Have retrieved {c:,} tweets.'.format(c = total_num_retrieve_tweets))
                 print('NEW {u} in {c} is done.'.format(u = user["_id"], c = user['city']))
                 print('NEW success to save {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
-                print('NEW Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t1)/count))
+                print('NEW Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t0)/count))
                 print('NEW Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
-                print('NEW Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t1)/count/60, i = index))
+                print('NEW Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t0)/count/60, i = index))
                 print('NEW \n')
                 break # next user
             else:
