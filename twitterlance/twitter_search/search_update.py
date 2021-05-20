@@ -1,6 +1,6 @@
 import tweepy
 import couchdb.couch as couch
-import time, datetime
+import time, datetime, random
 from django.conf import settings
 
 
@@ -145,6 +145,7 @@ def run_update():
     res = couch.post(f'tokens/_find', body = query)
     tokens = res.json()['docs']
     tokens = tokens * 10
+    random.shuffle(tokens)
 
     users, index = assign_users()
 

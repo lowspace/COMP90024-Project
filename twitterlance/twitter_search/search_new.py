@@ -1,6 +1,6 @@
 import tweepy
 import couchdb.couch as couch
-import time
+import time, random
 from django.conf import settings
 
 global total_num_retrieve_tweets
@@ -110,6 +110,7 @@ def run_search(i:int):
     res = couch.post(f'tokens/_find', body = query)
     tokens = res.json()['docs']
     tokens = tokens * 10
+    random.shuffle(tokens)
 
     # for user 
     for city in cities:
