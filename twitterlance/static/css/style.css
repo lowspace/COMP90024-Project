@@ -49,7 +49,7 @@ div {
   bottom: 105px;
 }
 .sidenav .sidenavin ul .Manage a {
-  font-size: 0.85vw;
+  font-size: 1vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
@@ -58,7 +58,7 @@ div {
   bottom: 70px;
 }
 .sidenav .sidenavin ul .haproxy a {
-  font-size: 0.85vw;
+  font-size: 1vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
@@ -67,7 +67,7 @@ div {
   bottom: 35px;
 }
 .sidenav .sidenavin ul .spark a {
-  font-size: 0.85vw;
+  font-size: 1vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
@@ -76,14 +76,14 @@ div {
   bottom: 0;
 }
 .sidenav .sidenavin ul .couchdb a {
-  font-size: 0.85vw;
+  font-size: 1vw;
   padding: 10px 0 10px 0;
   color: #094183;
 }
 .sidenav .sidenavin ul a {
   padding: 20px 0 20px 0;
   text-decoration: none;
-  font-size: 1vw;
+  font-size: 1.4vw;
   font-weight: 150;
   color: #7A7A7A;
   display: block;
@@ -108,27 +108,32 @@ div {
  */
 .home-right {
   margin: 0.5%;
-  height: 30%;
+  height: 20vw;
   border-radius: 10px;
-  background-image: url("../img/twitter-marketing.jpg");
+  background-image: url("../img/twitter-3.jpg");
+  background-blend-mode: lighten;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  color: #666666;
-  padding-top: 15%;
+  color: #ffffff;
+  padding-top: 5%;
   text-align: center;
   box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
   position: relative;
 }
 .home-right h1 {
   font-family: "Open Sans", sans-serif;
-  font-size: 77pt;
-  margin: 0 auto;
+  font-size: 6vw;
+  font-weight: 800;
+  padding-left: 10%;
+  color: #d4eaf8;
 }
-.home-right h2 {
+.home-right h3 {
   font-family: "Open Sans", sans-serif;
-  font-size: 50pt;
-  margin: 0 auto;
+  font-size: 2vw;
+  font-weight: 600;
+  padding-left: 10%;
+  color: #d4eaf8;
 }
 .home-right .help {
   position: absolute;

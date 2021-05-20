@@ -130,10 +130,10 @@ def do_migrate():
     cities = dict (
         Adelaide= "-34.9998826,138.3309816,40km",
         Sydney = "-33.8559799094,151.20666584,50km",
-        Melbourne = "-37.8142385,144.9622775,40km" ,
-        Perth = "-32.0391738, 115.6813561, 40km",
+        Melbourne = "-37.8142385,144.9622775,40km",
+        Perth = "-32.0391738,115.6813561,40km",
         Canberra ="-35.2812958,149.124822,40km",
-        Brisbane =  "-27.3812533, 152.713015, 40km",
+        Brisbane = "-27.3812533,152.713015,40km",
     )
 
     # Add necessary data
@@ -152,7 +152,7 @@ def do_migrate():
     output.append(post('jobs/', {'_id': 'search', 'status': 'idle', 'new_users': 0, 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
     output.append(post('jobs/', {'_id': 'update', 'status': 'idle', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
     output.append(post('jobs/', {'_id': 'stream', 'status': 'idle', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
-    output.append(post('jobs/', {'_id': 'couchdb', 'status': 'ready', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
+    output.append(post('jobs/', {'_id': 'couchdb', 'status': 'done', 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
     print(output)
 
     # Upload views

@@ -15,7 +15,7 @@ class Job(MinutelyJob):
 
     def do(self):
         print('Update job')
-        time.sleep(random.randint(1, 30))  # Delay to avoid the possibility of conflicts
+        time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/update/')
         if res.status_code == 404: 
             print("Have not found the search file in jobs database.")
@@ -23,9 +23,10 @@ class Job(MinutelyJob):
         doc = res.json()
         if doc['status'] != 'ready':
             return
-        if res.status_code == 200 and len(res.get('rows', [])) == len(doc['nodes']):
+        if res.status_code == 200 and len(res.json().get('rows', [])) == len(doc['nodes']):
             doc['status'] = 'running'
-        doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
+        if settings.DJANGO_NODENAME not in doc['nodes']:
+            doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
         couch.updatedoc(f'jobs/update/', doc)
         # Run the job
         search_update.run_update()

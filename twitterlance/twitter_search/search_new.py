@@ -1,16 +1,16 @@
 import tweepy
 import couchdb.couch as couch
 import time
-
+from django.conf import settings
 
 global total_num_retrieve_tweets
 total_num_retrieve_tweets = 0
 
 def toJson(tweets):
-    tweets = []
+    tweet = []
     for i in tweets:
-        tweets.append(i._json)
-    return tweets
+        tweet.append(i._json)
+    return tweet
 
 def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None, count = 0):
     """
@@ -64,7 +64,7 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None, c
                     user['city'] = city
                     user['update_timestamp'] = None # assign None to the timestamp
                     new_users.append(user)
-                    print('NEW new user is', user)
+                   #print('NEW new user is', user)
             retries = 0
             success = False
             while retries < 5:
@@ -85,8 +85,8 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None, c
                 t2 = time.time()
                 count += len(new_users)
                 print('NEW Progress {c}/{t}.'.format(c = count, t = rate_limit))
-                print('NEW Have cost {t:.3f} seconds; average cost time {s:.3f} seconds'.format(t = t2 - t1, s = (t2-t1)/count))
-                print('NEW Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60))  
+                print('NEW Have cost {t:.3f} seconds; average cost time {s:.3f} seconds'.format(t = t2 - t1, s = (t2-t1)/count if count != 0 else 0))
+                print('NEW Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60 if count != 0 else 0))  
                 maxid = str(tweets[-1]['id']-1)             
         else: # search query return None
             print(f'NEW Have retrieved {count}/{rate_limit}, but unable to query more.')
@@ -151,7 +151,7 @@ def search_tweet(user: dict, api, timeline_limit= 3000):
     while retries < 5:
         try:
             tweetres = couch.bulk_save('tweets', tweets)
-            if tweetres.status_code == 201: # ensure save into couchdb
+            if tweetres.status_code in [200, 201, 202]: # ensure save into couchdb
                 user['update_timestamp'] = couch.now() # update timestamp
                 userres = couch.updatedoc(f'users/{uid}', user)
                 if userres.status_code in [200, 201, 202]: 
