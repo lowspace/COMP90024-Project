@@ -14,24 +14,25 @@ class Job(MinutelyJob):
     help = "Streaming Twitter."
 
     def do(self):
-        print('Streaming job')
         time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/stream/')
         if res.status_code == 404: 
             print("Have not found the stream doc in jobs database.")
             return 
         doc = res.json()
-        if doc.get('status', '') != 'ready':
-            return
+
+        status = doc.get('status', '')
+        print(f'Stream job {status}')
+
+        if status != 'ready':
+            return 
+
         doc['status'] = 'running'
         doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
-        couch.updatedoc(f'jobs/stream/', doc)
-        # Run the job
-        rate_limit = doc['new_users']
-        try:
-            rate_limit = int(rate_limit)
-        except:
-            rate_limit = 1
+
+        res = couch.put(f'jobs/stream/', doc)
+        print(f'Updating statsus result {res.text}')
+        
         stream.run()
         # Job done on this node
         doc = couch.get(f'jobs/stream/').json()

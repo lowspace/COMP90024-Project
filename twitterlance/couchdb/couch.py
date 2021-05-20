@@ -20,6 +20,9 @@ class ExceptionResponse:
         else: 
             return {'error': self.body}
 
+    def text(self):
+        return self.body
+
 # Basic GET request. path is the url after base_url
 def get(path='', body=''):
     try:
