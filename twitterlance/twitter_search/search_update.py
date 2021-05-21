@@ -38,7 +38,7 @@ def search_tweet(user: dict, api, timeline_limit= 400):
     try:
         new_tweets = toJson(api.user_timeline(user_id = uid, count = 200))
     except Exception as e:
-        print(f"NEW First trial failed, we can try another token: {str(e)}")
+        print(f"UPDATE First trial failed, we can try another token: {str(e)}")
         return False
 
     while True: # get the tweets
@@ -50,13 +50,13 @@ def search_tweet(user: dict, api, timeline_limit= 400):
                 tweet = tweet_2_dict(tweet, city) # convert tweet to be structured
                 tweets.append(tweet)
             if len(tweets) >= timeline_limit: # some users have a large timeline
-                print("NEW for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
+                print("UPDATE for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
                 break
             try:
                 new_tweets = api.user_timeline(user_id = uid, count = 200, max_id = maxid)
                 new_tweets = toJson(new_tweets)
             except:
-                print("NEW Error occurs in the progress at tid, {t} of uid,{u}".format(t = maxid, u = uid))
+                print("UPDATE Error occurs in the progress at tid, {t} of uid,{u}".format(t = maxid, u = uid))
                 return False # move to next token
         else:
             for tweet in new_tweets:
@@ -72,18 +72,18 @@ def search_tweet(user: dict, api, timeline_limit= 400):
                 user['update_timestamp'] = couch.now() # update timestamp
                 userres = couch.put(f'users/{uid}', user)
                 if userres.status_code in [200, 201, 202]: 
-                    print('NEW the length of the timeline is {l}'.format(l = len(tweets)))
-                    print(f'NEW done at the {retries} retries.')
+                    print('UPDATE the length of the timeline is {l}'.format(l = len(tweets)))
+                    print(f'UPDATE done at the {retries} retries.')
                     return True
                 else:
-                    print(f'NEW Retries {retries}, {userres.status_code} at userres.')
+                    print(f'UPDATE Retries {retries}, {userres.status_code} at userres.')
             else:
-                print(f'NEW Retries {retries}, {tweetres.status_code} at tweetres.')
+                print(f'UPDATE Retries {retries}, {tweetres.status_code} at tweetres.')
         except Exception as e: # connection error
-            print(f'NEW Retries {retries}, tweets saving progress: {str(e)}')
+            print(f'UPDATE Retries {retries}, tweets saving progress: {str(e)}')
             time.sleep(10)
         retries += 1
-    print("NEW search tweet failed at connection error at the last.")
+    print("UPDATE search tweet failed at connection error at the last.")
     return False
 
 def get_api(tokens, i): 
