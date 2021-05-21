@@ -22,7 +22,6 @@ class Job(MinutelyJob):
         doc = res.json()
 
         status = doc.get('status', '')
-        print(f'Stream job {status}')
 
         if status != 'ready':
             return 
@@ -31,7 +30,7 @@ class Job(MinutelyJob):
         doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
 
         res = couch.put(f'jobs/stream/', doc)
-        print(f'Updating statsus result {res.text}')
+        print(f'Stream starting...')
         
         stream.run()
         # Job done on this node
