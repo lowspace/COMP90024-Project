@@ -125,7 +125,7 @@ div {
   font-family: "Open Sans", sans-serif;
   font-size: 6vw;
   font-weight: 800;
-  padding-left: 10%;
+  padding-left: 20%;
   color: #d4eaf8;
 }
 .home-right h3 {
@@ -137,8 +137,8 @@ div {
 }
 .home-right .help {
   position: absolute;
-  top: 95%;
-  right: 2%;
+  top: 90%;
+  right: 1%;
   height: auto;
   width: auto;
 }
@@ -155,7 +155,7 @@ div {
 }
 .job-control {
   width: 99%;
-  margin: 3% 0.5% 0.5% 0.5%;
+  margin: 1% 0.5% 0.5% 0.5%;
   height: auto;
   color: #4b4b4b;
   background-color: #ffffff;
@@ -198,9 +198,10 @@ div {
   height: auto;
   font-size: 2vw;
   width: 100%;
+  padding: 30px 0;
 }
 .about-right .frame-detail {
-  margin: 0 5px 20px 5px;
+  margin: 0 5px 0 5px;
   padding: 20px;
   height: auto;
   color: #4b4b4b;
@@ -219,7 +220,7 @@ div {
 }
 .about-right .member {
   margin: 0 0 0.5% 0;
-  padding: 20px;
+  padding: 0;
   width: 100%;
   height: 50%;
   display: table;
@@ -369,3 +370,4 @@ div {
 .statistic-right .show {
   height: 100% !important;
 }
+/*# sourceMappingURL=style.css.map */
