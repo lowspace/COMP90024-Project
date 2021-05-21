@@ -14,7 +14,6 @@ class Job(MinutelyJob):
     help = "Search Twitter Users (use 'update' for tweets)."
 
     def do(self):
-        print('Search Job')
         time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/search/')
         if res.status_code == 404: 
@@ -27,7 +26,7 @@ class Job(MinutelyJob):
         if status != 'ready':
             return  
 
-        print('Adding to the nodes list...')
+        print('Search starting...')
         if settings.DJANGO_NODENAME not in doc['nodes']:
             doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
 
