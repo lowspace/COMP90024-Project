@@ -8,11 +8,11 @@ Team: 39
 
 | Name       | Avatar | Student ID | Email                          | City      | Responsibility                                |
 |------------|--------|------------|--------------------------------|-----------|-----------------------------------------------|
-| Zihao Yang |![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/zhyhead.png)        | 1252410    | yangzy3@student.unimelb.edu.au | Melbourne | Backend, Ansible, Docker, CouchDB, Spark      |
-| Zihao Hu   |![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/zhhhead.png)        | 977716     | zihao1@student.unimelb.edu.au  | Yichun    | Twitter Search, Backend, CouchDB View         |
-| Yuqi Zhang | ![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/yqzhead.png)       | 777603     | yuqiz2@student.unimelb.edu.au  | Tianjin   | Frontend Charts, Twitter Search, CouchDB View |
-| Xin Li     |   ![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/xlhead.png)     | 1029029    | xin5@student.unimelb.edu.au    | Melbourne | Frontend Maps, Data Analysis, CouchDB View    |
-| Wei Li     |  ![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/wlhead.png)      | 956833     | liwl1@student.unimelb.edu.au   | Chengdu   | Twitter Stream, Overall Frontend, Ansible     |
+| Zihao Yang |![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/zhyhead.png=100x100)        | 1252410    | yangzy3@student.unimelb.edu.au | Melbourne | Backend, Ansible, Docker, CouchDB, Spark      |
+| Zihao Hu   |![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/zhhhead.png=100x100)        | 977716     | zihao1@student.unimelb.edu.au  | Yichun    | Twitter Search, Backend, CouchDB View         |
+| Yuqi Zhang | ![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/yqzhead.png=100x100)       | 777603     | yuqiz2@student.unimelb.edu.au  | Tianjin   | Frontend Charts, Twitter Search, CouchDB View |
+| Xin Li     |   ![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/xlhead.png=100x100)     | 1029029    | xin5@student.unimelb.edu.au    | Melbourne | Frontend Maps, Data Analysis, CouchDB View    |
+| Wei Li     |  ![](https://bitbucket.org/comp90024team39/comp90024-a2/raw/258d2fe333fd4d855454f0c914c454970183b2df/twitterlance/static/img/wlhead.png=100x100)      | 956833     | liwl1@student.unimelb.edu.au   | Chengdu   | Twitter Stream, Overall Frontend, Ansible     |
 
 
 
