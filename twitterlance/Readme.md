@@ -11,3 +11,7 @@
 | ./twitter_search/ | Twitter users & tweets discovery| Yuqi Zhang <br> Wei Li                            | 777603 <br> 956833                        | Tianjin <br>Chengdu                            |
 | ./twitter_stream/ | Twitter continuous streaming | Zihao Hu <br> Yuqi Zhang                                    | 977716 <br> 777603                             | Yichun  <br>Tianjin
 | ./twitterlance/   | Django settings | Zihao Yang <br> Zihao Hu                          | 1252410 <br> 977716                       | Melbourne <br>Yichun                           |
+
+## Docker Image
+
+A docker images is used in the deployment: [yangzy3/twitterlance](https://hub.docker.com/repository/docker/yangzy3)
