@@ -121,7 +121,7 @@
     path: /data
     src: /dev/vdb
     fstype: ext4
-    state: present
+    state: mounted
 
 - name: Create directories required by couchdb
   become: yes
