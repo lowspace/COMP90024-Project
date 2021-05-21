@@ -22,7 +22,7 @@ class Job(MinutelyJob):
         
         doc = res.json()
         status = doc.get('status', 'empty')
-        print(f'Status {status}')
+  
         if status != 'ready':
             return  
 
