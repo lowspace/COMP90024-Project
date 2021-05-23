@@ -72,7 +72,7 @@ for city in cities:
         cities_profile[city]["age"],cities_profile[city]["income"]=getAgeIncome(city)
         cities_profile[city]["housing price"] = getHousingPrice(city)
         educated = getEducation(city)
-        cities_profile[city]["educated%"] = round(educated/population,2)
+        cities_profile[city]["education"] = educated
         
 cities_profile  
 
