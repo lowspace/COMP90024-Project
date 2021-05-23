@@ -155,15 +155,11 @@ def AddUserTweet2DB(tweetJson):
 
 class MyStreamListener(tweepy.StreamListener):
     def on_data(self, data):
-        time.sleep(1)  # Delay to avoid the possibility of conflicts
+        time.sleep(1)  # Delay to reduce stress
         res = couch.get(f'jobs/stream/')
-        if res.status_code == 404: 
-            print("Have not found the stream doc in jobs database.")
-            return 
-        if res.json().get('status', '') == 'idle':
-            print('[stream] Stream job stopped.')
-            return 
-
+        assert res.status_code != 404, '[stream] Job not found in Jobs.'
+        assert res.json().get('status', '') != 'idle', '[stream] Job stopped.'
+            
         try:
             tweetJson = json.loads(data)
             AddUserTweet2DB(tweetJson)
