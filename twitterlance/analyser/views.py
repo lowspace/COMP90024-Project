@@ -71,7 +71,6 @@ class UserViewSet(viewsets.ViewSet):
             
         count = {}
         for city in couch.geocode().keys():
-            print(city)
             res = couch.get(f'users/_design/cities/_view/{city}')
             if res.status_code == 200 and res.json().get('rows', []):
                 count[city] = res.json().get('rows', [])[0]["value"]   
@@ -99,7 +98,7 @@ class UserViewSet(viewsets.ViewSet):
 
         rank.sort(key=lambda x : x['score'], reverse=True)
  
-        print(f'rank {rank}')               
+        print(f'[rank] {rank}')               
         if len(rank) > 0:
             rank[0]['name'] = '🥇 ' + rank[0]['name']
             rank[1]['name'] = '🥈 ' + rank[1]['name']
@@ -125,6 +124,7 @@ class SportViewSet(viewsets.ViewSet):
 
         count = {}
         sum_all = {}
+        print(f'[stats_all] cities={couch.geocode().keys()}')
         for city in couch.geocode().keys():
             res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/total')
             if res.json().get('rows', []):
@@ -137,7 +137,24 @@ class SportViewSet(viewsets.ViewSet):
         count['total'] = total
         sum_all['total'] = sum(sum_all.values())
         count['sum'] = sum_all
-        return Response(count)
+        return Response(self.deduplicate(count))
+
+    def deduplicate(self, cities):
+        merge_to = {
+            'afl': 'footy', 
+            'rugby': 'footy', 
+            'jump': 'jumps', 
+            'ran': 'run', 
+            'jog': 'run', 
+            'bike': 'cycling',
+            'bicycle': 'cycling',
+            'f1': 'racing',
+        }
+        for city in cities.keys(): 
+            for to_remove, to_add in merge_to.items():
+                cities[city][to_add] = cities[city].get(to_add, 0) + cities[city].pop(to_remove, 0)
+        return cities
+
 
     # GET analyser/sports/rank_top3
     @action(detail=False, methods=['get'], name="Get the top 3 sports in each city across all time")
@@ -186,9 +203,7 @@ class AurinViewSet(viewsets.ViewSet):
     # GET /aurin/
     def list(self, request):
         res = couch.head('')
-        if res.status_code == 500:
-            return Response({'error': res.json()})
-
+        return Response({"Greater Melbourne": {"death rate": 4.8, "male%": 0.49, "unemployment": 6.8, "age": 36, "income": 672, "housing price": 720000, "educated%": 0.5}, "Greater Sydney": {"death rate": 4.8, "male%": 0.49, "unemployment": 6.1, "age": 36, "income": 717, "housing price": 910000, "educated%": 0.51}, "Greater Adelaide": {"death rate": 5.3, "male%": 0.49, "unemployment": 7.8, "age": 39, "income": 614, "housing price": 477000, "educated%": 0.48}, "Australian Capital Territory": {"death rate": 5.2, "male%": 0.49, "unemployment": 4.8, "age": 35, "income": 997, "housing price": 679800, "educated%": 0.55}})
         return Response(couch.get(f'aurin/_design/cities/_view/aurinInfo').json())
 
 # Jobs statuses in Couchdb. Background tasks will periodically check the statuses to  
@@ -280,10 +295,9 @@ class JobsViewSet(viewsets.ViewSet):
 
     def start_search(self, request): 
         res = couch.head('')
-        print(res.status_code)
         if res.status_code == 500:
             return Response({'error': res.json()})
-        print(request.data)
+
         new_users = request.data.get('new_users', '1') if request.data is not None else None
         try:
             new_users = int(new_users)
@@ -332,20 +346,16 @@ class JobsViewSet(viewsets.ViewSet):
     
     def stop_search(self): 
         res = couch.head('')
-        print(res.status_code)
         if res.status_code == 500:
             return Response({'error': res.json()})
 
         res = couch.get('jobs/search')
-        if res.status_code == 200 and res.json().get('status') != 'running':
-            return Response(res.json(), 403)
-        else: 
-            doc = res.json()
-            doc['status'] = 'idle'
-            doc['nodes'] = []
-            doc['result'] = 'Job stopped.'
-            response = couch.updatedoc('jobs/search', doc)
-            return Response(response.json(), response.status_code)
+        doc = res.json()
+        doc['status'] = 'idle'
+        doc['nodes'] = []
+        doc['result'] = 'Job stopped.'
+        response = couch.updatedoc('jobs/search', doc)
+        return Response(response.json(), response.status_code)
 
     def stop_stream(self):
         res = couch.head('')
@@ -353,15 +363,12 @@ class JobsViewSet(viewsets.ViewSet):
             return Response({'error': res.json()})
 
         res = couch.get('jobs/stream')
-        if res.status_code == 200 and res.json().get('status') != 'running':
-            return Response(res.json(), 403)
-        else: 
-            doc = res.json()
-            doc['status'] = 'idle'
-            doc['nodes'] = []
-            doc['result'] = 'Job stopped.'
-            response = couch.updatedoc('jobs/stream', doc)
-            return Response(response.json(), response.status_code)
+        doc = res.json()
+        doc['status'] = 'idle'
+        doc['nodes'] = []
+        doc['result'] = 'Job stopped.'
+        response = couch.updatedoc('jobs/stream', doc)
+        return Response(response.json(), response.status_code)
     
     def stop_update(self):
         res = couch.head('')
@@ -369,15 +376,12 @@ class JobsViewSet(viewsets.ViewSet):
             return Response({'error': res.json()})
 
         res = couch.get('jobs/update')
-        if res.status_code == 200 and res.json().get('status') != 'running':
-            return Response(res.json(), 403)
-        else: 
-            doc = res.json()
-            doc['status'] = 'idle'
-            doc['nodes'] = []
-            doc['result'] = 'Job stopped.'
-            response = couch.updatedoc('jobs/update', doc)
-            return Response(response.json(), response.status_code)
+        doc = res.json()
+        doc['status'] = 'idle'
+        doc['nodes'] = []
+        doc['result'] = 'Job stopped.'
+        response = couch.updatedoc('jobs/update', doc)
+        return Response(response.json(), response.status_code)
 
 class InitialiserViewSet(viewsets.ViewSet):
     # GET analyser/initialiser/

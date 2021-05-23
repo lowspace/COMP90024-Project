@@ -53,8 +53,13 @@ def getEducation(city):
         housingPrice = json.load(f)
     for each in housingPrice["features"]:
         if each["properties"]['gcc_name16'] == city:
-             educated = int(each["properties"]['p_tot_tot_tot'])
-    return educated
+             postgraduate = int(each["properties"]["p_tot_tot_pgde_gddp_gdctl"])
+             advance =  int(each["properties"]["p_tot_tot_adip_dipl"])
+             certificate = int(each["properties"]["p_tot_tot_ct_i_ii"])+int(each["properties"]["p_tot_tot_ct_iii_and_iv_l"])
+             bachelor = int(each["properties"]["p_tot_tot_bdl"])
+             education= {"postgraduate":postgraduate,"bachelor":bachelor,"advance":advance,"certificate":certificate}
+             
+    return education
 
 cities=["Greater Melbourne","Greater Sydney","Greater Adelaide","Australian Capital Territory"]
 cities_profile = {}
@@ -67,7 +72,7 @@ for city in cities:
         cities_profile[city]["age"],cities_profile[city]["income"]=getAgeIncome(city)
         cities_profile[city]["housing price"] = getHousingPrice(city)
         educated = getEducation(city)
-        cities_profile[city]["educated%"] = round(educated/population,2)
+        cities_profile[city]["education"] = educated
         
 cities_profile  
 
