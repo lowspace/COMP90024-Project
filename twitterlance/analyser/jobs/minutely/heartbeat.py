@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.cache import caches
 from django_extensions.management.jobs import MinutelyJob
 from couchdb import couch
-import requests, sys
+import requests, datetime
 
 # Every minute, the current instance will push a heartbeat to couchdb, showing it is alive. The docker service 1 will remove the disconnected nodes. 
 class Job(MinutelyJob):
@@ -31,7 +31,7 @@ class Job(MinutelyJob):
             return 
         
         to_remove = []
-        res = couch.get(f'nodes/_all_docs')
+        res = couch.get(f'nodes/_all_docs?include_docs=true')
         if res.status_code == 200: 
             rows = res.json()['rows']
             for row in rows:
@@ -41,7 +41,13 @@ class Job(MinutelyJob):
                 except: 
                     print(f'{nodename} cannot be connected.')
                     to_remove.append(nodename)
-
+                    
+                # remove based on time
+                previous_timestamp = row['doc']['updated_at']
+                previous_time = datetime.datetime.strptime(previous_timestamp, '%a %b %d %H:%M:%S %z %Y').replace(tzinfo=datetime.timezone.utc) 
+                now_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+                if now_timestamp - previous_time > datetime.timedelta(minute=5):
+                    to_remove.append(nodename)
 
         for node in to_remove: 
             res = couch.head(f'nodes/{node}')
