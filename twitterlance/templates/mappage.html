@@ -63,7 +63,7 @@
 </body>
 <script>
     window.onload = function (){
-        let tweet = [1500000,2000000,3000000,1000000]
+        let tweet;
         
         let sportyearly = { // obselete value for testing only. Real data is loaded from database below.
             "Melbourne":[12, 24, 34],
@@ -78,6 +78,7 @@
             "Adelaide":{"basketball": 90,"squash": 70,"racing": 80},
             "Canberra":{"basketball": 90,"squash": 70,"racing": 80},
         }
+        let citystat
         mapboxgl.accessToken = 'pk.eyJ1IjoieGlubGk5OTYiLCJhIjoiY2tmN28xbzFwMDQ1dzJ5cGxmYnl4MmNmbiJ9.WwZMR2F-V57vhOVf69H9dQ';
         let map = new mapboxgl.Map({
             container: 'map',
@@ -92,22 +93,33 @@
                 headers:{'Content-Type':'application/json'},
                 dataType: "json",
                 success: function(data,textStatus,jqxhr){
-                    let temp = data;
-                    tweet = [
-                        temp['sum']["Melbourne"],
-                        temp['sum']["Adelaide"],
-                        temp['sum']["Canberra"],
-                        temp['sum']["Sydney"],
-                    ];
+                    tweet = data["sum"];
                     console.log(tweet);
                 },
                 error:function(jqxhr,textStatus,error){
-                  this.tryCount++;
-                  console.log(this.tryCount);
-                  console.log(error);
-                  console.log(textStatus);
-                  console.log(jqxhr);
-                  $.ajax(this);
+                    this.tryCount++;
+                    console.log(this.tryCount);
+                    console.log(error);
+                    console.log(textStatus);
+                    console.log(jqxhr);
+                    $.ajax(this);
+                }
+            }),
+            $.ajax({
+                url: "/analyser/aurin/",
+                type: "get",
+                headers:{'Content-Type':'application/json'},
+                dataType: "json",
+                success: function(data,textStatus,jqxhr){
+                    citystat= data;
+                },
+                error:function(jqxhr,textStatus,error){
+                    this.tryCount++;
+                    console.log(this.tryCount);
+                    console.log(error);
+                    console.log(textStatus);
+                    console.log(jqxhr);
+                    $.ajax(this);
                 }
             }),
             $.ajax({
@@ -171,9 +183,9 @@
                         'description':
                             '<strong>Melbourne Facts</strong><p>Median Age: 36</p ><p>housing price: 5000</p >',
                         'data': sportyearly["Melbourne"],
-                        "age": 36,
-                        "price": 720000,
-                        "tweets": tweet[0],
+                        "age": citystat["Greater Melbourne"]["age"],
+                        "price": citystat["Greater Melbourne"]["housing price"],
+                        "tweets": tweet["Melbourne"],
                         data2: popsport["Melbourne"]
                     },
                     'geometry': {
@@ -188,9 +200,9 @@
                         'description':
                             '<strong>Adelaide Facts</strong><p>Median Age: 40</p ><p>housing price: 4000</p >',
                         'data': sportyearly["Adelaide"],
-                        "age": 39,
-                        "price": 477000,
-                        "tweets": tweet[1],
+                        "age": citystat["Greater Adelaide"]["age"],
+                        "price": citystat["Greater Adelaide"]["housing price"],
+                        "tweets": tweet["Adelaide"],
                         data2: popsport["Adelaide"]
                     },
                     'geometry': {
@@ -205,9 +217,9 @@
                         'description':
                             '<strong>Canberra Facts</strong><p>Median Age: 50</p ><p>housing price: 3000</p >',
                         'data': sportyearly["Canberra"],
-                        "age": 35,
-                        "price": 679800,
-                        "tweets": tweet[2],
+                        "age": citystat["Australian Capital Territory"]["age"],
+                        "price": citystat["Australian Capital Territory"]["housing price"],
+                        "tweets": tweet["Canberra"],
                         data2: popsport["Canberra"]
                     },
                     'geometry': {
@@ -222,14 +234,46 @@
                         'description':
                             '<strong>Sydney Facts</strong><p>Median Age: 20</p ><p>housing price: 5000</p >',
                         'data': sportyearly["Sydney"],
-                        "age": 36,
-                        "price": 910000,
-                        "tweets": tweet[3],
+                        "age": citystat["Greater Sydney"]["age"],
+                        "price": citystat["Greater Sydney"]["housing price"],
+                        "tweets": tweet["Sydney"],
                         data2: popsport["Sydney"]
                     },
                     'geometry': {
                         'type': 'Point',
                         'coordinates': [151.2093, -33.8688]
+                    }
+                },{
+                    'type': 'Feature',
+                    'properties': {
+                        "title": "Brisbane",
+                        'description':
+                            '<strong>Brisbane Facts</strong><p>Median Age: 20</p ><p>housing price: 5000</p >',
+                        'data': sportyearly["Brisbane"],
+                        "age": citystat["Greater Brisbane"]["age"],
+                        "price": citystat["Greater Brisbane"]["housing price"],
+                        "tweets": tweet["Brisbane"],
+                        data2: popsport["Brisbane"]
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [152.71,-27.38]
+                    }
+                },{
+                    'type': 'Feature',
+                    'properties': {
+                        "title": "Perth",
+                        'description':
+                            '<strong>Perth Facts</strong><p>Median Age: 20</p ><p>housing price: 5000</p >',
+                        'data': sportyearly["Perth"],
+                        "age": citystat["Greater Perth"]["age"],
+                        "price": citystat["Greater Perth"]["housing price"],
+                        "tweets": tweet["Perth"],
+                        data2: popsport["Perth"]
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [115.6813,-32.0391]
                     }
                 },
             ].map((d) => {
