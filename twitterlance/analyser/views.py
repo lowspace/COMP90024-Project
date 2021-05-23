@@ -138,9 +138,9 @@ class SportViewSet(viewsets.ViewSet):
         sum_all['total'] = sum(sum_all.values())
         count['sum'] = sum_all
         return Response(self.deduplicate(count))
-
-    def deduplicate(self, cities):
-        merge_to = {
+    
+    def get_merger(self):
+        return {
             'afl': 'footy', 
             'rugby': 'footy', 
             'jump': 'jumps', 
@@ -150,12 +150,14 @@ class SportViewSet(viewsets.ViewSet):
             'bicycle': 'cycling',
             'f1': 'racing',
         }
+
+    def deduplicate(self, cities):
+        merge_to = self.get_merger()
         for city in cities.keys(): 
             if city == 'sum':
                 continue
             for to_remove, to_add in merge_to.items():
                 cities[city][to_add] = cities[city].get(to_add, 0) + cities[city].pop(to_remove, 0)
-                print(cities[city][to_add])
         return cities
 
 
@@ -171,6 +173,9 @@ class SportViewSet(viewsets.ViewSet):
             res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/total')
             if res.json().get('rows', []):
                 res = Counter(res.json().get('rows', [])[0]["value"])
+                merge_to = self.get_merger()
+                for to_remove, to_add in merge_to.items():
+                    res[to_add] = res.get(to_add, 0) + res.pop(to_remove, 0)
                 top3 = {}
                 for i in res.most_common(3):
                     top3[i[0]] = i[1]
