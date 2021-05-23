@@ -44,7 +44,7 @@ def search_tweet(user: dict, api, timeline_limit= 400):
     while True: # get the tweets
 
         # stop the job if the user asked
-        res = couch.get(f'jobs/stream/')
+        res = couch.get(f'jobs/update/')
         assert res.status_code != 404, '[update] Job not found in Jobs.'
         assert res.json().get('status', '') != 'idle', '[update] Job stopped.'
 
