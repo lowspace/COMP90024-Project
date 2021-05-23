@@ -71,20 +71,12 @@
         <div class="frame text-center">About the Project</div>
         <div class="frame-detail">
           <p>
-            The purpose of this project is to analyse a large amount of data from social media in the
-            context of the increasing importance of social media. The main method is to count the number
-            of swear words contained in tweets in different cities and analyse the emotions of tweets,
-            explore the connection between education level, unemployment rate and economic level with
-            emotions of people and swear word. A large number of tweets can provide a lot of useful
-            information for analysis tasks and help to improve the quality of analysis results.
-            However, due to the rapid growth of data and the large storage space required, data
-            analysis and processing often require a system with a good framework and design to support
-            the processing of big data analysis. This project established a clustered data analysis
-            system based on MRC and realized the visualization of the analysis results. In
-            this system, we combine the processed data with the statistical data of the Australian
-            Urban Research Infrastructure Network (AURIN) platform to explore the story between different
-            factors, different emotions and the frequency of swear word.
+            Twitterlance is a distributed system that harvests, stores, and analyses Twitter users and their timelines. To ensure the user experience, the architecture design has been aiming at high scalability, high availability and high automation. High Scalability is supported by the combination of CouchDB, Docker, Docker Swarm, and Ansible. High availability is a design objective embedded in the error handling methods of all software components in the system, while the duplication of services also makes a contribution to this goal. The purpose of high automation is to provide a one-click solution for deployment and scaling. With Ansible and Docker Swarm, it is extremely easy to scale up the data and harvesting/analysis performance when new resources are available on the cloud. The automated deployment is designed for Melbourne Research Cloud only, where the system is currently deployed.
           </p>
+          <p>
+            The system conducts two major tasks: data harvesting and data analysis. The process of harvesting consists of two phases: collecting users and collecting tweets, which can be initiated via the home page of the web application. Data analysis is implemented with the integration of Django, CouchDB, and Apache Spark, which are all running as scalable clusters.
+          </p>
+          <p>Our research includes three scenarios: to identify the most vibrant city, to find out the most popular sports, and to pickout the sports enthusiasts across 6 major cities in Australia.</p>
         </div>
         <div class="frame text-center">About Us</div>
         <div class="col-md-12 column member">
