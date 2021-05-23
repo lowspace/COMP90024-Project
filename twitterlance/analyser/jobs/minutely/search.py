@@ -17,23 +17,24 @@ class Job(MinutelyJob):
         time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/search/')
         if res.status_code == 404: 
-            print("Have not found the search file in jobs database.")
+            print("[search] Have not found the search file in jobs database.")
             return 
         
         doc = res.json()
         status = doc.get('status', 'empty')
+        print(f'[search] stream status: {status}')
   
         if status != 'ready':
             return  
 
-        print('Search starting...')
+        print('[search] Search starting...')
         if settings.DJANGO_NODENAME not in doc['nodes']:
             doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
 
         # only allow 1 node to run
         doc['status'] = 'running'
         
-        print(f'Update job status: {doc}')
+        print(f'[search] Update job status: {doc}')
         couch.updatedoc(f'jobs/search/', doc)
         
         rate_limit = doc['new_users']
@@ -42,18 +43,18 @@ class Job(MinutelyJob):
         except:
             rate_limit = 1
 
-        print(f'Running on rate limit {rate_limit}')
+        print(f'[search] Running on rate limit {rate_limit}')
 
         search_new.run_search(rate_limit)
 
-        print('Job completed.')
+        print('[search] Job completed.')
 
         # Job done on this node
         doc = couch.get(f'jobs/search/').json()
         if settings.DJANGO_NODENAME in doc['nodes']:
             doc['nodes'].remove(settings.DJANGO_NODENAME)
         
-        print(doc['nodes'])
+        print(f'[search] {doc["nodes"]}')
 
         if len(doc['nodes']) == 0: 
             doc['status'] = 'idle'
@@ -65,4 +66,4 @@ class Job(MinutelyJob):
         try: 
             self.do()
         except Exception as e: 
-            print(str(e))
+            print(f'[search] {str(e)}')

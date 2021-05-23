@@ -22,6 +22,7 @@ class Job(MinutelyJob):
         doc = res.json()
 
         status = doc.get('status', '')
+        print(f'[stream] stream status: {status}')
         if status != 'ready':
             return 
 
@@ -29,7 +30,7 @@ class Job(MinutelyJob):
         doc['nodes'].append(settings.DJANGO_NODENAME) # Add this instance to nodes list
 
         res = couch.put(f'jobs/stream/', doc)
-        print(f'Stream starting...')
+        print(f'[stream] stream starting...')
         
         stream.run() # Job stopped by frontend
 
@@ -39,4 +40,4 @@ class Job(MinutelyJob):
             if '.' in settings.DJANGO_NODENAME and settings.DJANGO_NODENAME.split('.')[1] == '1':
                 self.do()
         except Exception as e: 
-            print(str(e))
+            print(f'[stream] {str(e)}')
