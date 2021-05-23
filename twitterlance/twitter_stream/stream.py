@@ -155,6 +155,15 @@ def AddUserTweet2DB(tweetJson):
 
 class MyStreamListener(tweepy.StreamListener):
     def on_data(self, data):
+        time.sleep(1)  # Delay to avoid the possibility of conflicts
+        res = couch.get(f'jobs/stream/')
+        if res.status_code == 404: 
+            print("Have not found the stream doc in jobs database.")
+            return 
+        if res.json().get('status', '') == 'idle':
+            print('[stream] Stream job stopped.')
+            return 
+
         try:
             tweetJson = json.loads(data)
             AddUserTweet2DB(tweetJson)
@@ -199,15 +208,6 @@ def run():
         try:
             myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
             myStream.filter(locations=overall)
-
-            time.sleep(1)  # Delay to avoid the possibility of conflicts
-            res = couch.get(f'jobs/stream/')
-            if res.status_code == 404: 
-                print("Have not found the stream doc in jobs database.")
-                return 
-            if res.json().get('status', '') == 'idle':
-                print('[stream] Stream job stopped.')
-                return 
 
         except Exception as e:
             print(e)
