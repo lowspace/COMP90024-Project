@@ -22,7 +22,7 @@ class Job(MinutelyJob):
         
         doc = res.json()
         status = doc.get('status', 'empty')
-        print(f'[search] stream status: {status}')
+        print(f'[search] search status: {status}')
   
         if status != 'ready':
             return  
