@@ -196,6 +196,11 @@
     let umemploy;
     let edu;
 
+    let middleagescore;
+    let unempscore;
+    let eduscore;
+    let incscore;
+
     function tweetstat(response){
       let temp = response["tweet_stats"];
       console.log(temp)
@@ -224,8 +229,9 @@
         temps[0][1],temps[1][1],temps[2][1],temps[3][1],temps[4][1],
         temps[5][1],temps[6][1],temps[7][1],temps[8][1],temps[9][1]
       ];
-      let labels7 = sportlabel
-      let barchartdata7 = sportcounts
+      let labels7 = sportlabel;
+      let barchartdata7 = sportcounts;
+      let barcharttitle7 = 'Most Popular Sports';
       let UsersBar7={
         datasets: [{
           data: barchartdata7,
@@ -282,7 +288,7 @@
         ((sport4city[2]/tweet4city[2])*100).toFixed(2),
         ((sport4city[3]/tweet4city[3])*100).toFixed(2)
       ]
-      let sportscore = [0,0,0,0]
+      let sportscore = [0,0,0,0];
       for (let i=0; i<sportpertweet.length; i++){
         for (let j=0; j<sportpertweet.length; j++){
           if (sportpertweet[i]>=sportpertweet[j]){
@@ -328,10 +334,10 @@
       let Bar8 = canvas8.getContext('2d');
       let Barchart8 = new Chart(Bar8, {type:'bar', data: UsersBar8, options: optionBar8});
 
-      let middleage = [3,3,2,4];
-      let unemp = [3,2,1,4];
-      let edu = [3,3,2,4];
-      let inc = [3,2,1,4];
+      let middleage = middleagescore;
+      let unemp = unempscore;
+      let edu = eduscore;
+      let inc = incscore;
       //barchart
       let  UsersBar9= {
         datasets:[{
@@ -489,6 +495,29 @@
                     aurindata["Australian Capital Territory"]["education"]["certificate"],
             ],
           };
+
+          incscore = score(income,true);
+          middleagescore = score(medianage,false);
+          unempscore = score(umemploy,false);
+          eduscore = score(edu["other"],false);
+
+          function score(stat,ascending){
+            let tempscore = [0,0,0,0,0,0];
+            for (let i=0; i<stat.length; i++){
+              for (let j=0; j<stat.length; j++){
+                if(ascending){
+                  if (stat[i]>=stat[j]){
+                    tempscore[i] ++;
+                  }
+                }else{
+                  if (stat[i]<=stat[j]){
+                    tempscore[i] ++;
+                  }
+                }
+              }
+            }
+            return tempscore;
+          }
         },
         error:function(jqxhr,textStatus,error){
           this.tryCount++;
