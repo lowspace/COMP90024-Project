@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'couchdb',
+    'aurin',
     'analyser',
     'twitter_search',
     'twitter_stream',
