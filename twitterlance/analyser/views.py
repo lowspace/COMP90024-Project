@@ -203,8 +203,15 @@ class AurinViewSet(viewsets.ViewSet):
     # GET /aurin/
     def list(self, request):
         res = couch.head('')
-        return Response({"Greater Melbourne": {"death rate": 4.8, "male%": 0.49, "unemployment": 6.8, "age": 36, "income": 672, "housing price": 720000, "educated%": 0.5}, "Greater Sydney": {"death rate": 4.8, "male%": 0.49, "unemployment": 6.1, "age": 36, "income": 717, "housing price": 910000, "educated%": 0.51}, "Greater Adelaide": {"death rate": 5.3, "male%": 0.49, "unemployment": 7.8, "age": 39, "income": 614, "housing price": 477000, "educated%": 0.48}, "Australian Capital Territory": {"death rate": 5.2, "male%": 0.49, "unemployment": 4.8, "age": 35, "income": 997, "housing price": 679800, "educated%": 0.55}})
-        return Response(couch.get(f'aurin/_design/cities/_view/aurinInfo').json())
+        if res.status_code == 500:
+            return Response({'error': res.json()})
+
+        data = {}
+        res = couch.get(f'aurin/_all_docs?include_docs=true').json()
+        for row in res['rows']:
+            data[row['id']] = row['doc']['features']
+
+        return Response(data)
 
 # Jobs statuses in Couchdb. Background tasks will periodically check the statuses to  
 # start the jobs. 
