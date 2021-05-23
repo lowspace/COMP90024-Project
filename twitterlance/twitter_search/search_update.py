@@ -166,7 +166,7 @@ def run_update():
         for i in range(len(tokens)):
             api = get_api(tokens, i) 
             # find the users
-            previous_timestamp = user['update_timestamp']
+            previous_timestamp = user.get('update_timestamp', None)
             if previous_timestamp == None:
                 job = search_tweet(user, api, 3000)
             else:
