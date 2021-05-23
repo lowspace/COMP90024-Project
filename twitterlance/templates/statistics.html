@@ -118,7 +118,7 @@
           </div>
           <div class="col-md-6 column sportuser-charts">
             <div class = options>
-              <a class = "col-md-3" href="#" id="sportuser" style="border-radius: 5px 5px 0 0;width: 100%">Top 5 Sports Enthusiast</a>
+              <a class = "col-md-3" href="#" id="sportuser" style="border-radius: 5px 5px 0 0;width: 100%">Top 5 Australian Sport Enthusiasts</a>
             </div>
             <div class="charts">
                 <canvas id="topsportuser"></canvas>
@@ -384,7 +384,7 @@
       let username=[];
       let userscore=[];
       for (let i=0;i<5;i++){
-          username[i]=response[i]["name"]+"\n"+response[i]["city"];
+          username[i]=response[i]["name"];
           userscore[i]=response[i]["score"];
         }
         console.log(username);
@@ -413,7 +413,7 @@
         }
         let optionBar10={
           indexAxis: 'y',
-          title: {display: true,text: "Top 5 Fitness Enthusiasts",fontSize: 30,},
+          title: {display: true,text: "Top 5 Australian Sport Enthusiasts",fontSize: 30,},
           scales: {xAxes: [{ticks: {beginAtZero:true}}] },
           legend: {
             display: false

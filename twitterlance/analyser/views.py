@@ -124,6 +124,7 @@ class SportViewSet(viewsets.ViewSet):
 
         count = {}
         sum_all = {}
+        print(f'[stats_all] cities={couch.geocode().keys()}')
         for city in couch.geocode().keys():
             res = couch.get(f'tweets/_partition/{city}/_design/sports/_view/total')
             if res.json().get('rows', []):
@@ -202,9 +203,7 @@ class AurinViewSet(viewsets.ViewSet):
     # GET /aurin/
     def list(self, request):
         res = couch.head('')
-        if res.status_code == 500:
-            return Response({'error': res.json()})
-
+        return Response({"Greater Melbourne": {"death rate": 4.8, "male%": 0.49, "unemployment": 6.8, "age": 36, "income": 672, "housing price": 720000, "educated%": 0.5}, "Greater Sydney": {"death rate": 4.8, "male%": 0.49, "unemployment": 6.1, "age": 36, "income": 717, "housing price": 910000, "educated%": 0.51}, "Greater Adelaide": {"death rate": 5.3, "male%": 0.49, "unemployment": 7.8, "age": 39, "income": 614, "housing price": 477000, "educated%": 0.48}, "Australian Capital Territory": {"death rate": 5.2, "male%": 0.49, "unemployment": 4.8, "age": 35, "income": 997, "housing price": 679800, "educated%": 0.55}})
         return Response(couch.get(f'aurin/_design/cities/_view/aurinInfo').json())
 
 # Jobs statuses in Couchdb. Background tasks will periodically check the statuses to  
