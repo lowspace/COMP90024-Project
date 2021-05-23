@@ -81,6 +81,7 @@ def new_user(tweetJson, area):
     user = {}
     user["_id"] = tweetJson["user"]["id_str"]
     user["city"] = area
+    user['update_timestamp'] = couch.now()
     if user["_id"] in users:
         print('not a new user')
         return False # return ???
