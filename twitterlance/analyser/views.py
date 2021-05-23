@@ -256,6 +256,28 @@ class JobsViewSet(viewsets.ViewSet):
         except Exception as e: 
             return Response(str(e)) 
 
+    # DELETE /analyser/jobs/search/ 
+    # DELETE /analyser/jobs/update/
+    # DELETE /analyser/jobs/stream/
+    def delete(self, request, pk=None):
+        try: 
+            # get new users and timelines
+            if pk == 'search': 
+                return self.stop_search()
+            
+            # update existing user timelines
+            elif pk == 'update':
+                return self.stop_update()
+            
+            # start streaming
+            elif pk == 'stream':
+                return self.stop_stream()
+
+            else: 
+                return Response({'error': f'Invalid job name {pk}'}) 
+        except Exception as e: 
+            return Response(str(e)) 
+
     def start_search(self, request): 
         res = couch.head('')
         print(res.status_code)
@@ -305,6 +327,55 @@ class JobsViewSet(viewsets.ViewSet):
             doc = res.json()
             doc['status'] = 'ready'
             doc['result'] = 'Job Submitted.'
+            response = couch.updatedoc('jobs/update', doc)
+            return Response(response.json(), response.status_code)
+    
+    def stop_search(self): 
+        res = couch.head('')
+        print(res.status_code)
+        if res.status_code == 500:
+            return Response({'error': res.json()})
+
+        res = couch.get('jobs/search')
+        if res.status_code == 200 and res.json().get('status') != 'running':
+            return Response(res.json(), 403)
+        else: 
+            doc = res.json()
+            doc['status'] = 'idle'
+            doc['nodes'] = []
+            doc['result'] = 'Job stopped.'
+            response = couch.updatedoc('jobs/search', doc)
+            return Response(response.json(), response.status_code)
+
+    def stop_stream(self):
+        res = couch.head('')
+        if res.status_code == 500:
+            return Response({'error': res.json()})
+
+        res = couch.get('jobs/stream')
+        if res.status_code == 200 and res.json().get('status') != 'running':
+            return Response(res.json(), 403)
+        else: 
+            doc = res.json()
+            doc['status'] = 'idle'
+            doc['nodes'] = []
+            doc['result'] = 'Job stopped.'
+            response = couch.updatedoc('jobs/stream', doc)
+            return Response(response.json(), response.status_code)
+    
+    def stop_update(self):
+        res = couch.head('')
+        if res.status_code == 500:
+            return Response({'error': res.json()})
+
+        res = couch.get('jobs/update')
+        if res.status_code == 200 and res.json().get('status') != 'running':
+            return Response(res.json(), 403)
+        else: 
+            doc = res.json()
+            doc['status'] = 'idle'
+            doc['nodes'] = []
+            doc['result'] = 'Job stopped.'
             response = couch.updatedoc('jobs/update', doc)
             return Response(response.json(), response.status_code)
 

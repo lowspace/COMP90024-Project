@@ -22,7 +22,6 @@ class Job(MinutelyJob):
         doc = res.json()
 
         status = doc.get('status', '')
-
         if status != 'ready':
             return 
 
@@ -32,15 +31,8 @@ class Job(MinutelyJob):
         res = couch.put(f'jobs/stream/', doc)
         print(f'Stream starting...')
         
-        stream.run()
-        # Job done on this node
-        doc = couch.get(f'jobs/stream/').json()
-        if settings.DJANGO_NODENAME in doc['nodes']:
-            doc['nodes'].remove(settings.DJANGO_NODENAME)
-        if len(doc['nodes']) == 0: 
-            doc['status'] = 'idle'
-        doc['result'] = f'Job done. Last node: {settings.DJANGO_NODENAME}.'
-        couch.updatedoc(f'jobs/stream/', doc)
+        stream.run() # Job stopped by frontend
+
 
     def execute(self):
         try: 

@@ -200,5 +200,13 @@ def run():
             myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
             myStream.filter(locations=overall)
 
+            time.sleep(1)  # Delay to avoid the possibility of conflicts
+            res = couch.get(f'jobs/stream/')
+            if res.status_code == 404: 
+                print("Have not found the stream doc in jobs database.")
+                return 
+            if res.json().get('status', '') == 'idle':
+                return 
+
         except Exception as e:
             print(e)
