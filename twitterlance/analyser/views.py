@@ -208,7 +208,7 @@ class SportViewSet(viewsets.ViewSet):
         return Response(count)
 
 class AurinViewSet(viewsets.ViewSet):
-    # GET /aurin/
+    # GET /analyser/aurin/
     def list(self, request):
         res = couch.head('')
         if res.status_code == 500:
