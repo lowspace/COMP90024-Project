@@ -22,7 +22,7 @@ class Job(MinutelyJob):
         
         doc = res.json()
         status = doc.get('status', 'empty')
-        print(f'[search] stream status: {status}')
+        print(f'[search] search status: {status}')
   
         if status != 'ready':
             return  
@@ -45,7 +45,10 @@ class Job(MinutelyJob):
 
         print(f'[search] Running on rate limit {rate_limit}')
 
-        search_new.run_search(rate_limit)
+        try: 
+            search_new.run_search(rate_limit)
+        except AssertionError: 
+            print('[search] User interruptted.')
 
         print('[search] Job completed.')
 
