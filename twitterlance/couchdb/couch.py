@@ -1,4 +1,5 @@
 import requests, uuid, time, os, json, datetime
+from aurin import load_aurin
 from django.conf import settings
 
 # Module with functions serve a Singleton
@@ -15,6 +16,7 @@ class ExceptionResponse:
         self.headers = {}
     
     def json(self):
+        print(self.body)
         if isinstance(self.body, dict):
             return self.body
         else: 
@@ -113,7 +115,8 @@ def migrate():
     try:
         return do_migrate()
     except Exception as e: 
-        return ExceptionResponse(str(e), 500)
+        print(e)
+        return ExceptionResponse('Internal Error.', 500)
 
 # Initialise the necessary databases and design documents
 def do_migrate():
@@ -129,6 +132,7 @@ def do_migrate():
     output.append(createdb('users', False).json())
     output.append(createdb('tweets', True).json())
     output.append(createdb('tokens', False).json())
+    output.append(createdb('aurin', False).json()) 
 
     cities = dict (
         Adelaide= "-34.9998826,138.3309816,40km",
@@ -139,17 +143,13 @@ def do_migrate():
         Brisbane = "-27.3812533,152.713015,40km",
     )
 
-    # Add necessary data
+    # Add city data
     for key, value in cities.items(): 
         output.append(post('cities', {'_id': key, 'geocode': value}).json())
         time.sleep(0.5)
 
-    # Add tokens
-    output.append(post('tokens/', {'_id': 'Rkupsy9IRz1LZFn5BnW41HieR', 'consumer_key': 'Rkupsy9IRz1LZFn5BnW41HieR', 'consumer_secret': 'AJGztH99Xj8Ch3ueleBd95nUHS2L30tmmvRjiVEpri1qZyAlc4', 'access_token_key': '1383751844057391107-Tw0FTLNESkWFgq5OB9BkvjvlOjETot', 'access_token_secret': '847AbkKGOcEp1SeiR3wNu5xvBgDaUS0EHd9iIeMx6nv50', 'type': 'search'}).json())
-    output.append(post('tokens/', {'_id': 'b9UKdOCbro8FfL4bOK95Argnb', 'consumer_key': 'b9UKdOCbro8FfL4bOK95Argnb', 'consumer_secret': '1vSkkEIB4hdBhuTE7BMtvgjdnuq9h755E38bQzhaf0cdcbS90M', 'access_token_key': '1387659560098275331-hgjcBher08GC4QHuz8XYLq9ApNxKZA', 'access_token_secret': 'UVFS6qpTaUAu8WnfuEYiBpqV7VKZTh3Bjmof8s8Whws1E', 'type': 'search'}).json())
-    output.append(post('tokens/', {'_id': 'ieAZ39RX3gAFwCtQ3snmo8PjP','consumer_key': 'ieAZ39RX3gAFwCtQ3snmo8PjP', 'consumer_secret': 'QzeLA7P6LgRjZbfCAsJt6WOquh1Qva9jhBV1iJi83AWBCEXVnO', 'access_token_key': '2795545700-0QggHkc4Fa8Z7c4UYSrnmnlK1tYgPYgDu3koDOQ', 'access_token_secret': 'gehAPtKroC9vpcUIdcVAT46ELVOZOTQMhljRO7LI8Xx5N', 'type': 'search'}).json())
-    output.append(post('tokens/', {'_id': 'wku1JIpNi4pXukXp510Hzylj2','consumer_key': 'wku1JIpNi4pXukXp510Hzylj2', 'consumer_secret': 'JZPuJKqMZu929iu8XxgTQAOw0up1LLJj6hKUjFDPE4aSNsp1KP', 'access_token_key': '1382968455989583874-9DiykvjpUlnYtq2fJAgScghh9TMBs2', 'access_token_secret': 'k6C6Yx8LNkNp5FtyG55d6WZ0lwePYbAYAmnkg5xOd65G6', 'type': 'stream'}).json())
-    print(output)
+    # Add aurin data
+    load_aurin.load_data()
 
     # Add default jobs
     output.append(post('jobs/', {'_id': 'search', 'status': 'idle', 'new_users': 0, 'nodes': [], 'result': 'Initialised.', 'updated_at': now()}).json())
