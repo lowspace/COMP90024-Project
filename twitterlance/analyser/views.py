@@ -137,7 +137,20 @@ class SportViewSet(viewsets.ViewSet):
         count['total'] = total
         sum_all['total'] = sum(sum_all.values())
         count['sum'] = sum_all
-        return Response(count)
+        return Response(self.deduplicate(count))
+
+    def deduplicate(self, cities):
+        merge_to = {
+            'afl': 'footy', 
+            'bike': 'cycling',
+            'bicycle': 'cycling',
+            'f1': 'racing'
+        }
+        for city in cities.keys(): 
+            for to_remove, to_add in merge_to.items():
+                cities[city][to_add] = cities[city].get(to_add, 0) + cities[city].pop(to_remove, 0)
+        return cities
+
 
     # GET analyser/sports/rank_top3
     @action(detail=False, methods=['get'], name="Get the top 3 sports in each city across all time")
