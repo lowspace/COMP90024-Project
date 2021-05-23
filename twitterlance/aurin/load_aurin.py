@@ -80,6 +80,14 @@ def load_data():
         cities_profile[city]["age"],cities_profile[city]["income"]=getAgeIncome(city)
         cities_profile[city]["housing price"] = getHousingPrice(city)
         cities_profile[city]["education"] = getEducation(city)
+        edu = getEducation(city)
+        total = 0
+        for k, v in edu.items():
+            total += v
+        for k, v in edu.items():
+            edu[k] = round( v / total, 2)
+        cities_profile[city]["education%"] = edu
+
             
     for key, value in cities_profile.items(): 
         couch.put(f'aurin/{key}', {'_id': key, 'features': value})
