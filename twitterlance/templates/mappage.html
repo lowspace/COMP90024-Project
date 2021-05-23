@@ -100,9 +100,12 @@
                     console.log(tweet);
                 },
                 error:function(jqxhr,textStatus,error){
-                    console.log(error);
-                    console.log(textStatus);
-                    console.log(jqxhr);
+                  this.tryCount++;
+                  console.log(this.tryCount);
+                  console.log(error);
+                  console.log(textStatus);
+                  console.log(jqxhr);
+                  $.ajax(this);
                 }
             }),
             $.ajax({
@@ -124,9 +127,12 @@
                     console.log(sportyearly)
                 },
                 error:function(jqxhr,textStatus,error){
-                    console.log(error);
-                    console.log(textStatus);
-                    console.log(jqxhr);
+                  this.tryCount++;
+                  console.log(this.tryCount);
+                  console.log(error);
+                  console.log(textStatus);
+                  console.log(jqxhr);
+                  $.ajax(this);
                 }
             }),
             $.ajax({
@@ -139,9 +145,12 @@
                     console.log(popsport);
                 },
                 error:function(jqxhr,textStatus,error){
-                    console.log(error);
-                    console.log(textStatus);
-                    console.log(jqxhr);
+                  this.tryCount++;
+                  console.log(this.tryCount);
+                  console.log(error);
+                  console.log(textStatus);
+                  console.log(jqxhr);
+                  $.ajax(this);
                 }
             })
         ).done(function (){

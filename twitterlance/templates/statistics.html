@@ -172,9 +172,12 @@
           success(data);
         },
         error:function(jqxhr,textStatus,error){
+          this.tryCount++;
+          console.log(this.tryCount);
           console.log(error);
           console.log(textStatus);
           console.log(jqxhr);
+          $.ajax(this);
         },
       })
     }
@@ -365,6 +368,9 @@
     }
     function enthusiasts(response){
       console.log(response);
+      if (response.length == 0) {
+        return;
+      }
       let username=[];
       let userscore=[];
       for (let i=0;i<5;i++){
