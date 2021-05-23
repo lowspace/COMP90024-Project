@@ -5,15 +5,13 @@ import requests, time
 conf = SparkConf().setAppName('user rank')
 sc = SparkContext(conf=conf)
 
-cities = {
-    'Sydney': [], 
-    'Melbourne': [],
-    'Adelaide': [],
-    'Canberra': []
-}
+cities = {}
+rows = requests.get(f'http://user:pass@34.87.251.230/cities/_all_docs?include_docs=true').json()['rows']
+for city in rows: 
+    cities[city['id']] = []
 
 for city in cities.keys(): 
-    res = requests.get(f'http://user:pass@couchdb:5984/tweets/_partition/{city}/_design/sports/_view/sports_score')
+    res = requests.get(f'http://user:pass@couchdb:5984/tweets/_partition/{city}/_design/enthusiasts/_view/sports_score')
     if res.status_code == 200:
         rows = res.json().get('rows')
         scrdd = sc.parallelize(rows)
