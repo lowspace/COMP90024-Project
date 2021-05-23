@@ -151,8 +151,11 @@ class SportViewSet(viewsets.ViewSet):
             'f1': 'racing',
         }
         for city in cities.keys(): 
+            if city == 'sum':
+                continue
             for to_remove, to_add in merge_to.items():
                 cities[city][to_add] = cities[city].get(to_add, 0) + cities[city].pop(to_remove, 0)
+                print(cities[city][to_add])
         return cities
 
 
