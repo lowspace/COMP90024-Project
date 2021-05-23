@@ -212,10 +212,12 @@
       let temp = response["total"];
       let temps = Object.entries(temp).sort((a,b) => b[1]-a[1]);
       sportlabel=[
-        temps[0][0],temps[1][0],temps[2][0],temps[3][0],temps[4][0],temps[5][0]
+        temps[0][0],temps[1][0],temps[2][0],temps[3][0],temps[4][0],
+        temps[5][0],temps[6][0],temps[7][0],temps[8][0],temps[9][0]
       ];
       sportcounts=[
-        temps[0][1],temps[1][1],temps[2][1],temps[3][1],temps[4][1],temps[5][1]
+        temps[0][1],temps[1][1],temps[2][1],temps[3][1],temps[4][1],
+        temps[5][1],temps[6][1],temps[7][1],temps[8][1],temps[9][1]
       ];
       let labels7 = sportlabel
       let barchartdata7 = sportcounts
@@ -229,9 +231,17 @@
             'rgba(255, 206, 86, 0.5)',
             'rgba(75, 192, 192, 0.5)',
             'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
           ],
           borderColor: [
+            'rgba(255,99,132,0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
@@ -499,7 +509,7 @@
     let barcharttitle7 = 'Most Popular Sports';
     let barchartdata8 = sportpertweet;
     let barcharttitle8 = 'Total Sport Tweets/Tweets Ratio';
-    let labels7 = ['sport1','sport2','sport3','sport4','sport5','sport6']
+    let labels7 = ['sport1','sport2','sport3','sport4','sport5', 'sport6', 'sport7', 'sport8','sport9','sport10']
     let UsersBar7={
       datasets: [{
         data: barchartdata7,
@@ -510,9 +520,17 @@
           'rgba(255, 206, 86, 0.5)',
           'rgba(75, 192, 192, 0.5)',
           'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)',
           'rgba(255, 206, 86, 0.5)',
+          'rgba(75, 192, 192, 0.5)',
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)',
         ],
         borderColor: [
+          'rgba(255,99,132,0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
           'rgba(255,99,132,0.6)',
           'rgba(54, 162, 235, 0.6)',
           'rgba(255, 206, 86, 0.6)',
@@ -777,8 +795,6 @@
       canvas7.className = 'show';
       canvas8.className = 'show';
 
-      // statajax('/analyser/sports/stats_all/',popularsport)
-
       let barchartdata7 = sportcounts;
       let barcharttitle7 = 'Most Popular Sports';
       let barchartdata8 = sportpertweet
@@ -795,9 +811,17 @@
             'rgba(255, 206, 86, 0.5)',
             'rgba(75, 192, 192, 0.5)',
             'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
           ],
           borderColor: [
+            'rgba(255,99,132,0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
