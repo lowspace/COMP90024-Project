@@ -71,7 +71,6 @@ class UserViewSet(viewsets.ViewSet):
             
         count = {}
         for city in couch.geocode().keys():
-            print(city)
             res = couch.get(f'users/_design/cities/_view/{city}')
             if res.status_code == 200 and res.json().get('rows', []):
                 count[city] = res.json().get('rows', [])[0]["value"]   
@@ -99,7 +98,7 @@ class UserViewSet(viewsets.ViewSet):
 
         rank.sort(key=lambda x : x['score'], reverse=True)
  
-        print(f'rank {rank}')               
+        print(f'[rank] {rank}')               
         if len(rank) > 0:
             rank[0]['name'] = '🥇 ' + rank[0]['name']
             rank[1]['name'] = '🥈 ' + rank[1]['name']
@@ -142,9 +141,13 @@ class SportViewSet(viewsets.ViewSet):
     def deduplicate(self, cities):
         merge_to = {
             'afl': 'footy', 
+            'rugby': 'footy', 
+            'jump': 'jumps', 
+            'ran': 'run', 
+            'jog': 'run', 
             'bike': 'cycling',
             'bicycle': 'cycling',
-            'f1': 'racing'
+            'f1': 'racing',
         }
         for city in cities.keys(): 
             for to_remove, to_add in merge_to.items():
@@ -293,10 +296,9 @@ class JobsViewSet(viewsets.ViewSet):
 
     def start_search(self, request): 
         res = couch.head('')
-        print(res.status_code)
         if res.status_code == 500:
             return Response({'error': res.json()})
-        print(request.data)
+
         new_users = request.data.get('new_users', '1') if request.data is not None else None
         try:
             new_users = int(new_users)
@@ -345,20 +347,16 @@ class JobsViewSet(viewsets.ViewSet):
     
     def stop_search(self): 
         res = couch.head('')
-        print(res.status_code)
         if res.status_code == 500:
             return Response({'error': res.json()})
 
         res = couch.get('jobs/search')
-        if res.status_code == 200 and res.json().get('status') != 'running':
-            return Response(res.json(), 403)
-        else: 
-            doc = res.json()
-            doc['status'] = 'idle'
-            doc['nodes'] = []
-            doc['result'] = 'Job stopped.'
-            response = couch.updatedoc('jobs/search', doc)
-            return Response(response.json(), response.status_code)
+        doc = res.json()
+        doc['status'] = 'idle'
+        doc['nodes'] = []
+        doc['result'] = 'Job stopped.'
+        response = couch.updatedoc('jobs/search', doc)
+        return Response(response.json(), response.status_code)
 
     def stop_stream(self):
         res = couch.head('')
@@ -366,15 +364,12 @@ class JobsViewSet(viewsets.ViewSet):
             return Response({'error': res.json()})
 
         res = couch.get('jobs/stream')
-        if res.status_code == 200 and res.json().get('status') != 'running':
-            return Response(res.json(), 403)
-        else: 
-            doc = res.json()
-            doc['status'] = 'idle'
-            doc['nodes'] = []
-            doc['result'] = 'Job stopped.'
-            response = couch.updatedoc('jobs/stream', doc)
-            return Response(response.json(), response.status_code)
+        doc = res.json()
+        doc['status'] = 'idle'
+        doc['nodes'] = []
+        doc['result'] = 'Job stopped.'
+        response = couch.updatedoc('jobs/stream', doc)
+        return Response(response.json(), response.status_code)
     
     def stop_update(self):
         res = couch.head('')
@@ -382,15 +377,12 @@ class JobsViewSet(viewsets.ViewSet):
             return Response({'error': res.json()})
 
         res = couch.get('jobs/update')
-        if res.status_code == 200 and res.json().get('status') != 'running':
-            return Response(res.json(), 403)
-        else: 
-            doc = res.json()
-            doc['status'] = 'idle'
-            doc['nodes'] = []
-            doc['result'] = 'Job stopped.'
-            response = couch.updatedoc('jobs/update', doc)
-            return Response(response.json(), response.status_code)
+        doc = res.json()
+        doc['status'] = 'idle'
+        doc['nodes'] = []
+        doc['result'] = 'Job stopped.'
+        response = couch.updatedoc('jobs/update', doc)
+        return Response(response.json(), response.status_code)
 
 class InitialiserViewSet(viewsets.ViewSet):
     # GET analyser/initialiser/
