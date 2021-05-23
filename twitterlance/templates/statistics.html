@@ -195,7 +195,6 @@
     let medianage;
     let umemploy;
     let edu;
-
     let middleagescore;
     let unempscore;
     let eduscore;
@@ -205,7 +204,7 @@
       let temp = response["tweet_stats"];
       console.log(temp)
       tweet4city = [
-        temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+        temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"],temp["Brisbane"],temp["Perth"]
       ];
       ttweet.innerHTML = temp["total_tweets"].toLocaleString()
     }
@@ -214,7 +213,7 @@
       let temp = response["user_stats"];
       tuser.innerHTML = temp["total_users"].toLocaleString();
       user4city=[
-        temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+        temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"],temp["Brisbane"],temp["Perth"]
       ];
     }
 
@@ -229,8 +228,8 @@
         temps[0][1],temps[1][1],temps[2][1],temps[3][1],temps[4][1],
         temps[5][1],temps[6][1],temps[7][1],temps[8][1],temps[9][1]
       ];
-      let labels7 = sportlabel;
-      let barchartdata7 = sportcounts;
+      let labels7 = sportlabel
+      let barchartdata7 = sportcounts
       let barcharttitle7 = 'Most Popular Sports';
       let UsersBar7={
         datasets: [{
@@ -280,15 +279,17 @@
       let temp = response["sum"];
       tsport.innerHTML = temp["total"].toLocaleString();
       sport4city=[
-        temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"]
+        temp["Sydney"],temp["Melbourne"],temp["Adelaide"],temp["Canberra"],temp["Brisbane"],temp["Perth"]
       ];
       sportpertweet = [
         ((sport4city[0]/tweet4city[0])*100).toFixed(2),
         ((sport4city[1]/tweet4city[1])*100).toFixed(2),
         ((sport4city[2]/tweet4city[2])*100).toFixed(2),
-        ((sport4city[3]/tweet4city[3])*100).toFixed(2)
+        ((sport4city[3]/tweet4city[3])*100).toFixed(2),
+        ((sport4city[4]/tweet4city[4])*100).toFixed(2),
+        ((sport4city[5]/tweet4city[5])*100).toFixed(2)
       ]
-      let sportscore = [0,0,0,0];
+      let sportscore = [0,0,0,0,0,0]
       for (let i=0; i<sportpertweet.length; i++){
         for (let j=0; j<sportpertweet.length; j++){
           if (sportpertweet[i]>=sportpertweet[j]){
@@ -312,16 +313,20 @@
             'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
             'rgba(75, 192, 192, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 140, 25, 0.5)',
           ],
           borderColor: [
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
             'rgba(75, 192, 192, 0.6)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 140, 25, 0.5)',
           ],
           borderWidth: 0
         }],
-        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra", "Brisbane", "Perth"]
       }
 
       let optionBar8={
@@ -450,24 +455,32 @@
             aurindata["Greater Melbourne"]["male"],
             aurindata["Greater Adelaide"]["male"],
             aurindata["Australian Capital Territory"]["male"],
+            aurindata["Greater Brisbane"]["male"],
+            aurindata["Greater Perth"]["male"],
           ];
           income = [
             aurindata["Greater Sydney"]["income"],
             aurindata["Greater Melbourne"]["income"],
             aurindata["Greater Adelaide"]["income"],
             aurindata["Australian Capital Territory"]["income"],
+            aurindata["Greater Brisbane"]["income"],
+            aurindata["Greater Perth"]["income"],
           ];
           medianage = [
             aurindata["Greater Sydney"]["age"],
             aurindata["Greater Melbourne"]["age"],
             aurindata["Greater Adelaide"]["age"],
             aurindata["Australian Capital Territory"]["age"],
+            aurindata["Greater Brisbane"]["age"],
+            aurindata["Greater Perth"]["age"],
           ];
           umemploy = [
             aurindata["Greater Sydney"]["unemployment"],
             aurindata["Greater Melbourne"]["unemployment"],
             aurindata["Greater Adelaide"]["unemployment"],
             aurindata["Australian Capital Territory"]["unemployment"],
+            aurindata["Greater Brisbane"]["unemployment"],
+            aurindata["Greater Perth"]["unemployment"],
           ];
           edu = {
             "postgraduate":[
@@ -475,24 +488,40 @@
                     aurindata["Greater Melbourne"]["education"]["postgraduate"],
                     aurindata["Greater Adelaide"]["education"]["postgraduate"],
                     aurindata["Australian Capital Territory"]["education"]["postgraduate"],
+                    aurindata["Greater Brisbane"]["education"]["postgraduate"],
+                    aurindata["Greater Perth"]["education"]["postgraduate"],
             ],
             "bachelor":[
                     aurindata["Greater Sydney"]["education"]["bachelor"],
                     aurindata["Greater Melbourne"]["education"]["bachelor"],
                     aurindata["Greater Adelaide"]["education"]["bachelor"],
                     aurindata["Australian Capital Territory"]["education"]["bachelor"],
+                    aurindata["Greater Brisbane"]["education"]["bachelor"],
+                    aurindata["Greater Perth"]["education"]["bachelor"],
             ],
             "advance":[
                     aurindata["Greater Sydney"]["education"]["advance"],
                     aurindata["Greater Melbourne"]["education"]["advance"],
                     aurindata["Greater Adelaide"]["education"]["advance"],
                     aurindata["Australian Capital Territory"]["education"]["advance"],
+                    aurindata["Greater Brisbane"]["education"]["advance"],
+                    aurindata["Greater Perth"]["education"]["advance"],
             ],
             "certificate":[
-                    aurindata["Greater Sydney"]["education"]["certificate"],
-                    aurindata["Greater Melbourne"]["education"]["certificate"],
-                    aurindata["Greater Adelaide"]["education"]["certificate"],
-                    aurindata["Australian Capital Territory"]["education"]["certificate"],
+              aurindata["Greater Sydney"]["education"]["certificate"],
+              aurindata["Greater Melbourne"]["education"]["certificate"],
+              aurindata["Greater Adelaide"]["education"]["certificate"],
+              aurindata["Australian Capital Territory"]["education"]["certificate"],
+              aurindata["Greater Brisbane"]["education"]["certificate"],
+              aurindata["Greater Perth"]["education"]["certificate"],
+            ],
+            "other":[
+              aurindata["Greater Sydney"]["education"]["other"],
+              aurindata["Greater Melbourne"]["education"]["other"],
+              aurindata["Greater Adelaide"]["education"]["other"],
+              aurindata["Australian Capital Territory"]["education"]["other"],
+              aurindata["Greater Brisbane"]["education"]["other"],
+              aurindata["Greater Perth"]["education"]["other"],
             ],
           };
 
@@ -554,16 +583,21 @@
             'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
             'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 199, 132, 0.5)',
+            'rgba(255,33,132,0.4)',
+
           ],
           borderColor: [
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
             'rgba(255,99,132,0.6)',
+            'rgba(255,206,132,0.6)',
+            'rgba(255,33,132,0.4)',
           ],
           borderWidth: 0
         }],
-        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra", "Brisbane", "Perth"]
       }
       let optionBar1={
         title: {display: true,text: barcharttitle1,fontSize: 30,},
@@ -595,10 +629,12 @@
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
             'rgba(255,99,132,0.6)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
           ],
           borderWidth: 0
         }],
-        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+        labels: ["Sydney", "Melbourne", "Adelaide", "Canberra", "Brisbane", "Perth"]
       }
       let optionBar2={
         title: {display: true,text: barcharttitle2,fontSize: 30,},
@@ -740,16 +776,20 @@
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
               'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
               'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderWidth: 0
           }],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra", "Brisbane", "Perth"]
         }
 
         let optionBar3={
@@ -781,7 +821,7 @@
             backgroundColor: 'rgba(75, 192, 192, 0.5)'
           }
           ],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra", "Brisbane", "Perth"]
         }
         let optionBar4= {
           responsive: true,
@@ -822,6 +862,8 @@
           (tweet4city[1]/user4city[1]).toFixed(2),
           (tweet4city[2]/user4city[2]).toFixed(2),
           (tweet4city[3]/user4city[3]).toFixed(2),
+          (tweet4city[4]/user4city[4]).toFixed(2),
+          (tweet4city[5]/user4city[5]).toFixed(2),
         ]
 
         console.log(tweet4city)
@@ -842,16 +884,20 @@
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
               'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
               'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderWidth: 0
           }],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra", "Brisbane", "Perth"]
         }
 
         let optionBar5={
@@ -873,16 +919,20 @@
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
               'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
               'rgba(255,99,132,0.6)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderWidth: 0
           }],
-          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra"]
+          labels: ["Sydney", "Melbourne", "Adelaide", "Canberra", "Brisbane", "Perth"]
         }
 
         let optionBar6={
