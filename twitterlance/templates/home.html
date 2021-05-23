@@ -154,9 +154,10 @@
                 <input type="number" class="form-control" min="1" max="1000" placeholder="Input search quantity">
                 <span class="input-group-btn">
                 <button disabled="disabled" class="btn btn-default" type="button" style="margin-right: 5px">Add New Users</button>
-                <button disabled="disabled" class="btn btn-default" type="button" style="margin-right: 5px">Search User Tweets</button>
+                <button disabled="disabled" class="btn btn-default" type="button">Search User Tweets</button>
+                <button disabled="disabled" class="btn btn-default" type="button" style="margin-right: 5px">Stop</button>
                 <button disabled="disabled" class="btn btn-default" type="button">Start Stream</button>
-                <button disabled="disabled" class="btn btn-default" type="button">Stop Stream</button>
+                <button disabled="disabled" class="btn btn-default" type="button">Stop</button>
                 </span>
               </div>
             </div>
@@ -180,8 +181,9 @@
     console.log(btn)
     let searchbtn = btn[0];
     let updatebtn = btn[1];
-    let startstreambtn = btn[2];
-    let stopstreambtn = btn[3];
+    let stopupdatebtn = btn[2]
+    let startstreambtn = btn[3];
+    let stopstreambtn = btn[4];
     let input = document.getElementsByTagName("input")[0].value;
 
     function startjobstatus(url_,status,btn){
@@ -226,8 +228,8 @@
         },
       })
     }
+    stopjobstatus("/analyser/jobs/update/",streamstatus,stopupdatebtn);
     stopjobstatus("/analyser/jobs/stream/",streamstatus,stopstreambtn);
-
 
     function searchjobcontrol(url_,data_){
       $.ajax({
@@ -302,6 +304,10 @@
     updatebtn.addEventListener('click',function(){
       jobcontrol("/analyser/jobs/update/");
       updatebtn.disabled=true;
+    })
+    stopupdatebtn.addEventListener('click',function(){
+      stopjobcontrol("/analyser/jobs/update/");
+      stopupdatebtn.disabled=true;
     })
     startstreambtn.addEventListener('click',function(){
       jobcontrol("/analyser/jobs/stream/");

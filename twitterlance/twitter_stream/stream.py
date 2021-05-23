@@ -207,4 +207,5 @@ def run():
         except Exception as e:
             print(e)
         except AssertionError: 
+            print('[stream] User interruptted.')
             break
