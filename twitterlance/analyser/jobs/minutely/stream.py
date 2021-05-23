@@ -17,7 +17,7 @@ class Job(MinutelyJob):
         time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/stream/')
         if res.status_code == 404: 
-            print("Have not found the stream doc in jobs database.")
+            print("[stream] Have not found the stream doc in jobs database.")
             return 
         doc = res.json()
 

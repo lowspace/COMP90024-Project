@@ -206,6 +206,7 @@ def run():
                 print("Have not found the stream doc in jobs database.")
                 return 
             if res.json().get('status', '') == 'idle':
+                print('[stream] Stream job stopped.')
                 return 
 
         except Exception as e:

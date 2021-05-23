@@ -51,7 +51,7 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None, c
             # convert search results into Json file
             tweets = toJson(api.search(q = query, geocode = geocode, count = 200, max_id = maxid))
         except:
-            print(f'NEW Have retrieved {count}/{rate_limit}, but unable to continue on this token.')
+            print(f'[search] NEW Have retrieved {count}/{rate_limit}, but unable to continue on this token.')
             return False, maxid, count # to be continued
         if len(tweets) != 0 and count < rate_limit: # search query return tweets
             for tweet in tweets: # add brand new users to save list
@@ -74,13 +74,13 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None, c
                         success = True
                         break
                     else:
-                        print(f'NEW Retries {retries}, {res.status_code} at user_search.')
+                        print(f'[search] NEW Retries {retries}, {res.status_code} at user_search.')
                 except Exception as e: # connection error
-                    print(f'NEW Retries {retries}, user saving progress: {str(e)}')
+                    print(f'[search] NEW Retries {retries}, user saving progress: {str(e)}')
                     time.sleep(10)
                 retries += 1
             if success == False:
-                print("NEW user search failed at connection error at {maxid}.")
+                print("[search] NEW user search failed at connection error at {maxid}.")
             else:
                 t2 = time.time()
                 count += len(new_users)
@@ -89,7 +89,7 @@ def search_user(query: str, city: str, api, rate_limit = 10, latest_id = None, c
                 print('NEW Estimated time to complete {t:.3f} mins.'.format(t = (rate_limit-count)*(t2-t1)/count/60 if count != 0 else 0))  
                 maxid = str(tweets[-1]['id']-1)             
         else: # search query return None
-            print(f'NEW Have retrieved {count}/{rate_limit}, but unable to query more.')
+            print(f'[search] NEW Have retrieved {count}/{rate_limit}, but unable to query more.')
             break
     return True, maxid, count
 
@@ -124,7 +124,7 @@ def run_search(i:int):
                 print('NEW {c} is done.\n\n'.format(c = city))
                 break # next city
             else:
-                print(f'NEW token {i} has been used, max_id is {latest_id}, have added {count} users.')
-    print("NEW USER SEARCH COMPLETED.\n\n")
+                print(f'[search] NEW token {i} has been used, max_id is {latest_id}, have added {count} users.')
+    print("[search] NEW USER SEARCH COMPLETED.\n\n")
 
     return True
