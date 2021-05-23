@@ -428,9 +428,10 @@
         let Barchart10 = new Chart(Bar10, {type: 'horizontalBar', data: UsersBar10, options: optionBar10});
       }
     let aurindata;
+
     $.when(
       $.ajax({
-        url: "/analyser/sports/rank_top3/",
+        url: "/analyser/aurin/",
         type: "get",
         headers:{'Content-Type':'application/json'},
         dataType: "json",
@@ -438,46 +439,55 @@
           aurindata = data;
           console.log(aurindata);
           gender = [
-            aurindata["Melbourne"],
-            aurindata["Adelaide"],
-            aurindata["Canberra"],
-            aurindata["Sydney"],
-            aurindata["Brisbane"],
-            aurindata["Perth"],
+            aurindata["Greater Sydney"]["male"],
+            aurindata["Greater Melbourne"]["male"],
+            aurindata["Greater Adelaide"]["male"],
+            aurindata["Australian Capital Territory"]["male"],
           ];
           income = [
-            aurindata["Melbourne"],
-            aurindata["Adelaide"],
-            aurindata["Canberra"],
-            aurindata["Sydney"],
-            aurindata["Brisbane"],
-            aurindata["Perth"],
+            aurindata["Greater Sydney"]["income"],
+            aurindata["Greater Melbourne"]["income"],
+            aurindata["Greater Adelaide"]["income"],
+            aurindata["Australian Capital Territory"]["income"],
           ];
           medianage = [
-            aurindata["Melbourne"],
-            aurindata["Adelaide"],
-            aurindata["Canberra"],
-            aurindata["Sydney"],
-            aurindata["Brisbane"],
-            aurindata["Perth"],
+            aurindata["Greater Sydney"]["age"],
+            aurindata["Greater Melbourne"]["age"],
+            aurindata["Greater Adelaide"]["age"],
+            aurindata["Australian Capital Territory"]["age"],
           ];
           umemploy = [
-            aurindata["Melbourne"],
-            aurindata["Adelaide"],
-            aurindata["Canberra"],
-            aurindata["Sydney"],
-            aurindata["Brisbane"],
-            aurindata["Perth"],
+            aurindata["Greater Sydney"]["unemployment"],
+            aurindata["Greater Melbourne"]["unemployment"],
+            aurindata["Greater Adelaide"]["unemployment"],
+            aurindata["Australian Capital Territory"]["unemployment"],
           ];
-          edu = [
-            aurindata["Melbourne"],
-            aurindata["Adelaide"],
-            aurindata["Canberra"],
-            aurindata["Sydney"],
-            aurindata["Brisbane"],
-            aurindata["Perth"],
-          ];
-
+          edu = {
+            "postgraduate":[
+                    aurindata["Greater Sydney"]["education"]["postgraduate"],
+                    aurindata["Greater Melbourne"]["education"]["postgraduate"],
+                    aurindata["Greater Adelaide"]["education"]["postgraduate"],
+                    aurindata["Australian Capital Territory"]["education"]["postgraduate"],
+            ],
+            "bachelor":[
+                    aurindata["Greater Sydney"]["education"]["bachelor"],
+                    aurindata["Greater Melbourne"]["education"]["bachelor"],
+                    aurindata["Greater Adelaide"]["education"]["bachelor"],
+                    aurindata["Australian Capital Territory"]["education"]["bachelor"],
+            ],
+            "advance":[
+                    aurindata["Greater Sydney"]["education"]["advance"],
+                    aurindata["Greater Melbourne"]["education"]["advance"],
+                    aurindata["Greater Adelaide"]["education"]["advance"],
+                    aurindata["Australian Capital Territory"]["education"]["advance"],
+            ],
+            "certificate":[
+                    aurindata["Greater Sydney"]["education"]["certificate"],
+                    aurindata["Greater Melbourne"]["education"]["certificate"],
+                    aurindata["Greater Adelaide"]["education"]["certificate"],
+                    aurindata["Australian Capital Territory"]["education"]["certificate"],
+            ],
+          };
         },
         error:function(jqxhr,textStatus,error){
           this.tryCount++;
@@ -500,10 +510,10 @@
 
       //default chart when the page is refreshed
 
-      let barchartdata1 = [0.49,0.49,0.49,0.49];
+      let barchartdata1 = gender;
       let barcharttitle1 = 'Gender Ratio';
-      let barchartdata2 = [36,36,39,35];
-      let barcharttitle2 = 'Medium Age';
+      let barchartdata2 = medianage;
+      let barcharttitle2 = 'Median Age';
 
       let UsersBar1={
         datasets: [{
@@ -513,13 +523,13 @@
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
-            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
           ],
           borderColor: [
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
+            'rgba(255,99,132,0.6)',
           ],
           borderWidth: 0
         }],
@@ -546,13 +556,15 @@
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
-            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
           ],
           borderColor: [
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
+            'rgba(255,99,132,0.6)',
           ],
           borderWidth: 0
         }],
@@ -626,13 +638,13 @@
             'rgba(255, 99, 132, 0.5)',
             'rgba(54, 162, 235, 0.5)',
             'rgba(255, 206, 86, 0.5)',
-            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
           ],
           borderColor: [
             'rgba(255,99,132,0.6)',
             'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
+            'rgba(255,99,132,0.6)',
           ],
           borderWidth: 0
         }],
@@ -681,14 +693,13 @@
         document.getElementById('scenario2').className = 'col-md-3 activate'
         document.getElementById('scenario3').className = 'col-md-3'
 
-        let barchartdata3 = [6.1,6.8,7.8,4.8];
+        let barchartdata3 = umemploy;
         let barcharttitle3 = 'Unemployment Rate';
         let barcharttitle4 = 'Education Levels Ratio';
-        let bachelor = [0.31,0.3,0.26,0.32]
-        let postgraduate = [0.15,0.15,0.11,0.22]
-        let advance = [0.15,0.15,0.15,0.14]
-        let certificate = [0.03,0.03,0.03,0.02]
-        let others = [0.36,0.37,0.45,0.3]
+        let bachelor = edu["bachelor"];
+        let postgraduate = edu["postgraduate"];
+        let advance = edu["advance"];
+        let certificate = edu["certificate"];
 
         let UsersBar3={
           datasets: [{
@@ -698,13 +709,13 @@
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
             ],
             borderWidth: 0
           }],
@@ -787,7 +798,7 @@
         console.log(user4city)
         console.log(tweetperuser)
 
-        let barchartdata5 = [717,672,614,997];
+        let barchartdata5 = income;
         let barcharttitle5 = 'Medium Income ';
         let barchartdata6 = tweetperuser ;
         let barcharttitle6 = 'Tweets Sent per User';
@@ -800,13 +811,13 @@
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
             ],
             borderWidth: 0
           }],
@@ -831,13 +842,13 @@
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
             ],
             borderWidth: 0
           }],
@@ -856,10 +867,8 @@
       })
       //
       document.getElementById('sporttype').addEventListener('click', function(){
-
         canvas7.className = 'show';
         canvas8.className = 'show';
-
         let barchartdata7 = sportcounts;
         let barcharttitle7 = 'Most Popular Sports';
         let barchartdata8 = sportpertweet
@@ -918,13 +927,15 @@
               'rgba(255, 99, 132, 0.5)',
               'rgba(54, 162, 235, 0.5)',
               'rgba(255, 206, 86, 0.5)',
-              'rgba(75, 192, 192, 0.5)',
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
             ],
             borderColor: [
               'rgba(255,99,132,0.6)',
               'rgba(54, 162, 235, 0.6)',
               'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
+              'rgba(255,99,132,0.6)',
             ],
             borderWidth: 0
           }],
