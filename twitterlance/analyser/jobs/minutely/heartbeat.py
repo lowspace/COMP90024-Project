@@ -41,12 +41,12 @@ class Job(MinutelyJob):
                 except: 
                     print(f'{nodename} cannot be connected.')
                     to_remove.append(nodename)
-                    
+
                 # remove based on time
                 previous_timestamp = row['doc']['updated_at']
                 previous_time = datetime.datetime.strptime(previous_timestamp, '%a %b %d %H:%M:%S %z %Y').replace(tzinfo=datetime.timezone.utc) 
                 now_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
-                if now_timestamp - previous_time > datetime.timedelta(minute=5):
+                if now_timestamp - previous_time > datetime.timedelta(minutes=5):
                     to_remove.append(nodename)
 
         for node in to_remove: 
