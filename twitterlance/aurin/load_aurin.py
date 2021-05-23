@@ -75,18 +75,24 @@ def load_data():
     for city in cities:
         cities_profile[city]={}
         cities_profile[city]["death rate"] = getDeath(city)
-        cities_profile[city]["male%"],population = getMales(city)
+        cities_profile[city]["male"],population = getMales(city)
         cities_profile[city]["unemployment"] = getUnemployment(city)
         cities_profile[city]["age"],cities_profile[city]["income"]=getAgeIncome(city)
         cities_profile[city]["housing price"] = getHousingPrice(city)
         cities_profile[city]["education_level"] = getEducation(city)
+        cities_profile[city]["population"] = population 
+
         edu = getEducation(city)
         total = 0
         for k, v in edu.items():
             total += v
+        cities_profile[city]["educated"] = total
+        
         for k, v in edu.items():
-            edu[k] = round( v / total, 2)
+            edu[k] = round( v / population, 2)
+        edu['other'] = 1 - round( total / population, 2)
         cities_profile[city]["education"] = edu
+
 
             
     for key, value in cities_profile.items(): 
