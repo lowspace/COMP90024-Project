@@ -1,6 +1,12 @@
 SHELL=/bin/bash
-* * * * * python /code/manage.py runjob heartbeat
-* * * * * python /code/manage.py runjob search
-* * * * * python /code/manage.py runjob stream
-* * * * * python /code/manage.py runjob update
-0 * * * * python /code/manage.py runjob user_rank
+* * * * * python /code/manage.py runjob heartbeat >> /code/heartbeat.log 2>> /code/error.log
+* * * * * python /code/manage.py runjob search >> /code/search.log 2>> /code/error.log
+* * * * * python /code/manage.py runjob stream >> /code/stream.log 2>> /code/error.log
+* * * * * python /code/manage.py runjob update >> /code/update.log 2>> /code/error.log
+0 * * * * python /code/manage.py runjob user_rank >> /code/user_rank.log 2>> /code/error.log
+* * * * * tail -n 1024 /code/heartbeat.log | tee heartbeat.log
+* * * * * tail -n 1024 /code/search.log | tee /code/search.log
+* * * * * tail -n 1024 /code/stream.log | tee /code/stream.log
+* * * * * tail -n 1024 /code/update.log | tee /code/update.log
+* * * * * tail -n 1024 /code/user_rank.log | tee /code/user_rank.log
+* * * * * tail -n 1024 /code/error.log | tee /code/error.log
