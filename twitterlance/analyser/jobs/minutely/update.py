@@ -17,7 +17,7 @@ class Job(MinutelyJob):
         time.sleep(random.randint(1, 10))  # Delay to avoid the possibility of conflicts
         res = couch.get(f'jobs/update/')
         if res.status_code == 404: 
-            print("Have not found the search file in jobs database.")
+            print("[update] Have not found the search file in jobs database.")
             return 
         doc = res.json()
         if doc['status'] != 'ready':
@@ -33,7 +33,7 @@ class Job(MinutelyJob):
 
         couch.updatedoc(f'jobs/update/', doc)
 
-        print('Update starting...')
+        print('[update] Update starting...')
         search_update.run_update()
         # Job done on this node
         doc = couch.get(f'jobs/update/').json()
@@ -48,4 +48,4 @@ class Job(MinutelyJob):
         try: 
             self.do()
         except Exception as e: 
-            print(str(e))
+            print(f'[update]{str(e)}')

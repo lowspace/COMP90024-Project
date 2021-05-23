@@ -38,15 +38,15 @@ def search_tweet(user: dict, api, timeline_limit= 400):
     try:
         new_tweets = toJson(api.user_timeline(user_id = uid, count = 200))
     except Exception as e:
-        print(f"[search] UPDATE First trial failed, we can try another token: {str(e)}")
+        print(f"[update] UPDATE First trial failed, we can try another token: {str(e)}")
         return False
 
     while True: # get the tweets
 
         # stop the job if the user asked
         res = couch.get(f'jobs/stream/')
-        assert res.status_code != 404, '[search] Job not found in Jobs.'
-        assert res.json().get('status', '') != 'idle', '[search] Job stopped.'
+        assert res.status_code != 404, '[update] Job not found in Jobs.'
+        assert res.json().get('status', '') != 'idle', '[update] Job stopped.'
 
         if len(new_tweets) == 0: # no tweet returns
             break
@@ -56,13 +56,13 @@ def search_tweet(user: dict, api, timeline_limit= 400):
                 tweet = tweet_2_dict(tweet, city) # convert tweet to be structured
                 tweets.append(tweet)
             if len(tweets) >= timeline_limit: # some users have a large timeline
-                print("[search] UPDATE for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
+                print("[update] UPDATE for each user, retrieve {l} tweets maximally".format(l = timeline_limit))
                 break
             try:
                 new_tweets = api.user_timeline(user_id = uid, count = 200, max_id = maxid)
                 new_tweets = toJson(new_tweets)
             except:
-                print("[search] UPDATE Error occurs in the progress at tid, {t} of uid,{u}".format(t = maxid, u = uid))
+                print("[update] UPDATE Error occurs in the progress at tid, {t} of uid,{u}".format(t = maxid, u = uid))
                 return False # move to next token
         else:
             for tweet in new_tweets:
@@ -78,18 +78,18 @@ def search_tweet(user: dict, api, timeline_limit= 400):
                 user['update_timestamp'] = couch.now() # update timestamp
                 userres = couch.put(f'users/{uid}', user)
                 if userres.status_code in [200, 201, 202]: 
-                    print('[search] UPDATE the length of the timeline is {l}'.format(l = len(tweets)))
-                    print(f'[search] UPDATE done at the {retries} retries.')
+                    print('[update] UPDATE the length of the timeline is {l}'.format(l = len(tweets)))
+                    print(f'[update] UPDATE done at the {retries} retries.')
                     return True
                 else:
-                    print(f'[search] UPDATE Retries {retries}, {userres.status_code} at userres.')
+                    print(f'[update] UPDATE Retries {retries}, {userres.status_code} at userres.')
             else:
-                print(f'[search] UPDATE Retries {retries}, {tweetres.status_code} at tweetres.')
+                print(f'[update] UPDATE Retries {retries}, {tweetres.status_code} at tweetres.')
         except Exception as e: # connection error
-            print(f'[search] UPDATE Retries {retries}, tweets saving progress: {str(e)}')
+            print(f'[update] UPDATE Retries {retries}, tweets saving progress: {str(e)}')
             time.sleep(10)
         retries += 1
-    print("[search] UPDATE search tweet failed at connection error at the last.")
+    print("[update] UPDATE search tweet failed at connection error at the last.")
     return False
 
 def get_api(tokens, i): 
@@ -109,23 +109,23 @@ def assign_users():
         for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
             users.append(row['doc'])
     except Exception as e:
-        print(f'[search] UPDATE Unable to get ulist due to {e}.')
-        print('[search] UPDATE the machine will wait for another 10 mins, then try again.')
+        print(f'[update] UPDATE Unable to get ulist due to {e}.')
+        print('[update] UPDATE the machine will wait for another 10 mins, then try again.')
         time.sleep(200) # wait for data compaction
         for row in couch.get('users/_all_docs?include_docs=true').json()['rows']:
             users.append(row['doc'])
-        print('[search] UPDATE Success to get ulist after waiting 10 mins.')
+        print('[update] UPDATE Success to get ulist after waiting 10 mins.')
 
     # Get node index
     index = -1
     rows = couch.get('nodes/_all_docs').json()['rows']
-    print(f'[search] Nodes: {rows}')
+    print(f'[update] Nodes: {rows}')
     if rows is None:
         index = 0
     else: 
         for i in range(len(rows)): 
             row = rows[i]
-            print(f'[search] {row["id"]} == {settings.DJANGO_NODENAME}')
+            print(f'[update] {row["id"]} == {settings.DJANGO_NODENAME}')
             if row['id'] == settings.DJANGO_NODENAME:
                 index = i
     workers = len(rows) if rows is not None else 1
@@ -140,7 +140,7 @@ def assign_users():
     start = assign_list[index] # closed at left, open at the right
     end = assign_list[index + 1] - 1 
 
-    print(f'[search] UPDATE update start from user {start} ends at user {end}.')
+    print(f'[update] UPDATE update start from user {start} ends at user {end}.')
     users = users[start:end]
     random.shuffle(users)
 
@@ -155,7 +155,7 @@ def run_update():
 
 
     users, index = assign_users()
-    print(f'[search] {len(users)}:{index}')
+    print(f'[update] {len(users)}:{index}')
 
     # for timelines of users
     t0 = time.time()
@@ -184,12 +184,12 @@ def run_update():
                     break
             if job == True:
                 t2 = time.time()
-                print('[search] UPDATE {u} in {c} is done.'.format(u = user["_id"], c = user['city']))
-                print('[search] UPDATE success to update {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
-                print('[search] UPDATE Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t0)/count))
-                print('[search] UPDATE Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
-                print('[search] UPDATE Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t0)/count/60, i = index))
-                print('[search] UPDATE \n')
+                print('[update] UPDATE {u} in {c} is done.'.format(u = user["_id"], c = user['city']))
+                print('[update] UPDATE success to update {c}/{t} users into CouchDB'.format(c = count, t = len(users)))
+                print('[update] UPDATE Cost {t:.3f} seconds for this user; average cost time {s:.3f} seconds for each user'.format(t = t2-t1, s = (t2-t0)/count))
+                print('[update] UPDATE Total cost time is {t:.3f} mins.'.format(t = (t2 - t0)/60))
+                print('[update] UPDATE Estimated time to complete {t:.3f} mins at instance {i}.'.format(t = (len(users)-count)*(t2-t0)/count/60, i = index))
+                print('[update] UPDATE \n')
                 break # next user
             else:
-                print('[search] UPDATE move to next token and continue to search {u} in {c}.'.format(u = user["_id"], c = user['city']))
+                print('[update] UPDATE move to next token and continue to search {u} in {c}.'.format(u = user["_id"], c = user['city']))
