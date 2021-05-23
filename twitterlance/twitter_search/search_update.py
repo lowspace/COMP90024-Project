@@ -141,8 +141,8 @@ def assign_users():
     end = assign_list[index + 1] - 1 
 
     print(f'[search] UPDATE update start from user {start} ends at user {end}.')
-    random.shuffle(users)
     users = users[start:end]
+    random.shuffle(users)
 
     return users, index
 
