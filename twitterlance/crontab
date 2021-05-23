@@ -1,5 +1,4 @@
 SHELL=/bin/bash
-* * * * * printenv > /code/cronenv
 * * * * * python /code/manage.py runjob heartbeat
 * * * * * python /code/manage.py runjob search
 * * * * * python /code/manage.py runjob stream
