@@ -170,7 +170,6 @@ def run_update():
             if previous_timestamp == None:
                 job = search_tweet(user, api, 3000)
             else:
-                break; # temp disabled for data fixes.
                 previous_timestamp = datetime.datetime.strptime(previous_timestamp, '%a %b %d %H:%M:%S %z %Y').replace(tzinfo=datetime.timezone.utc) 
                 now_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
                 time_diff = now_timestamp - previous_timestamp
