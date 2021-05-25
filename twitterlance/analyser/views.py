@@ -13,7 +13,6 @@ class TweetViewSet(viewsets.ViewSet):
     # GET analyser/sports/
     def list(self, request):
         actions = {
-            'tweets/:id': 'Get single tweet',
             'stats': 'Get the stats of tweets',
             'sports': 'sport tweets total'
         }
