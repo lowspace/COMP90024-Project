@@ -23,3 +23,4 @@ Team: 39
 |-------------------|:-------------------|:----------------------------------------------|
 | ./deployment/  | Deployment scripts | Zihao Yang <br>Zihao Hu <br>Yuqi Zhang      
 | ./twitterlance/       | Major web app controller |Zihao Yang <br>Zihao Hu <br>Yuqi Zhang <br>Xin Li<br> Wei Li | 1252410 <br>977716<br> 777603 <br>1029029<br> 956833 | Melbourne<br> Yichun <br>Tianjin<br> Melbourne<br> Chengdu 
+| ./AURIN\ and\ Sports/ | Aurin Data pre-processing | Xin Li
