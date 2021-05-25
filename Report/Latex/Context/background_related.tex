@@ -1,0 +1,17 @@
+\section{Background And Related Work}
+\subsection{Introduction to MRC}
+Melbourne Research Cloud (MRC) is a largely Infrastructure-as-a-Service and is managed by Research Computing Services. MRC consists of almost 20000 virtual cores. It provides raw IT infrastructure and special resources like GPGPUs, private networking, load balancing, and DNS. By using MRC, researchers can access a computer quickly and build complex software with low startup costs\cite{mrc}.
+
+\subsection{MapReduce and MPI}
+
+At the design phase of this project, data analysis and Twitter Harvester are designed to be parallelised and distributed. Multiple parallel processing methods are evaluated, including OpenMP, MPI, and MapReduce. MapReduce and Apache Spark RDD are identified to be the best-fit data analysis method in this research. To keep the simplicity, a simple parallel model that resembles the MPI model is designed and implemented for the Twitter harvester.
+
+Kumar and Rahman compared the performance between MPI and Apache Spark RDD in an experiment on Twitter Sentiment Analysis \cite{kumar_rahman_2017}. They developed a C++ program that runs on MPI and a Spark job implemented in Scala. Both programs are benchmarked on datasets from 200GB to 1TB. Results revealed that MPI consumes significantly less time than the Spark job because they were able to implement optimized memory allocation and task scheduling at a finely detailed level, while Spark encapsulates the program details. Another factor is that programs compiled in C++ run faster than Scala. 
+
+Experiments from Kang, et al. \cite{kang_lee_lee_2015} compared the performance and usability of OpenMP, MPI, and MapReduce in the all-pairs-shortest-path problem. It was clear that OpenMP is only suitable for small problems, while MPI is suitable for the computation-intensive problem with moderate data size, and MapReduce has its advantage in large data size and the job does not have iterative processing. 
+
+Twitterlance is a project that focuses on simple data analysis on a large dataset and does not require intensive computation. MapReduce is, therefore, the best choice for the data analysis model in this case. 
+
+To parallelize the Twitter harvester, MapReduce might not be a good fit as the harvester runs in long iterative processes. The only result of the harvester is to save data to the database, which is not performance intensive. In this case, MPI or OpenMP bring excessive complexity to the system. Therefore, we designed a parallel model that divides the harvesting targets evenly across nodes via a shared database in CouchDB. 
+
+The detailed implementations are explained in the following sections.   

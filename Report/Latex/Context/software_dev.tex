@@ -1,0 +1,31 @@
+\section{Software Development}
+
+\subsection{Team Organisation}
+
+Team 39 involves five developers. Zihao Yang was mainly responsible for the back-end development along with the system integration and deployment of the applications with Docker and Docker Swarm. Wei Li focused on Twitter harvesters, back-end data processing, and job control. Yuqi Zhang’s job was mostly Twitter harvester development and chart visualization in the user interface. Xin Li was primarily responsible for data analysis and map visualization in the user interface. Zihao Hu mainly focused on the front-end and Twitter harvesters. Apart from their major focuses, each team member also contributed to other people’s jobs upon necessity. For example, Zihao Yang optimized the front-end. Zihao Hu wrote the Ansible scripts for MRC instances creation. Yuqi Zhang and Xin Li made significant efforts in defining the research scope, as well as creating views of CouchDB a Django. Wei Li helped debug the integration. The organization and task allocation firmly ensured the team's productivity and delivery quality. 
+
+\subsection{Development Methods}
+
+\subsubsection{Meeting}
+
+Meetings were held every Monday and Friday. On Monday’s meeting, members firstly show the progress done from the last week and then solve the issue encountered together. After that, weekly tasks are distributed to each member. On Friday’s meeting, we make sure each member is on the track and then solve the issue encountered together. In this project, we fully realized that the key to teamwork lies in timely and centralized communication.
+
+\subsubsection{Trello}
+
+Tasks are distributed and tracked with Trello by simply adding the member's name and the due date under the task. There are five parts on dashboards, ToDo, Underway, Obstacle, Complete, and Denied. On Monday’s meeting, the allocated tasks are put into the ToDo list. When there is a challenge, the member adds it into the Obstacle part, so others get notified and try to address the issue before the next meeting. If the issue is raised which we are not able to solve (due to the limitation of resources, tools, or skills), it is moved into the Denied part. After that, an alternative plan is added to the ToDo list.
+
+\subsubsection{Remote Collaboration during COVID-19}
+
+Completing this assignment in 5 weeks might not be an easy job, especially during COVID-19. As some members are in China, while some are in Melbourne. We are fortunate to have applications and tools provided by the University of Melbourne. All the jobs in this assignment can be completed in time through the internet. For example, our daily communication was through Slack, and tasks are tracked through Trello, all the meetings were held on ZOOM, and our team shared source code on Bitbucket. The biggest challenge for remote collaboration comes from the instability of VPN. The MRC instance is connected through the Cisco AnyConnect. However, the connection can be interrupted anytime when using Cisco AnyConnect in China \textbf{due to limited speed}. Besides, FortiClient VPN can connect to the internet but can not access MRC.
+
+\subsubsection{Pair Programming}
+
+During the development of complex modules such as distributed Twitter harvester job control, we exercised pair programming remotely on a voice call and IDE live to share. Compared to single engineering, coding in pairs significantly reduced the number of human mistakes. It is extremely common that a single engineer keeps thinking about a problem in a loop that does not direct to the right solution. With two people working together, it is much easier to find the best strategies out of discussions. Pair programming may provide more than double the increase of productivity as some insidious mistakes are extremely time-consuming to locate. 
+
+\subsection{Development Process}
+
+We followed short-term iterative development cycles where each week was a sprint. Goals and requirements were set on Monday every week. We firstly started from designing the overall architecture, drafting the analysis problem, setting up the software frameworks, and proof of concepts. In this phase, we were able to prove the feasibility of the architecture and the analysis tasks. In the next week, we began to develop the domain business logic within the chosen software framework, and the database was set up for testing. Then all software components except the load balancer were built into container images and deployed for testing. The rest of the time was consumed by engineering details. By the end of the project, we summarised time consumption for various types of tasks. The largest portion of time was spent on configuration and small adjustments on engineering. This truly showed us how long the journey is for a software product to grow up. 
+
+\subsection{Version Control}
+
+Git is the major version control system adopted in the development cycle. The current repository is hosted on a public \href{https://bitbucket.org/comp90024team39/comp90024-a2/src/master/}{Bitbucket workspace} (\url{https://bitbucket.org/comp90024team39/comp90024-a2/src/master/}). 

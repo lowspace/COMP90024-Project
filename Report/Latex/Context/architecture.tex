@@ -1,0 +1,268 @@
+\section{Architecture and Implementation}
+\begin{figure*}
+\centering
+\includegraphics[width=6in]{Figures/Overview.png}
+\caption{Architecture \label{Architecture}}
+\end{figure*}
+\begin{figure*}
+\centerline{\includegraphics[width=6in]{Figures/swarm-diagram.png}}
+\caption{Docker Swarm Managers \label{Docker Sarm Managers}}
+\label{docker manager}
+\vspace{-0.5cm}
+\end{figure*}
+
+Twitterlance is a distributed system that harvests, stores, and analyses Twitter users and their timelines. To improve the development productivity, the architecture design has been aiming at high scalability, high availability and high automation. High Scalability is supported by the combination of CouchDB, Docker, Docker Swarm, and Ansible. High availability is a design objective embedded in the error handling methods of all software components in the system, while the duplication of services also makes a contribution to this goal. The purpose of high automation is to provide a one-click solution for deployment and scaling. With Ansible and Docker Swarm, it is extremely easy to scale up the data and harvesting/analysis performance when new resources are available on the cloud. The automated deployment is designed for Melbourne Research Cloud only, where the system is currently deployed.
+
+The system conducts two major tasks: data harvesting and data analysis. The process of harvesting consists of two phases: collecting users and collecting tweets, which can be initiated via the home page of the web application. Data analysis is implemented with the integration of Django, CouchDB, and Apache Spark, which are all running as scalable clusters.
+
+The overall architecture is illustrated in Figure \ref{Architecture}, where HAProxy works as an external load balancer outside of the docker swarm. The Swarm load balancer works as a routing mesh that redirects requests to containers across MRC instances. Portainer is a GUI-based docker swarm controller app. Django contains a Twitter harvester and web application, in which the harvesters work in parallel. Apache Spark cluster is used for the data analysis that CouchDB does not well support. Lastly, CouchDB is configured to work as a cluster where the data storage is mounted to the MRC volumes. By default, the system requires a minimum of 3 nodes to run properly. Due to the resource limitation on MRC, Instance 4 has the least resources available, so it is created to test and showcase the scalability of the system.
+
+\subsection{Containerisation}
+\begin{figure*}
+\centering
+\includegraphics[width=6in]{Figures/Network.jpg}
+\caption{External Load Balancer}
+\label{External Load Balancer}
+\vspace{-0.5cm}
+\end{figure*}
+Containers are a type of virtualization technologies that enable developers to encapsulate the software application along with the dependent environment. A container provides a clean environment on top of a choice of the base image. Then developers can package the application and all the dependencies in this environment into an image. This decouples the software package and the actual execution environment, which allows the package to be deployed on any platform easily. 
+
+Instead of virtualizing the hardware, containers virtualize at the operating system level. This allows multiple containers to share the same hardware and operating system components, which is faster to initiate and consumes fewer resources than virtual machines. 
+
+Docker is used as the containerization tool as it has the largest community with abundant open-source resources. Most of our software components are deployed within Docker containers managed as scalable services by Docker swarm orchestration tools. Docker swarm is natively supported by Docker so it does not add as much complexity as using other tools that need extra packages. Docker swarm enables a single entry point of container management across multiple host machines (either virtualized or not). It adds another layer of abstraction, in which developers do not need to be concerned about where containers are deployed. The swarm manager will assign containers in a way that all host machines are balanced on stress. It provides a simple interface for starting and stopping services without having to access all hosts. Each service is bound with a docker image and it can be set to have multiple replicas to form a cluster. Thus we were able to distribute multiple CouchDB, Apache Spark, and Django services across MRC instances and each service structured its own clusters to enable distributed storage and parallel computing. Figure \ref{docker manager} shows how swarm managers are linked to workers, where the maximum of loss is (N-1)/2 managers given N managers \cite{offical_2021}. Since MRC only allocated 4 instances to the system, it is configured to have 2 swarm managers, so that if one manager is down, the swarm can still function. 
+
+
+The only component that is not a part of the Docker swarm is the external load balancer HAProxy, illustrated in Figure \ref{External Load Balancer}. Since the major entry point is one of the host IP, an external load balancer may help balance the requests to the Docker swarm. The network inside the swarm is balanced by the internal routing mesh, where all swarm nodes are balanced. This indicates that a CouchDB requests from any Django node could be sent to any CouchDB node by the routing mesh and the pressure on each CouchDB node should be balanced.
+
+The configuration that enables CouchDB and Apache Spark to work in clusters in Docker swarm adds significant complexity to the development. The major challenge is that IP addresses are hidden and the communication endpoint is replaced by a random docker swarm task ID. Within a container, the IP addresses of other containers are not accessible. Luckily, the Docker swarm supports connection via container hostnames, which is constructed with the pattern $ServiceName.TaskSlot.TaskID$. For example, the below information printed by Docker contains the hostname of the first CouchDB node. The CouchDB nodes on other swarm nodes can access this CouchDB via \url{http://twitterlance\_couchdb.1.x072x072t8wkha8ybxp3iob4a:5984}.
+
+\begin{center}
+\begin{tabular}{ c c c }
+ID & NAME &  ... \\
+x072x072t8wkha8ybxp3iob4a & twitterlance\_couchdb.1 & ... \\
+midibg71gftmjgb04sq747a35 & twitterlance\_couchdb.2 & ... \\
+7us100fy01jyuczeovvadv4vx & twitterlance\_couchdb.3 & ... \\
+\end{tabular}
+\end{center}
+
+Due to the use of proxy in containers on MRC, the hostname ``CouchDB" has to be added to the no\_proxy environment variable in Django containers so that Django can access CouchDB. By accessing the service name as hostname, swarm routing mesh will direct the requests to any node of the service.
+
+\begin{figure*}
+\centerline{\includegraphics[width=6in]{Figures/Couchdb.jpg}}
+\caption{Twitterlance CouchDB Cluster \label{Twitterlance CouchDB Cluster}}
+\end{figure*}
+
+As illustrated in Figure \ref{Twitterlance CouchDB Cluster}, CouchDB is configured to run as a cluster with multiple nodes, where the nodes are distributed on several host machines. Replicas are set to allow data recovery if any part of the infrastructure breaks down. It is set to have each node storing 2 shards, with 3 replicas per shard, which indicates that at most 2 nodes can be down temporarily. It is recommended that the number of CouchDB nodes is a multiple of 2 so that the shards can be distributed evenly.
+
+Since each MRC instance mounts an extra volume, which is significantly larger than the default volume, it would be more flexible to place CouchDB data on this volume. The extra volume is programmatically mounted by the deployment scripts.
+
+Docker supports three types of volumes, where one of them is placed on memory, and Volumes and Bind Mount are placed on the filesystem of the host. Although Volumes are officially recommended by Docker for many reasons, Bind Mount is chosen to be the storage method because it is more suitable for storing persisting data. Given that the data may exist outside of the container lifecycle, especially when services are restarted or redeployed, the existing data can be easily moved or ported to the new database services. An important configuration is that the path of the bind mount must exist on all swarm nodes before deploying the service. 
+
+CouchDB cluster cannot automatically add nodes to cluster on the first-time simultaneous deployment, so Ansible will run a Python script that adds all nodes to the cluster after the first batch of CouchDB tasks are alive. Any new CouchDB node added by scaling up the service is automatically discovered by the existing CouchDB cluster. Most importantly, the configuration, including secrets and cluster settings, must be consistent on every node.  
+
+Docker-compose is configured to assign each CouchDB container a node name with the pattern of $<Service Name>.<Task Slot>.<Task ID>$, so that the containers can communicate with each other. In a working cluster, shard files are registered to be paired with CouchDB node names in the intrinsic databases. If the Docker services are removed or restarted, the CouchDB node name will randomly change, which will cause failures in reading shards. A separate Ansible task initiated by \href{https://bitbucket.org/comp90024team39/comp90024-a2/src/master/deployment/recluster-couchdb.sh}{recluster-couchdb.sh} can be used to fix the mismatching shard-node pairs. 
+
+The Ansible task \href{https://bitbucket.org/comp90024team39/comp90024-a2/src/master/deployment/recluster-couchdb.sh}{recluster-couchdb.sh} gathers all hosts information via \href{https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html}{openstack\_inventory.py} and runs a Python script \href{https://bitbucket.org/comp90024team39/comp90024-a2/src/master/deployment/files/couchdb_cluster/reshard.py}{reshard.py} on every host. This enables developers to link CouchDB and shards by one script. The Python script uses a docker SDK to gather all container information on the node, and bind the local shard file names to the CouchDB service task name in the database. It needs to run on every node because the shard files are distributed across the swarm. 
+
+\subsection{Database}
+
+The application utilizes tweets to do different analysis scenarios, which requires the tweets to have been stored and well-prepared whenever the application needs to refer. Tweets have a standard JSON file structure proposed by the Twitter company, though the relational database is able to store the fields of that structure over different tables, a JSON file including an integral tweet can be fed to the NoSQL database. From this perspective, the application employees CouchDB, an open-source document-oriented NoSQL database, to store data.
+
+\subsubsection{CouchDB}
+The flexible document-based design enables CouchDB to store various types of data, such as AURIN data, tweets, geocodes of the cities, and Twitter API tokens. These data lead to a large volume,  and CouchDB has a promising architecture to handle big data. 
+\begin{itemize}
+    \item CouchDB is a distributed database, which allows users and servers to access and update the same shared data while disconnected and it can be distributed in a cluster instead of a single node to promote the performance. 
+	\item CouchDB provides eventual consistency in its distributed system, which means CouchDB enables a single node to support reading and writing service and synchronizes the changes in the cluster later in incremental replication progress.
+	\item CouchDB uses MapReduce methods to optimize data extraction efficiency.
+\end{itemize}
+CouchDB communication follows representational state transfer (REST) design, which is easy to understand and use as the zen of CouchDB relax. 
+
+\subsubsection{MapReduce}
+Reading information to satisfy users’ needs is always the core of database tasks, and MapReduce allows the database to extract data in a parallel manner. A MapReduce job consists of splitting the data into independent chunks and processing them by a map function parallelly. CouchDB provides many build-in MapReduce methods to obtain data in views, views are the group of data to meet the users’ and servers’ needs,  and this application uses \mintinline{python}{sum} function and \mintinline{python}{count} function. The \mintinline{python}{count} function counts the values of some pre-defined keys, while \mintinline{python}{sum} function counts the occurrence of an object, such as a dictionary or an array. After implementing the above two methods, the CouchDB returns the responses to the frontend ask in a shorted time, such as without MapReduce, CouchDB costs roughly 8s to return the statistical results in \mintinline{python}{users} database; otherwise, CouchDB completes the statistics task in 2s.
+
+\subsubsection{Limitations}
+In practice, though the CouchDB views use MapReduce to reduce the time consuming on grouping data, it still costs a lot of time on a large batch. For example, a view generation job on 10 GB of data will take more than 6 hours to complete at the first time, while updating the view after injection of new data also consumes a few  minutes. During the updating process, the database will compact the new data, and these two tasks make the database unavailable for users and servers to read. Meanwhile, loading all documents from a database or view in CouchDB is somewhat inefficient and inconvenient when the data volume is large. This is caused by the separations of CouchDB servers and couchjs Query servers, which brings significant overheads to the view generation and updates\cite{cd}. Furthermore, it is often inevitable for developers to update the view functions during or after collecting large datasets, in which the view regeneration will dramatically slow down the development progress. A trick can be used to speed up the development, which is separating the view that is changed often into multiple design documents, so that one updated view document does not affect other design documents.\cite{cd2}. During the development, one of our views named ``sport\_score" disappeared from the design documents due to a CouchDB issue, and it needs more than 10 hours to regenerate. We then deployed the view in a separate design document to speed up the indexing. 
+
+Even if small new datasets are gathered progressively while the view only updates for the new data, it still causes an obvious delay in the frontend as the view is inaccessible until a batch process completes in a few seconds or minutes. 
+
+\subsection{Web Application Backend}
+
+All application-level programs are encapsulated in a container within the Django framework. It is the main controller of all the business logic. A typical process of using the application to collect data is:
+
+\begin{enumerate}
+  \item Launch Twitter harvesting in the front-end.
+  \item Django initiates the Twitter harvester scripts.
+  \item The harvester saves data to CouchDB
+  \item CouchDB updates the views with the new data
+\end{enumerate}
+
+Another process that has Apache Spark involved:
+
+\begin{enumerate}
+  \item Django provides a view that calculates the fitness score of each tweet.
+  \item Django submits the Apache Spark job that analyses the top 100 fitness enthusiasts in each city every hour
+  \item Apache Spark cluster process the job with MapReduce and save the conclusion to CouchDB
+\end{enumerate}
+
+
+The process of using the application for visualizing analysis conclusion:
+
+\begin{enumerate}
+  \item The front-end requests the conclusion data from Django
+  \item Django retrieves the views, transforms the data structure, and sends it to the front-end.
+\end{enumerate}
+
+Restful API is designed following its original spirits:
+
+\begin{itemize}
+\item Be able to navigate through the API without having to look at the protocol/blueprint. Each layer of the URL lists all child available resources. For example, the analyzer/ will display available children. analyzer/sports will list its children as well. The resource that does not have a child will return to the resource state.
+\item The Restful resources are all nouns, which indicates that the user should always firstly get, and then modify, followed by a post for update.
+\item PUT method is used to create a resource, while POST is used to modify.
+\end{itemize}
+
+All restful API are listed in the appendix.
+
+MRC proxy needs to be configured correctly in Django containers so that it can access Twitter. A subtle caution is that hostname ``CouchDB" needs to be added to the ``no\_proxy" environment variable so that Django can access CouchDB via \url{http://couchdb:5984/}, which cannot be recognized at the proxy.   
+
+CouchDB Python packages are redundant as CouchDB itself supports restful API. 
+
+\begin{figure*}
+\centerline{\includegraphics[width=6in]{Figures/Django.jpg}}
+\caption{Twitterlance Django Cluster \label{Twitterlance Django Cluster}}
+\end{figure*}
+\begin{figure*}
+\centerline{\includegraphics[width=6in]{Figures/heartbeat.png}}
+\caption{Django Heartbeat \label{Django Node Heartbeat}}
+\end{figure*}
+
+Large-scale Twitter harvesting is extremely time-consuming, where they wait on network response and the Rate limit from Twitter occupies most of the time. In a parallel harvester, the number of nodes and API tokens is the most important factor rather than computation power, as it does not require much computing. Therefore, the system is designed to contain multiple harvesters within the Django framework, which provides the interface to job control. 
+
+The Twitter harvester can be started and stopped by the job control panel in the front end. Jobs are scheduled every minute or hour by cron. Each job will check its status in Jobs database every minute. If it is on a "ready" status, it will start running the Python job and update the status to running. For the parallel tweet search job, every node registers itself in the job document, and the last starting node updates the status to "running". 
+
+The Django cluster model follows the same paradigm as MPI, where the message passing is handled by CouchDB. \ref{Twitterlance Django Cluster} shows that each Django node registers its node name in CouchDB ``nodes" database by a minutely scheduled heartbeat cron job as shown in Figure \ref{Django Node Heartbeat}. One of the difficulties is to remove the disconnected nodes once the service is scaled or re-deployed. In attempting to use the container hostname for connection tests, an issue is that the MRC proxy cannot resolve the hostname. Furthermore, the specific hostnames in the pattern of $ServiceName.TaskSlot.TaskID$ cannot be added to the no\_proxy list due to random $Task ID$ generated at swarm task deployment. Since Django node cannot directly access each other, an algorithm was implemented to periodically compare the heartbeat ``updated\_at" field with the current time, and if a node has not been submitted a heartbeat for over 5 minutes, it will be recognized as disconnected and will be removed from the database. 
+
+When parallel harvesters start, each node will be able to find its own assigned portion by calculating the position of its rank in the total number of nodes. The aggregation of tweets or user data is simply completed by a CouchDB PUT method. Since the only shared information is the total number of nodes and it is only accessed once, the network performance of CouchDB would be sufficient for this task. This does not require MPI or other distributed models and tools so the system complexity remains. 
+
+
+\subsection{Web Application Frontend}
+
+\subsubsection{Framework}
+The front-end includes a homepage, a map page, a statistics page, and some buttons for doing backend control. Figure \ref{frontends} is the structure of our front-end. We managed the main structure of our front-end with Bootstrap, one of the most popular HTML, CSS, and JS library. Most details of our front-end are amended by CSS, for example, the font family, font size, shadows of boxes, and so on. All the static resources were load from the Django backend. Charts in the frontend were plotted with the Char.js library and ECharts library \cite{LI2018136}. The Django backend provided the resource to the frontend with RESTful URL, then the front-end was connected to the backend by jQuery. jQuery is a JavaScript library that simplifies the programming of sending ajax requests to the backend. The following is an overview of the architecture of the front-end system. Data analysis results and the job status will be displayed in the front-end, and we can start the twitter harvest Job by clicking the button in the front-end. 
+\begin{figure*}
+\centerline{\includegraphics[width=6in]{Figures/FrontendStructure.JPG}}
+\caption{Front-end Structure\label{frontends}}
+\end{figure*}
+
+More to mentions, during the view regeneration on new data intake, typically when Twitter stream mode is turned on, the frontend will request the view in a loop of retries, so that the data will be available as soon as the view finishes processing the new data. 
+
+\subsubsection{Map}
+The map page shows the pattern of sports tweets in each city and is created by using JavaScript, CSS, and HTML. While the base map layer is made through Mapbox, which can be accessed through style URL and access token. In general, there are six points representing six cities, namely, Melbourne, Sydney, Adelaide, Brisbane, Perth, and Canberra, whose size depends on the number of tweets. When the user hovers the mouse over any of the points, a pop-up containing descriptive statics, a real-time interactive bar chart, and a line graph appears, which are made by using Apache ECharts. We also included pop-up effects in those two figures just in case the user would be interested to see the exact number. Except for showing the cities’ information, we add a geocoding control by using Mapbox geocoding API, enabling users to search a place on the map.
+
+\subsubsection{Statistics}
+On the statistics page, information from Aurin and Twitter data were shown. At the top of the webpage, three dashboards that include the total number of users, the total number of tweets, and the amount of sport-related tweets were placed. Below the dashboard, there are several charts. The charts show the data extracted from Aurin (median age, gender ratio, education index, unemployment rate, and income) and the analyzed data which are the three scenarios. Three scenarios are the most vibrant city (the city with the highest sport score), popular sports, and fitness enthusiasts. All the charts were made by Chart.Js package and data were getting from CouchDB by using jQuery which details will be explained in the Data Analysis section.
+
+\subsubsection{Limitation}
+The front-end code contains repetition and hard-coded patterns that can be further engineered. For example, The city names could be encapsulated so that the expanded city list is reflected in the front end automatically. 
+
+\subsubsection{Deployment}
+
+The production deployment and scaling have been recorded as a video on \href{https://youtu.be/cqmxZdLdOyk}{Youtube}.
+
+The entire system is designed to be running on Melbourne Research Cloud. Ansible scripts are developed to create security groups, volumes, and instances on the cloud via the OpenStack module. We provided a one-click solution that allows the developer to deploy or scale up the entire system with one click. This section explains the deployment methods. Refer to the appendix for the deployment user guide. Each folder in the project repository contains a readme file that describes the configuration details and code components.
+
+Ansible is chosen as the main deployment tool because it has a large community base, where numerous modules are available to the automation. The deployment is completed in 2 phases: infrastructure and application. Infrastructure includes the creation of security groups, volumes, and instances on Melbourne Research Cloud (MRC). Authentication is ensured by using SSH and MRC master password. The team shares a single project on MRC, where all software components are deployed.
+
+Some nodes in Docker Swarm are marked as $``couchdb=true"$ and $``spark\_master=true"$, which means only the marked instances can deploy CouchDB and spark master. These marks can be changed on Portainer (accessible from the ``Manage" button on the web app) if CouchDB needs to be scaled up. 
+
+One of the main challenges of deployment automation is to obtain the instances' details after they are created. After researching the OpenStack project, we found a convenient Python script \href{https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html}{[openstack\_inventory.py]}, which automatically loads the hosts' information into Ansible, so that the deployment starts from allocating resources on MRC and ends when all applications are configured without asking the developer to find and enter any information manually.
+
+The application deployment process starts with the configuration of the environment, including directories creation, file permission setup, package installation, Docker swarm setup, and then followed by Docker stack deployment and application initialization. Docker Swarm initialization is the most difficult part to develop among the aforementioned steps. It requires one host machine to initialize the Docker swarm, which generates a token for joining the swarm. The initial host needs to find its IP address that is accessible from other hosts. When the join token and IP address are available, all other hosts should run the Docker swarm join command followed by the token and IP address to join the swarm. It is important to ensure that the security groups are correctly set so that all necessary ports are open for Docker swarm, CouchDB, and Django clusters. 
+
+Another challenge is to share the token and swarm the initial host IP address across all Ansible hosts. Initializing swarm and joining swarm are separated as two plays so that the token and IP are saved in a dummy host variable shared across plays before other hosts join the swarm. All the details of the host machines (MRC instances) can be found in the Ansible inventory provided by \href{https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html}{[openstack\_inventory.py]} script.
+
+CouchDB cluster needs an extra script to initialize during the first-time deployment. When CouchDB nodes are ready, Ansible will invoke a Python program that adds all the nodes to the cluster. Environment variables and CouchDB initial configuration need to be set carefully so that the CouchDB nodes can run in the same cluster.
+
+When the deployment is completed, it is recommended to quickly scan the files and verify if all the files, mounts, and directories are in place so that the risk of deployment fault is minimized.
+
+\subsubsection{Partition}
+
+Partitioning is a part of database management where a large table is splitting into multiple small tables, whose main purpose of partition is to speed query. For CouchDB, one of the limitations is that no more than 10 GB of data can be stored in each partition (recommended by the CouchDB developer). To apply partition, as well as query faster and efficiently, once tweets are stored in the database, they are partitioned according to their location by setting each entry’s ID as “{city}: ID”. Therefore, tweets posted in the same city have the same partition key (second indices).  When checking the view result of any city, we can just simply add a city name after “\_partition”. For example, by using $/tweets/\_partition/Melbourne/\_design/sports/\_view\\/total$, we can get the total number of sports tweets in Melbourne. 
+
+We had planned to partition the database by cities, but only realised the 10G size limitation when most data is in place. The solution is to remove the partitions, as either user or city data could potentially grow over 10 GB. The shard reading speed optimisation by partitioning is not a priority as the bottleneck is at the view query  communication with couchjs server. It is estimated to take 2 days to migrate the partition method and the relevant code, which is not a difficult job but CouchDB will consume 10-15 hours to rebuild the views. Due to the limited time-frame, we have left it as is. If the user continues to harvest a very large amount of data, it may potentially hit the size limit.
+
+\subsection{Scalability and Automation}
+
+Scalability and automation are the most important design objectives in Twitterlance to minimises the future deployment and extension work while data grows. Although it is a non-trivial job to develop such a system, they will save a tremendous amount of time for future scaling-up tasks and extensions. In the scope of  Twitterlance, every functionality is encapsulated into a single click solution, such as deployment, start and stop harvesting, and data analysis. Robustness has been maintained at an acceptable level, as it will not break unless under stressful usage. 
+
+The scaling of MRC instances is supported in a separate Ansible script, where new volumes and instances are created. The developer only needs to change a few lines of settings in the Ansible script to specify the new resources. When the MRC instances are ready to run programs, the developer can scale up and down the Docker services in Portainer, which is a tool that we use to manage the swarm. The “Manage” link on the web application is linked to Portainer, where the default username and password are “admin” and “password”. Scaling up Docker services such as harvesters, Apache Spark workers, or CouchDB nodes is as easy as turning on a television in Portainer. The services are set to automatically connect to their clusters.
+
+The user or developer may scale down the computation clusters: Apache Spark or Django, but it will not be meaningful because computation demand will always grow as data grows. It is complicated and not recommended to scale down any CouchDB nodes because CouchDB data is bound with the file system on the host instance on MRC. The removal of CouchDB nodes requires developers to manually merge shard files, which is a complex and risky job for production. Moreover, it is unlikely that we remove any data as the cost of data storage is trivial compared to other services. However, there may be requirements to move CouchDB nodes to other host instances.
+
+\subsection{MRC}
+The Melbourne Research Cloud is Infrastructure-as-a-Service. It provides users with virtual computers, networks, and disks. Users can deploy and run any software, including applications and operating systems on MRC. Users can also choose the version of the operating system, data storage method, application deployment type without contacting any manager. At the same time, users do not need to manage any IT equipment or data center facilities. Most importantly, it is completely free of costs for us. 
+
+MRC is extremely helpful for researchers, for it can provide researchers with a huge amount of processors, lots of memory, and a great number of computers. The virtualization technology of MRC includes application virtualization and resource virtualization, which breaks the boundaries of time and space. Further, MRC supports multiple languages, which is friendly for foreign researchers.
+
+All the services of Twitterlance are deployed on Melbourne Research Cloud. Overall, the MRC instance creation can be fully automated using Ansible and OpenStack SDK. MRC image creation is unused as Docker containers do not depend on environments. A fresh deployment always starts from an empty project on MRC. However, scaling up is not as easy as the first-time deployment, because the developers need to specify the names of new instances to be created by the Ansible Task. It will be more convenient if the deployment tools are further encapsulated so the developer only needs to enter the scale when scaling up. 
+
+In attempting Ansible development, MRC instances were frequently deleted and re-creating for testing purposes. An issue occurred where volumes could not be deleted due to the mount to deleted instances, which was resolved manually by technical support. It is inevitable that a complex cloud platform such as MRC runs into a problem due to stress, system weaknesses, or abnormal usage. 
+
+MRC instances can be accessed via SSH and VPN, which ensured security but VPN brings inconvenience and inaccessibility. 
+
+
+\subsection{Data Sourcing}
+\subsubsection{AURIN}
+Six cities are explored and analysed in this research, and the cities’ boundaries are defined by the greater capital city statistical area (GCCSA). The datasets chosen from the AURIN platform are JSON files between 2016 and 2019. After pre-processing, cities’ profiles are created and combined, including facts such as income, education, housing price, demographic information, and unemployment rate, etc.
+
+\subsubsection{Sport List and Challenge Rank}
+The sports list includes 76 sport types and their challenge ranks. ESPN published 60 sports rankings according to the degree of difficulties, where boxing is proved to be the most demanding sport and fishing is the least. We pre-processed the list by adding 16 extra common sports in Australia into the list manually, such as “footy”, “AFL”, “F1”, “hike”,” jog”, etc. While those newly added sports are scored according to their similar sport types which are already on the list
+
+\subsubsection{Twitter Harvesting}
+
+The Twitter harvest utilizes Twitter API to get tweets from Twitter. Due to the limitations of the Twitter API, ordinary users cannot get search results for specific words before 7 days, but there is no time limit for crawling the user's timeline. This system bypasses the time limit of Twitter by first finding users and then crawling the timeline, thereby obtaining a relatively complete database. This harvesting system consists of searching, updating, and streaming, the first two parts employ search API, and the last uses stream API.
+
+\paragraph{Components}
+The search part tends to find the brand new users from the tweets, and to ensure the users are brand new, the search gets the full user list via \mintinline{html}{GET /users/_all_docs} and checks the returned users from the Twitter query.  The query only contains a whitespace ‘ ’, since almost all the tweets in English use whitespace to separate words, the search can obtain as many brand new users as possible. The update part aims to crawl the timelines for the brand new users and update the timelines for the users with an outdated update timestamp. However, some Twitter fanatics and official accounts post too many tweets, which is irrelevant to our scenario, the system only obtains the first 3,000 tweets for one user. The stream listens to the tweets in real-time. Because monitoring efficiency of the stream is not high and the amount and flow of data are small, once a new user is discovered, they and their timeline can be directly added to the database without worrying about the overloading of \mintinline{html}{POST} requests.
+
+\paragraph{Data Structure}
+
+Twitter proposed snowflake algorithms to ensure it can generate a unique user ID and tweets ID \cite{10.5555/110778.110783} \cite{10.5555/70413.70419}, thus the CouchDB can set the user/tweet id as the id to avoid duplication issues. However, the tweets database has a large volume, which needs a partition to improve its performance. Since the application aims to investigate the sport situation over cities, using the city name as the partition primary key is nature. Though implementation of partition improves the query efficiency, the partition database in CouchDB does not support the custom MapReduce method, which limits the scope of views.
+The user fields consist of id, city, and update timestamp, the id is the user id, the city is where the user has been found, such as Melbourne, Sydney, and Perth, and the update timestamp records the timestamp that the application updates their timeline. The timestamp format follows Twitter style.
+The tweet fields are id, city, user id, and value. Due to partition, the id consists of city, colon, and tweet id, which provides a unique id for each tweet. And value is the whole tweet object.
+
+
+\paragraph{Algorithms}\footnote{All the details of algorithms are shown in the Appendix pseudo code part.}
+
+The search algorithm consists of \mintinline{python}{search_user} function and \mintinline{python}{run_search} function, and this algorithm tends to find a fixed number of brand new users, this number comes from front-end inputted by the application user. Brand new users are the users out of the \mintinline{python}{users} database. Running this algorithm in a parallel manner cannot guarantee the system will add to the number of Twitter users the application user wants to add. Because some instances may wake up later than others, and it obtains the  \mintinline{python}{users} database that other instances have added some brand new users in. Completing the search job on one node can solve this problem. Meanwhile, assigning search user jobs across nodes evenly does not save much time. Therefore, the system only employs one node to complete the search user job.
+
+As for error handling in search users, the key idea is moving to the next token while a fatal error occurs. Once a fatal error occurs, the search user function will return the \mintinline{python}{maxid} of the current batch of tweets and the number of how many users have been added, then the algorithm will move to the next token and commence a new search user function at that breakpoint. Though our group only has a few tokens, we can build a token pool by expanding the token list 10 times and randomly shuffling the token pool. Expanding allows the system to try enough times, and random shuffling enables different instances to use distinct tokens to avoid rate limits in Twitter API. Meanwhile, each user has a token pool, that is the token pool is the innermost loop. In sum, this design assumes that tokens will not be consumed easily, trying different tokens can solve both the short-term network connection problem and the exhaustion of a certain token. As for CouchDB, the \mintinline{python}{PUT} request deserves the most attention, that is feeding the user data to CouchDB. For each \mintinline{python}{PUT}, the algorithm will try 5 times maximally and each retry will sleep 10s, if the CouchDB returns a good status code, such as 200, 201, and 202, the algorithm will start the next search to harvest new tweets; otherwise, it will continue work on the current batch tweets. This design makes full use of the Twitter query results and allows short-time connection error with CouchDB. 
+
+The update algorithm also consists of \mintinline{python}{search_tweets} function and \mintinline{python}{run_update} function, which aims to update the user timeline without an update timestamp or with an outdated update timestamp, the former allows to search 3,000 tweets maximally and the last limitations range from 400 tweets to 3,00 tweets. Unlike search user algorithm, update algorithm works in a parallel manner, since each city has almost 10,000 users and the searching timeline for one user is independent with others, parallel processing can greatly improve efficiency. The algorithm automatically assigns tasks to each instance evenly. For example, there are 3 nodes and 10 users in CouchDB, the algorithm will assign an index to each node, such as 0, 1, and 2, and it evenly splits the 10 users into 3 intervals and assigns them to the node respectively, [0, 2] for index 0 nodes, [3, 5] for index 1 node, and [6, 9] for index 2 node, then executing the \mintinline{python}{search_tweets} function in each instance. The assigned rule follows left close, right open, thus, each node will be assigned to the same volume task. \mintinline{python}{GET \{db\}/_all_docs} in CouchDB returns the id of all documents in an ascending manner, which promises the user list in each instance has no intersection.
+
+The update and search share the same idea to handle the fatal errors, but the update doesn't allow breakpoint retransmission. In update progress, the function will \mintinline{python}{PUT} the user and their timeline into CouchDB, and it is difficult to tell which progress failed and retry at the failure point. To simplify the code and logic, the algorithm only allows the two \mintinline{python}{PUT} progress to success at once.
+
+Comparing to the update and search algorithm, the logic of the stream algorithm is more simple and straightforward. Similar to search and update algorithms the stream algorithm consists of \mintinline{python}{run_stream} function and \mintinline{python}{stream_tweets} function. The stream algorithm is aimed to listen to the instant (several hours ago) tweets in target areas. In-stream progress, the function will firstly identify which city the tweets come from. Then, check whether the user is in our CouchDB. If the user is in our CouchDB then store the single tweet into the CouchDB(stream API can only get instant tweet). If the user is not in our CouchDB then store the user and his timeline into CouchDB and add a timestamp to the user. The timestamp will be used by \mintinline{python}{stream_tweets} algorithm. Stream algorithm works in a single node. In the experiment, we found that when listening to the single city the tweets harvest speed is extremely slow, nearly 2 tweets per minute. When expand the listen to the area of four cities, the stream algorithm will get about 6 to 8 tweets per minute. working in a parallel manner will not increase the work efficiency of the stream algorithm in our condition.
+
+For error handling in stream, during the development stage, we only found network connection errors. Handling this error is relatively simple. When a network connection error takes place the algorithm will sleep for few minutes, and continue the job after sleep. When the connection was stable, the stream will listen to the instant tweets again. 
+
+\paragraph{API keys and Limitations}
+
+Both search and stream API were accessed via tokens which were generated by using the Twitter Developer account. The accounts used in this project are all standard accounts, so the tokens generated by these accounts have some limitations which are mainly related to search API. The limitations are that we can only search the tweets within 7 days and the maximum number of tweets we can get from each user's timeline is 3500. Moreover, the search API only accepts 180 requests per 15 minutes. As a result, when doing Twitter harvesting, the number of search tweets was limited, and the speed was slow. Another problem related to tokens was met apart from those limitations: tokens were suspended several times due to the spam groups of Twitter. Token disable is a huge issue when doing Twitter harvesting. To avoid that, all tokens were stored in the token database, so that we can replace or remove the disabled tokens easily from the database. This allows API to be accessed via the working tokens only.
+
+\begin{figure*}
+\centerline{\includegraphics[width=6in]{Figures/couchdb-django.png}}
+\caption{Map Reduce in CouchDB \label{couchdb and django}}
+\end{figure*}
+\paragraph{Implementation and Limitations}
+
+In MRC, the search script costs 10s $\sim$ 15s to find a brand new user in one city, and the update script harvests the timeline for one user in 5s, and these scripts have run 13 hours in MRC without throwing an error. Thus, the Twitter harvest has a promising performance. 
+
+There are several limitations posed in the Twitter harvest system:\\
+\begin{enumerate}
+    \item Though the system can handle the breakpoint while running the script and cancel these tasks in the frontend via job control bottoms, the user can not pause and resume the search, update, stream progress.
+    \item The algorithm can not handle long-time connection error. 
+    \item The system fails to obtain the timelines of some users due to authorization issues, this unauthorized means the user sets their account as private status, which does not allow the public to access their tweets. Due to the timeframe, the system fails to handle this situation.
+    \item It’s quite inconvenient to check the logs overall. The Portainer provides an incomplete overall log with a wrong timestamp, which halts the checking progress.
+    \item Tokens are always inadequate. Applying for a Twitter development account is difficult, and Twitter does not provide a clear measurement about the usage, thus we don't know when the token will run out of its usage. 
+    \item Twitter development accounts are not in a stable status. Our group has crawled data in a gentle way, but two accounts have been suspended several times.
+\end{enumerate}
