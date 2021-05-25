@@ -25,4 +25,7 @@
 5. Portainer username is admin and password is password. 
 6. Scale up services. 
 
+# Fix CouchDB "Failed to load database" Error
+1. Run ```recluster-couchdb.sh```
+
 

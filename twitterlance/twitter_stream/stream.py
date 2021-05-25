@@ -83,10 +83,10 @@ def new_user(tweetJson, area):
     user["city"] = area
     user['update_timestamp'] = couch.now()
     if user["_id"] in users:
-        print('not a new user')
+        print('[stream] not a new user')
         return False # return ???
     else:
-        print("got new user in", area)
+        print("[stream] got new user in", area)
         users.append(user["_id"])
         couch.save('users', user)
         return True
@@ -100,11 +100,11 @@ def new_tweet(tweetJson, area):
     tweettemp["city"] = area
     tweettemp["value"] = tweetJson
     try: # save directly, no need to retrive all, since too slow?
-        print('got new tweet')
+        print('[stream] got new tweet')
         couch.save('tweets', tweettemp)
         return True
     except:
-        print("error new tweet")
+        print("[stream] error new tweet")
         return False
 
 
@@ -122,11 +122,11 @@ def new_timeline(tweetJson, area):
         tweettemp["value"] = tjson
         tweets.append(tweettemp)
     try:
-        print("got new timeline")
-        couch.bulk_save('tweets', tweets)
+        res = couch.bulk_save('tweets', tweets)
+        print(f"[stream] got new timeline {res.json()}")
         return True
     except:
-        print("error: new timeline")
+        print("[stream] error: new timeline")
         return False
 
 
@@ -151,7 +151,7 @@ def AddUserTweet2DB(tweetJson):
         else:
             new_tweet(tweetJson, t_area)
     else:
-        print('Not in target area')
+        print('[stream] Not in target area')
 
 
 class MyStreamListener(tweepy.StreamListener):
@@ -181,7 +181,7 @@ class MyStreamListener(tweepy.StreamListener):
             return True
 
     def on_error(self, status_code):
-        print(status_code)
+        print(f'[stream] {status_code}')
         if status_code == 429:
             time.sleep(15 * 60 + 1)
         if status_code == 420:
@@ -195,9 +195,9 @@ def run():
 
     try:
         api.verify_credentials()
-        print("Authentication OK")
+        print("[stream] Authentication OK")
     except:
-        print("Error during authentication")
+        print("[stream] Error during authentication")
 
     # Loop to save the tweets that meet the requirements in CouchDB
     while True:
