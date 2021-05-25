@@ -14,4 +14,4 @@
 
 ## Docker Image
 
-A docker images is used in the deployment: [yangzy3/twitterlance](https://hub.docker.com/repository/docker/yangzy3)
+The web app docker image used in the deployment: [yangzy3/twitterlance](https://hub.docker.com/repository/docker/yangzy3)
