@@ -8,7 +8,7 @@ Team: 39
 
 | Name       | Student ID | Email                          | City      | Responsibility                                |
 |------------|------------|--------------------------------|-----------|-----------------------------------------------|
-| Zihao Yang | 1252410    | yangzy3@student.unimelb.edu.au | Melbourne | Backend, Ansible, Docker, CouchDB, Spark      |
+| (Simon) Zihao Yang | 1252410    | yangzy3@student.unimelb.edu.au | Melbourne | Backend, Ansible, Docker, CouchDB, Spark      |
 | Zihao Hu   | 977716     | zihao1@student.unimelb.edu.au  | Yichun    | Twitter Search, Backend, CouchDB View         |
 | Yuqi Zhang | 777603     | yuqiz2@student.unimelb.edu.au  | Tianjin   | Frontend Charts, Twitter Search, CouchDB View |
 | Xin Li     | 1029029    | xin5@student.unimelb.edu.au    | Melbourne | Frontend Maps, Data Analysis, CouchDB View    |
